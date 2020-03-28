@@ -1,0 +1,8 @@
+api.spec
+venv/
+node_modules/
+dist/
+package-lock.json
+textualize*/
+.build/
+.DS_STORE

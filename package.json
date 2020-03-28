@@ -1,0 +1,29 @@
+{
+  "name": "textualize",
+  "version": "0.0.1",
+  "description": "A minimal Electron and Python application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "electron-rebuild": "electron-rebuild",
+    "electron-package": "electron-packager . --ignore=^/backend --ignore=^/venv --ignore=package-lock.json"
+  },
+  "repository": "https://github.com/fyears/electron-python-example",
+  "keywords": [
+    "Electron",
+    "Python",
+    "zerorpc"
+  ],
+  "author": "jweinstein2",
+  "license": "MIT",
+  "dependencies": {
+    "electron-is-dev": "^1.1.0",
+    "zeromq": "^5.1.0",
+    "zerorpc": "git+https://github.com/fyears/zerorpc-node.git"
+  },
+  "devDependencies": {
+    "electron": "6.0.10",
+    "electron-packager": "^14.0.6",
+    "electron-rebuild": "^1.10.1"
+  }
+}
