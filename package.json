@@ -2,11 +2,15 @@
   "name": "textualize",
   "version": "0.0.1",
   "description": "A minimal Electron and Python application",
-  "main": "main.js",
+  "main": "start.js",
   "scripts": {
-    "start": "electron .",
+    "start": "nf start -p 3000",
+    "electron": "electron .",
     "electron-rebuild": "electron-rebuild",
-    "electron-package": "electron-packager . --ignore=^/backend --ignore=^/venv --ignore=package-lock.json"
+    "electron-package": "electron-packager . --ignore=^/backend --ignore=^/venv --ignore=package-lock.json",
+    "electron-start": "node start-react",
+    "react-start": "BROWSER=none react-scripts start",
+    "build": "react-scripts build"
   },
   "repository": "https://github.com/fyears/electron-python-example",
   "keywords": [
@@ -17,13 +21,35 @@
   "author": "jweinstein2",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^4.4.3",
     "electron-is-dev": "^1.1.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.4.1",
     "zeromq": "^5.1.0",
     "zerorpc": "git+https://github.com/fyears/zerorpc-node.git"
+  },
+  "homepage": "./",
+  "eslintConfig": {
+    "extends": "react-app"
   },
   "devDependencies": {
     "electron": "6.0.10",
     "electron-packager": "^14.0.6",
     "electron-rebuild": "^1.10.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

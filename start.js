@@ -2,13 +2,14 @@ const electron = require('electron')
 const app = electron.app
 const isDev = require('electron-is-dev')
 const BrowserWindow = electron.BrowserWindow
-const path = require('path')
+const { dialog } = electron
 
+const path = require('path')
+const url = require('url')
 
 /*************************************************************
  * py process
  *************************************************************/
-
 const PY_DIST_FOLDER = 'dist'
 const PY_FOLDER = 'backend'
 const PY_MODULE = 'api' // without .py suffix
@@ -66,24 +67,71 @@ const exitPyProc = () => {
 app.on('ready', createPyProc)
 app.on('will-quit', exitPyProc)
 
+/************************************************************
+ZeroRPC
+************************************************************/
+//window.zerorpcClient.connect("tcp://127.0.0.1:4242")
+//
+//window.zerorpcClient.invoke("echo", "server ready", (error, res) => {
+//  if(error || res !== 'server ready') {
+//    console.error(error)
+//  } else {
+//    console.log("server is ready")
+//  }
+//})
+/************************************************************
+ window management
+************************************************************/
+let mainWindow
+const { ipcMain } = electron
+ipcMain.on('async-file-select', (event, arg) => {
+    console.log(arg) // prints "ping"
 
-/*************************************************************
- * window management
- *************************************************************/
+    dialog.showOpenDialog(mainWindow, {
+        buttonLabel: "Select",
+        properties: ['openFile', 'openDirectory']
+    }).then(result => {
+        console.log(result.canceled)
+        console.log(result.filePaths)
+        event.reply('async-file-reply', result)
+    }).catch(err => {
+        console.log(err)
+        event.reply('async-file-reply', err)
+    })
+})
 
-let mainWindow = null
+//ipcMain.on('async-server-call', (event, arg) => {
+//    console.log(arg)
+//
+//    window.zerorpcClient.invoke("calc", formula.value, (error, res) => {
+//        if(error) {
+//            console.error(error)
+//        } else {
+//            result.textContent = res
+//        }
+//    })
+//})
 
-const createWindow = () => {
-    mainWindow = new BrowserWindow({width: 800, height: 600,
+function createWindow() {
+    mainWindow = new BrowserWindow({
+        show: false,
+        title: "Textualize",
         webPreferences: {
+            nodeIntegration: true, // SECURITY RISK: used to access ipcRenderer
             preload: path.join(__dirname, 'preload.js')
-        }})
-    mainWindow.loadURL(require('url').format({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
-    mainWindow.webContents.openDevTools()
+        },
+    })
+    mainWindow.maximize()
+    mainWindow.show()
+
+    mainWindow.loadURL(
+        process.env.ELECTRON_START_URL ||
+        url.format({
+            pathname: path.join(__dirname, 'public/index.html'),
+            protocol: 'file:',
+            slashes: true
+        })
+    )
 
     mainWindow.on('closed', () => {
         mainWindow = null
