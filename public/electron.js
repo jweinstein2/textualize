@@ -10,7 +10,7 @@ const url = require('url')
 /*************************************************************
  * py process
  *************************************************************/
-const PY_DIST_FOLDER = 'dist'
+const PY_DIST_FOLDER = 'api'
 const PY_FOLDER = 'backend'
 const PY_MODULE = 'api' // without .py suffix
 const PY_PORT = 4242
@@ -20,7 +20,7 @@ let pyPort = null
 
 const getScriptPath = () => {
     if (isDev) {
-        return path.join(__dirname, PY_FOLDER, PY_MODULE + '.py')
+        return path.join(__dirname, '..', PY_FOLDER, PY_MODULE + '.py')
     }
     if (process.platform === 'win32') {
         return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
@@ -127,7 +127,7 @@ function createWindow() {
     mainWindow.loadURL(
         process.env.ELECTRON_START_URL ||
         url.format({
-            pathname: path.join(__dirname, 'public/index.html'),
+            pathname: path.join(__dirname, 'index.html'),
             protocol: 'file:',
             slashes: true
         })

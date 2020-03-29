@@ -2,15 +2,18 @@
   "name": "textualize",
   "version": "0.0.1",
   "description": "A minimal Electron and Python application",
-  "main": "start.js",
+  "main": "public/electron.js",
   "scripts": {
     "start": "nf start -p 3000",
     "electron": "electron .",
     "electron-rebuild": "electron-rebuild",
-    "electron-package": "electron-packager . --ignore=^/backend --ignore=^/venv --ignore=package-lock.json",
+    "package": "electron-packager . --overwrite",
     "electron-start": "node start-react",
+    "build": "npm run react-build && npm run python-build && electron-builder",
+    "python-build": "pyinstaller backend/api.py -F --clean --workpath ./backend_build --distpath ./build/api",
     "react-start": "BROWSER=none react-scripts start",
-    "build": "react-scripts build"
+    "react-build": "react-scripts build",
+    "postinstall": "electron-builder install-app-deps"
   },
   "repository": "https://github.com/fyears/electron-python-example",
   "keywords": [

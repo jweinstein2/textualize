@@ -1,8 +1,8 @@
 api.spec
-venv/
 node_modules/
 dist/
 package-lock.json
 textualize*/
-.build/
+build/
+backend_build/
 .DS_STORE

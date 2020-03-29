@@ -1,7 +1,0 @@
-echo '(1/3) BUILDING PYTHON'
-pyinstaller backend/api.py -F --clean --workpath ./.build
-
-echo '(3/3) PACKAGING ELECTRON'
-npm run electron-package
-
-textualize-darwin-x64/textualize.app/Contents/MacOS/textualize
