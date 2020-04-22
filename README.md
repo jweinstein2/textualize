@@ -22,3 +22,18 @@ https://github.com/fyears/electron-python-example/issues/28
 
 pip install zerorpc and make sure you are running the command from the correct
 virtual-env
+
+## Future Work
+- Robust Logger for the Backend
+- Smoother User Onboarding
+    - Guess Sources
+    - Select
+- Select Date Range
+- Performance (correct caching and preprocessing)
+- More Stats!
+    - Group Analysis
+    - Wordcloud Component
+- Videos
+- Abstract data fetching from Components
+    - Redux?
+

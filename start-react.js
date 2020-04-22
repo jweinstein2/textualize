@@ -14,13 +14,19 @@ const tryConnection = () => {
     () => {
       client.end()
       if (!startedElectron) {
-        console.log('starting electron')
-        startedElectron = true
-        const proc = childProcess.exec('npm run electron')
-        proc.stdout.setEncoding('utf8')
-        proc.stdout.on('data', function(data) {
-            console.log(data);
-        });
+          console.log('Starting Electron');
+          startedElectron = true;
+          const { spawn } = require('child_process');
+          const ls = spawn('npm run electron', [], { shell: true });
+          ls.stdout.on('data', (data) => {
+              console.log(`${data}`);
+          });
+          ls.stderr.on('data', (data) => {
+              console.error(`err: ${data}`);
+          });
+          ls.on('close', (code) => {
+              console.log(`child process exited with code ${code}`);
+          });
       }
     }
   )

@@ -1,18 +1,85 @@
 from __future__ import print_function
-from calc import calc as real_calc
 import sys
 import zerorpc
+import src.data_manager as data_manager
+import src.file_util as file_util
+import src.configuration as config
+import src.stats.general as general_stats
+import src.stats.language as language_stats
+import src.stats.emoji as emoji_stats
+import src.stats.sentiment as sentiment_stats
 
-class CalcApi(object):
-    def calc(self, text):
-        """based on the input text, return the int result"""
-        try:
-            return real_calc(text)
-        except Exception as e:
-            return 0.0    
-    def echo(self, text):
-        """echo any text"""
-        return text
+class Api(object):
+    def state(self):
+        status, additional = data_manager.process_progress()
+        if status == "completed":
+            state = 3
+        elif status == "failed":
+            state = 2
+        elif status == "in_progress":
+            state = 2
+        elif status == "unstarted":
+            state = 1
+        else:
+            print("unexpected state")
+            state = 0
+
+        return state
+
+    def set_source(self, path):
+        if file_util.is_valid_source(path):
+            config.set_backup_path(path)
+            return True
+        return False
+
+    def clear_src(self):
+        config.reset();
+        data_manager.clear();
+        return True
+
+    def process(self):
+        return data_manager.process()
+
+    def get_process_progress(self):
+       status, msg = data_manager.process_progress()
+       return status, msg
+
+    def contact_info(self, number):
+        content = general_stats.contact(number)
+        return content
+
+    # return the first n numbers sorted by frequency
+    def get_numbers(self, start=None, end=None, n=100):
+        msg = data_manager.messages(start=start, end=end)
+        result = general_stats.contacts_summary(msg, n)
+        return result
+
+    def language_stats(self, number, start=None, end=None):
+        msg = data_manager.messages(number=number, start=start, end=end)
+        result = language_stats.contact_summary(msg)
+        return result
+
+    def frequency(self, number=None, start=None, end=None):
+        msg = data_manager.messages(number=number, start=start, end=end)
+        result = general_stats.frequency(msg, period='M')
+        return result
+
+    def summary(self, start=None, end=None):
+        msg = data_manager.messages(start=start, end=end)
+        result = general_stats.summary(msg)
+        return result
+
+    def sentiment(self, number, start=None, end=None):
+        msg = data_manager.messages(number=number, start=start, end=end)
+        result = sentiment_stats.contact_summary(msg)
+        return result
+
+    def emoji(self, number, start=None, end=None):
+        n = 5
+        msg = data_manager.messages(number=number, start=start, end=end)
+        result = emoji_stats.contact_summary(msg, n)
+        return result
+
 
 def parse_port():
     port = 4242
@@ -24,7 +91,7 @@ def parse_port():
 
 def main():
     addr = 'tcp://127.0.0.1:' + parse_port()
-    s = zerorpc.Server(CalcApi())
+    s = zerorpc.Server(Api(), heartbeat=None)
     s.bind(addr)
     print('start running on {}'.format(addr))
     s.run()
