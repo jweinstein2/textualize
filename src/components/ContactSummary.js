@@ -46,12 +46,17 @@ const tableIcons = {
 function ContactSummary(props) {
     const [data, setData] = useState([]);
     const hist = props.history
-    const columns = [{ title: "First", field: "first" },
-        { title: "Last", field: "last" },
-        { title: "Number", field: "number" },
-        { title: "Sent", field: "sent" },
-        { title: "Received", field: "received" },
-        ];
+    const columns = [
+        {title: "First", field: "first"},
+        {title: "Last", field: "last"},
+        {title: "Number", field: "number"},
+        {title: "Sent", field: "sent"},
+        {title: "Received", field: "received"},
+        {title: "Conversations Started", field: "started"},
+        {title: "Conversations Ended", field: "ended"},
+        {title: "Your Response Time", field: "sent_response_time"},
+        {title: "Their Response Time", field: "received_response_time"},
+    ];
 
     useEffect(() => {
         window.zerorpcClient.invoke('get_numbers', (error, res, more) => {

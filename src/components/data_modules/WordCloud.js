@@ -1,56 +1,23 @@
 import React from 'react';
-import wordcloud from 'vue-wordcloud';
+import TagCloud from 'react-tag-cloud';
+import randomColor from 'randomcolor';
 
 function WordCloud(props) {
-    const data = {
-        words: [{
-                "name": "Cat",
-                "value": 26
-            },
-            {
-                "name": "fish",
-                "value": 19
-            },
-            {
-                "name": "things",
-                "value": 18
-            },
-            {
-                "name": "look",
-                "value": 16
-            },
-            {
-                "name": "two",
-                "value": 15
-            },
-            {
-                "name": "fun",
-                "value": 9
-            },
-            {
-                "name": "know",
-                "value": 9
-            },
-            {
-                "name": "good",
-                "value": 9
-            },
-            {
-                "name": "play",
-                "value": 6
-            }
-        ],
-        colors: ['#1f77b4', '#629fc9', '#94bedb', '#c9e0ef']
-    }
+    const data = props.data ?? []
 
     return (
-        <wordcloud
-            data={data}
-            nameKey="name"
-            valueKey="value"
-            color="colors"
-            showTooltip="true">
-        </wordcloud>
+        <TagCloud
+        style={{
+            fontFamily: 'sans-serif',
+                color: () => '#248CF5',
+                padding: 5,
+                width: '100%',
+                height: '500px'
+        }}>
+        {
+            data.map(w => <div key={w['name']}>{w['name']}</div>)
+        }
+        </TagCloud>
     );
 }
 

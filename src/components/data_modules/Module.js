@@ -56,7 +56,7 @@ function Module(props) {
             case mod.RANKED:
                 return <Ranked data={data} />
             case mod.WORD:
-                return <WordCloud data={{}} />
+                return <WordCloud data={data} />
             default:
         }
 

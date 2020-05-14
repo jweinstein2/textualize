@@ -23,7 +23,11 @@ https://github.com/fyears/electron-python-example/issues/28
 pip install zerorpc and make sure you are running the command from the correct
 virtual-env
 
+3. pyinstaller has known issue with nltk
+https://stackoverflow.com/questions/57128735/using-pyinstaller-with-nltk-results-in-error-cant-find-nltk-data
+
 ## Future Work
+- Autoupdater with Squirrel
 - Robust Logger for the Backend
 - Smoother User Onboarding
     - Guess Sources

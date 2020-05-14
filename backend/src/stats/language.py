@@ -9,6 +9,7 @@ def contact_summary(messages):
     sent, received = split_sender(messages)
     # dictionary = enchant.Dict("en_US")
 
+    # TODO: dictionary isn't compiled in production build
     def process(txt, messages):
         words, text = extract_words(messages)
         n_words = len(words)
@@ -23,17 +24,15 @@ def contact_summary(messages):
     process('received', received)
     process('sent', sent)
 
-    # unique words
-    (words, text) = extract_words(messages)
-    (all_words, all_text) = extract_words(data_manager.messages())
-    uni = unique(words, all_words)
-    df = pd.DataFrame({'name': uni.index, 'value': uni.values})
-    info_dict['unique'] = df.to_dict(orient='records')
-
+    info_dict['unique'] = unique_words(messages)
     return info_dict
 
 def unique_words(messages):
-    pass
+    (words, text) = extract_words(messages)
+    (all_words, all_text) = extract_words(data_manager.messages())
+    uni = unique(words, all_words)
+    df = pd.DataFrame({'name': uni.index, 'value': uni.values})[:100]
+    return df.to_dict(orient='records')
 
 if __name__ == '__main__':
     import pdb; pdb.set_trace()

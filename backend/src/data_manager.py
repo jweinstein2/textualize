@@ -1,22 +1,70 @@
 # Handles parsing messages specific to iOS
-
 import threading
 import shutil
 import pandas as pd
+import time
 
 import src.util as util
 import src.file_util as file_util
 import src.configuration as config
+import src.preprocess as preprocess
 
+#############################################################
+# FETCH DATA TABLES
+# Only use these methods after completing the process step
+#############################################################
+
+_cache = {}
+
+NUMBER_STAT_PATH = file_util.app_data_path('data/numbers.pck')
 CM_JOIN_PATH = file_util.app_data_path('data/chat_message_join.pck')
 CH_JOIN_PATH = file_util.app_data_path('data/chat_handle_join.pck')
 CONTACTS_PATH = file_util.app_data_path('data/contacts.pck')
 MESSAGES_PATH = file_util.app_data_path('data/message.pck')
 HANDLES_PATH = file_util.app_data_path('data/handle.pck')
 
+def _fetch(path):
+    df = _cache.get(path, None)
+    if df is None: df = pd.read_pickle(path)
+    _cache[path] = df
+    return df
+
+def _set(df, path):
+    _cache[path] = df
+    df.to_pickle(path)
+
+def cm_join():
+    return _fetch(CM_JOIN_PATH)
+
+def ch_join():
+    return _fetch(CH_JOIN_PATH)
+
+def handles():
+    return _fetch(HANDLES_PATH)
+
+def contacts():
+    return _fetch(CONTACTS_PATH)
+
+def numbers():
+    return _fetch(NUMBER_STAT_PATH)
+
+# Get the messages df filtered by time, group, and sender
+def messages(number=None, is_group=None, start=None, end=None):
+    df = _fetch(MESSAGES_PATH)
+
+    if number: df = df.loc[df.number == number]
+    if is_group is not None: df = df.loc[df['is_group'] == is_group]
+    # TODO: add temporal filter
+    # if start_date: df = df.loc[df['is_group'] >= start_date]
+    # if start_date: df = df.loc[df['is_group'] < end_date]
+    return df
+
+#############################################################
+# PREPROCESS WORK
+#############################################################
+
 process_lock = threading.Lock()
 
-# Returns
 # "failed",      description
 # "in progress", status
 # "completed",   None
@@ -40,92 +88,83 @@ def clear():
         print("processing in background: shit is about to go south")
 
     shutil.rmtree(app_data_path('data'), ignore_errors=True)
+    cache = {}
     config.del_process_progress()
     config.del_last_error()
 
-# Synchronously begin process
-def process():
+def start_process():
     backup_path = config.get_backup_path()
     if backup_path == None:
-        return False, 'backup path has not been set'
-
+        return 'backup path has not been set', None
     if not process_lock.acquire(False):
-        return False, 'process already in progress'
+        return 'process already in progress', None
 
-
-    # TODO: get quick stats to return immediately
-    content = ['Analyzing over 200 messages',
-               'from over 68 contacts',
-               'in over 400 countries']
-
-    # start non-blocking thread for heavy processing
-    t = threading.Thread(target = _async_process,
-                     name = 'processing',
-                     args = (backup_path, process_lock))
-    t.start()
-    return True, content
-
-#: MARK: Methods that read directly from the pickled dataframes
-def cm_join():
-    return pd.read_pickle(CM_JOIN_PATH)
-
-def ch_join():
-    return pd.read_pickle(CH_JOIN_PATH)
-
-def handles():
-    return pd.read_pickle(HANDLES_PATH)
-
-def contacts():
-    return pd.read_pickle(CONTACTS_PATH)
-
-# Get the messages df filtered by time, group, and sender
-def messages(number=None, is_group=None, start=None, end=None):
-    df = pd.read_pickle(MESSAGES_PATH)
-
-    if number: df = df.loc[df.number == number]
-    if is_group is not None: df = df.loc[df['is_group'] == is_group]
-    # TODO: add temporal filter
-    # if start_date: df = df.loc[df['is_group'] >= start_date]
-    # if start_date: df = df.loc[df['is_group'] < end_date]
-    return df
-
-# MARK: Helper Methods
-def _async_process(path, lock):
-    config.del_last_error()
-    try:
-        success, message = _process(path)
-        if not success:
-            config.set_process_progress(-1)
-            config.set_last_error(message)
-            print("Handled failure while processing")
-            print(message)
-            return
-        elif success:
-            config.set_process_progress(100)
-    except Exception as e:
-        config.set_process_progress(-1);
-        config.set_last_error(str(e))
-        print("Unexpected error while processing")
-        print(e)
-    lock.release()
-
-def _process(backup_path):
+    start_time = time.time()
     err, dfs = file_util.fetch_message_tables(backup_path)
-    if err: return False, 'error fetching messages'
+    if err: return err, None
     message_df, handle_df, ch_join, cm_join = dfs
 
     err, contact_df = file_util.fetch_contact_table(backup_path)
-    if err: return False, 'error fetching contacts'
+    if err: return err, None
 
-    # XXX
+    contact_df = _format_contacts(contact_df)
+    cm_join = _format_cm_join(cm_join)
+    message_df = _format_messages(message_df, handle_df, cm_join, ch_join)
+
+    _set(contact_df, CONTACTS_PATH)
+    _set(message_df, MESSAGES_PATH)
+    _set(handle_df, HANDLES_PATH)
+    _set(ch_join, CH_JOIN_PATH)
+    _set(cm_join, CM_JOIN_PATH)
+
+
+    print('completed synchronous processing work (%s seconds)' % round((time.time() - start_time), 2))
+
+    # start non-blocking thread for heavy processing
+    t = threading.Thread(target = async_process,
+                     name = 'processing',
+                     args = [process_lock])
+    t.start()
+    return None, preprocess.quick_stats()
+
+def async_process(lock):
+    config.del_last_error()
+    try:
+        start_time = time.time()
+        number_stats = preprocess.generate_number_stats()
+        _set(number_stats, NUMBER_STAT_PATH)
+        print('generated and saved number stats (%s seconds)' % round((time.time() - start_time), 2))
+        config.set_process_progress(100)
+    except Exception as e:
+        config.set_process_progress(-1);
+        config.set_last_error(str(e))
+        lock.release()
+        raise(e)
+
+    lock.release()
+
+def _format_cm_join(cm_join):
     # MessageId: 834570 belongs to 18 chats. I believe this is anomalous
     # due to a third party messing with my chat database (2019-09-14)
     # To prevent breaking analysis, I filter this one message.
-    cm_join = cm_join.drop_duplicates(subset='message_id', keep='first')
-    # XXX
+    return cm_join.drop_duplicates(subset='message_id', keep='first')
 
-    # TODO: this is really slow
-    message_df['timestamp'] = message_df['date'].apply(util.ts)
+def _format_contacts(df):
+    # generate full name string
+    first = list(map(lambda v: v or "", df["First"]))
+    last = list(map(lambda v: v or "", df["Last"]))
+    full = ["{} {}".format(a_, b_) for a_, b_ in zip(first, last)]
+    full = [s.strip() for s in full]
+    df['Name'] = full
+    df = df.loc[df['Name'] != " "]
+
+    # simplify phone number data
+    df['value'] = df['value'].map(lambda a: util.parse_num(a))
+    return df
+
+def _format_messages(message_df, handle_df, cm_join, ch_join):
+    # TODO: this is really slow and unecessary
+    # message_df['timestamp'] = message_df['date'].apply(util.ts)
 
     # TODO: This could be skipped to save time
     # add number (0 for sent messages in groupchat)
@@ -144,24 +183,4 @@ def _process(backup_path):
     ch_counts.loc[ch_counts > 1] = 1
     ch_counts = ch_counts.astype(bool)
     message_df['is_group'] = ch_counts[chat_ids].values
-
-    # generate full name string
-    first = list(map(lambda v: v or "", contact_df["First"]))
-    last = list(map(lambda v: v or "", contact_df["Last"]))
-    full = ["{} {}".format(a_, b_) for a_, b_ in zip(first, last)]
-    full = [s.strip() for s in full]
-    contact_df['Name'] = full
-    contact_df = contact_df.loc[contact_df['Name'] != " "]
-
-    # simplify phone number data
-    contact_df['value'] = contact_df['value'].map(lambda a: util.parse_num(a))
-
-    # save databases
-    contact_df.to_pickle(CONTACTS_PATH)
-    message_df.to_pickle(MESSAGES_PATH)
-    handle_df.to_pickle(HANDLES_PATH)
-    ch_join.to_pickle(CH_JOIN_PATH)
-    cm_join.to_pickle(CM_JOIN_PATH)
-
-    config.set_process_progress(100);
-    return True, None
+    return message_df

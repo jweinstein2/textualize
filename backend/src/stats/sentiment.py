@@ -1,4 +1,5 @@
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from src.util import *
 
 def contact_summary(messages):

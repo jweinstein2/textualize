@@ -38,21 +38,22 @@ class Api(object):
         return True
 
     def process(self):
-        return data_manager.process()
+        return data_manager.start_process()
 
     def get_process_progress(self):
        status, msg = data_manager.process_progress()
        return status, msg
 
+    # use the saved database
     def contact_info(self, number):
-        content = general_stats.contact(number)
+        content = general_stats.contact_info(number)
         return content
 
     # return the first n numbers sorted by frequency
     def get_numbers(self, start=None, end=None, n=100):
-        msg = data_manager.messages(start=start, end=end)
-        result = general_stats.contacts_summary(msg, n)
-        return result
+        numbers = data_manager.numbers()
+        numbers = numbers[:n]
+        return numbers.to_dict(orient='records')
 
     def language_stats(self, number, start=None, end=None):
         msg = data_manager.messages(number=number, start=start, end=end)
@@ -79,6 +80,9 @@ class Api(object):
         msg = data_manager.messages(number=number, start=start, end=end)
         result = emoji_stats.contact_summary(msg, n)
         return result
+
+    def test(self):
+        import pdb; pdb.set_trace()
 
 
 def parse_port():

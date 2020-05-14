@@ -101,16 +101,6 @@ function Contact({ match }) {
                 </Grid>
         {
                 //<Grid item xs={3}>
-                //    <Module title="English Words (sent)"
-                //    data={langData ? langData['sent_perc_proper'] : {}}
-                //    type="simple"/>
-                //</Grid>
-                //<Grid item xs={3}>
-                //    <Module title="English Words (received)"
-                //    data={langData ? langData['received_perc_proper'] : {}}
-                //    type="simple"/>
-                //</Grid>
-                //<Grid item xs={3}>
                 //    <Module title="Readability (s)"
                 //    data={langData ? langData['sent_readability'] : {}}
                 //    type="simple"/>
@@ -122,11 +112,9 @@ function Contact({ match }) {
                 //</Grid>
         }
                 <Grid item xs={12}>
-                {
-                    //<Module title="Wordcloud"
-                    //data={langData ? langData['received_readability'] : {}}
-                    //type="word_cloud"/>
-                }
+                    <Module title="Wordcloud"
+                    data={langData ? langData['unique'] : {}}
+                    type="word_cloud"/>
                 </Grid>
             </Grid>
             <Header title="Sentiment" />
