@@ -1,9 +1,9 @@
 {
-  "name": "electron-vite-react",
-  "version": "2.2.0",
+  "name": "textualize",
+  "version": "0.0.1",
   "main": "dist-electron/main/index.js",
-  "description": "Electron Vite React boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "description": "Pulling insights from personalized imessage data",
+  "author": "Jared Weinstein <jaredweinstein1@gmail.com>",
   "license": "MIT",
   "private": true,
   "debug": {
@@ -13,14 +13,14 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "start": "vite",
     "build": "tsc && vite build && electron-builder",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"
   },
   "dependencies": {
-    "electron-updater": "^6.1.8"
+    "electron-updater": "^6.2.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
