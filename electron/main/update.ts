@@ -29,7 +29,7 @@ export function update(win: Electron.BrowserWindow) {
   // Checking for updates
   ipcMain.handle('check-update', async () => {
     if (!app.isPackaged) {
-      const error = new Error('The update feature is only available after the package.')
+      const error = new Error('Update feature only available for built binary.')
       return { message: error.message, error }
     }
 
