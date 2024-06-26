@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, dialog, BrowserWindow, shell, ipcMain } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -7,6 +7,8 @@ import { update } from './update'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const fs = require("fs");
 
 // The built directory structure
 //
@@ -81,7 +83,18 @@ async function createWindow() {
   update(win)
 }
 
-app.whenReady().then(createWindow)
+async function handleFileOpen (event: any, dir: String) {
+    //const dir = '/Library/Application Support/MobileSync/Backup/'
+    const home = app.getPath('home');
+    const dirPath = path.resolve(home + dir)
+    return await fs.readdirSync(dirPath)
+}
+
+app.whenReady().then(() => {
+    // Renderer > Main
+    ipcMain.handle('lsDir', handleFileOpen)
+    createWindow()
+})
 
 app.on('window-all-closed', () => {
   win = null

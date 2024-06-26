@@ -10,8 +10,12 @@ function Onboarding() {
   const [source, setSource] = useState<string | null>(null);
   const [backup, setBackup] = useState<string | null>(null);
 
-    const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
-    const readFiles = () => {}
+    const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current))
+    const readFiles = async () => {
+        const path = '/Library/Application Support/MobileSync/Backup/'
+        const filePath = await window.ipcRenderer.invoke('lsDir', path)
+        console.log(filePath)
+    }
 
     const data = [
         {name: 'iPhone Backup ⭐️', description: 'Messages stored on your iPhone' },
