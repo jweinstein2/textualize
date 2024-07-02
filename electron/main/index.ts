@@ -83,16 +83,16 @@ async function createWindow() {
   update(win)
 }
 
-async function handleFileOpen (event: any, dir: String) {
-    //const dir = '/Library/Application Support/MobileSync/Backup/'
+async function listBackups (event: any, dir: String) {
     const home = app.getPath('home');
     const dirPath = path.resolve(home + dir)
-    return await fs.readdirSync(dirPath)
+    const backups = await fs.readdirSync(dirPath)
+    return backups.filter((path: string) => path[0] !== '.');
 }
 
 app.whenReady().then(() => {
     // Renderer > Main
-    ipcMain.handle('lsDir', handleFileOpen)
+    ipcMain.handle('listBackups', listBackups)
     createWindow()
 })
 
