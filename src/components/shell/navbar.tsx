@@ -6,22 +6,23 @@ import {
   IconKey,
   IconSettings,
   Icon2fa,
+  IconChartAreaLine,
   IconDatabaseImport,
   IconReceipt2,
-  IconSwitchHorizontal,
-  IconLogout,
+  IconMessage,
+  IconUsersGroup,
 } from '@tabler/icons-react';
 import './navbar.css';
 
 const data = [
-  { link: 'summary', label: 'Summary', icon: IconBellRinging },
-  { link: 'contacts', label: 'Contacts', icon: IconReceipt2 },
-  { link: 'groups', label: 'Groups', icon: IconSwitchHorizontal },
-  { link: 'ai', label: 'AI', icon: IconFingerprint },
+  { link: '/summary', label: 'Summary', icon: IconChartAreaLine },
+  { link: '/contacts', label: 'Contacts', icon: IconMessage },
+  { link: '/groups', label: 'Groups', icon: IconUsersGroup },
+  { link: '/ai', label: 'AI', icon: IconFingerprint },
 ];
 
 function Navbar() {
-  const [active, setActive] = useState('Billing');
+  const [active, setActive] = useState('Summary');
 
   const links = data.map((item) => (
     <a
@@ -29,10 +30,7 @@ function Navbar() {
       data-active={item.label === active || undefined}
       href={item.link}
       key={item.label}
-      onClick={(event) => {
-        setActive(item.label);
-      }}
-    >
+      onClick={(event) => {setActive(item.label)}} >
       <item.icon className="linkIcon" stroke={1.5} />
       <span>{item.label}</span>
     </a>
@@ -45,7 +43,7 @@ function Navbar() {
       </div>
 
       <div className="footer">
-        <a href="#" className="link">
+        <a href="/settings" className="link">
           <IconSettings className="linkIcon" stroke={1.5} />
           <span>Settings</span>
         </a>

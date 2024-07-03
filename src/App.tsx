@@ -5,6 +5,7 @@ import '@mantine/core/styles.css'
 import { createTheme, MantineProvider } from '@mantine/core'
 import store from './store/store'
 import Root from './Root'
+import { BrowserRouter } from 'react-router-dom'
 
 
 const theme = createTheme({
@@ -16,7 +17,9 @@ function App() {
     return (
         <Provider store={store}>
             <MantineProvider theme={theme}>
-                <Root/>
+                <BrowserRouter>
+                    <Root/>
+                </BrowserRouter>
             </MantineProvider>
         </Provider>
     )

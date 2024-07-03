@@ -6,13 +6,15 @@ import Loading from '@/components/onboarding/loading'
 import Shell from '@/components/shell/shell'
 
 function renderAppRoot(param: State) {
-    switch(param) {
-        case State.NEW:
-            return <Onboarding/>;
-        case State.LOADING:
-            return <Loading/>;
-        case State.READY:
-            return <Shell/>;
+    return <Shell/>;
+    { //switch(param) {
+        //case State.NEW:
+        //    return <Onboarding/>;
+        //case State.LOADING:
+        //    //return <Loading/>;
+        //    return <Shell/>;
+        //case State.READY:
+        //    return <Shell/>; }
     }
 }
 

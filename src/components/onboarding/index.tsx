@@ -86,7 +86,7 @@ function Onboarding() {
                         {renderSourceCards()}
                     </Stack>
                 </Radio.Group>
-                <Button disabled={source === null} className="next" onClick={nextStep}>
+                <Button disabled={source == null} className="next" onClick={nextStep}>
                     Next
                 </Button>
             </Stepper.Step>
@@ -99,7 +99,7 @@ function Onboarding() {
                         {renderBackupCards()}
                     </Stack>
                 </Radio.Group>
-                <Button disabled={backup === null} className="next" onClick={nextStep}>
+                <Button disabled={backup == null} className="next" onClick={nextStep}>
                     Next
                 </Button>
             </Stepper.Step>
