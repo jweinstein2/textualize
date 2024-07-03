@@ -1,9 +1,13 @@
 #root {
-  /*max-width: 600px;*/
   margin: 0 auto;
   padding: 1rem;
   width: 600px;
   height: 80vh;
+}
+
+.tabler-icon {
+    width: rem(18);
+    height: rem(18);
 }
 
 .card {

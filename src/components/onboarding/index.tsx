@@ -8,24 +8,22 @@ import {useAppDispatch} from '@/store/hooks';
 
 import { IconUserCheck, IconMailOpened, IconShieldCheck } from '@tabler/icons-react';
 
+const IOS_BACKUP_PATH_MAC = '/Library/Application Support/MobileSync/Backup/'
+
 function Onboarding() {
-  const [active, setActive] = useState(0);
-  const [source, setSource] = useState<string | null>(null);
-  const [backup, setBackup] = useState<string | null>(null);
-  const [backupOptions, setBackupOptions] = useState<string[] | null>(null);
+    const [active, setActive] = useState(0);
+    const [source, setSource] = useState<string | undefined>(undefined);
+    const [backup, setBackup] = useState<string | undefined>(undefined);
+    const [error, setError] = useState<Error | undefined>(undefined);
+    const [backupOptions, setBackupOptions] = useState<string[]>([]);
 
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const path = '/Library/Application Support/MobileSync/Backup/'
+        const path = IOS_BACKUP_PATH_MAC
         window.ipcRenderer.invoke('listBackups', path)
-            .then(response => {
-                setBackupOptions(response)
-            })
-         .catch(error => {
-             // TODO(jaredweinstein): Handle error case
-             console.log('ERROR')
-         });
+            .then(setBackupOptions)
+            .catch(setError);
     }, []);
 
     function nextStep() {
@@ -48,7 +46,8 @@ function Onboarding() {
         {name: 'Messenger', description: 'coming soon...', disabled: true},
     ];
 
-    const sourceCards = data.map((item) => (
+    function renderSourceCards() {
+        return data.map((item) => (
         <Radio.Card className="card" radius="md" value={item.name} key={item.name}>
             <Group wrap="nowrap" align="flex-start">
                 <Radio.Indicator />
@@ -58,12 +57,10 @@ function Onboarding() {
                 </div>
             </Group>
         </Radio.Card>
-    ));
+        ));
+    }
 
-    const backupCards = () => {
-        if (backupOptions === null) {
-            return <div>Error State</div>
-        }
+    function renderBackupCards() {
         return backupOptions.map((item) => (
             <Radio.Card className="card" radius="md" value={item} key={item}>
                 <Group wrap="nowrap" align="flex-start">
@@ -74,44 +71,44 @@ function Onboarding() {
                 </Group>
             </Radio.Card>
         ));
+
     }
 
-  return (
-      <Stepper active={active} onStepClick={setActive} allowNextStepsSelect={false}>
-          <Stepper.Step icon={<IconUserCheck style={{ width: rem(18), height: rem(18) }} />} >
-              <Radio.Group
-                  value={source}
-                  onChange={setSource}
-                  label="Pick a message data source"
-                  description="What messages do you want to analyze?">
-                  <Stack pt="md" gap="xs">
-                      {sourceCards}
-                  </Stack>
-              </Radio.Group>
-              <Button disabled={source === null} className="next" onClick={nextStep}>
-                  Next
-              </Button>
-          </Stepper.Step>
-          <Stepper.Step icon={<IconMailOpened style={{ width: rem(18), height: rem(18) }} />} >
-              <Radio.Group
-                  value={backup}
-                  onChange={setBackup}
-                  label="What backup would you like to use?">
-                  <Stack pt="md" gap="xs">
-                      {backupCards()}
-                  </Stack>
-              </Radio.Group>
-
-              <Button disabled={backup === null} className="next" onClick={nextStep}>
-                  Next
-              </Button>
-          </Stepper.Step>
-          <Stepper.Step icon={<IconShieldCheck style={{ width: rem(18), height: rem(18) }} />}>
-              We understand your data is important and private. That's why your messages never leave your device.
-              <Button className="analyze" onClick={analyze}>Analyze</Button>
-          </Stepper.Step>
-      </Stepper>
-  );
+    return (
+        <Stepper active={active} onStepClick={setActive} allowNextStepsSelect={false}>
+            <Stepper.Step icon={<IconUserCheck/>} >
+                <Radio.Group
+                    value={source}
+                    onChange={setSource}
+                    label="Pick a message data source"
+                    description="What messages do you want to analyze?">
+                    <Stack pt="md" gap="xs">
+                        {renderSourceCards()}
+                    </Stack>
+                </Radio.Group>
+                <Button disabled={source === null} className="next" onClick={nextStep}>
+                    Next
+                </Button>
+            </Stepper.Step>
+            <Stepper.Step icon={<IconMailOpened/>} >
+                <Radio.Group
+                    value={backup}
+                    onChange={setBackup}
+                    label="What backup would you like to use?">
+                    <Stack pt="md" gap="xs">
+                        {renderBackupCards()}
+                    </Stack>
+                </Radio.Group>
+                <Button disabled={backup === null} className="next" onClick={nextStep}>
+                    Next
+                </Button>
+            </Stepper.Step>
+            <Stepper.Step icon={<IconShieldCheck/>}>
+                We understand your data is important and private. That's why your messages never leave your device.
+                <Button className="analyze" onClick={analyze}>Analyze</Button>
+            </Stepper.Step>
+        </Stepper>
+    );
 }
 
 export default Onboarding

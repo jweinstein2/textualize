@@ -14,10 +14,10 @@ import {
 import './navbar.css';
 
 const data = [
-  { link: '', label: 'Summary', icon: IconBellRinging },
-  { link: '', label: 'Contacts', icon: IconReceipt2 },
-  { link: '', label: 'Groups', icon: IconSwitchHorizontal },
-  { link: '', label: 'AI', icon: IconFingerprint },
+  { link: 'summary', label: 'Summary', icon: IconBellRinging },
+  { link: 'contacts', label: 'Contacts', icon: IconReceipt2 },
+  { link: 'groups', label: 'Groups', icon: IconSwitchHorizontal },
+  { link: 'ai', label: 'AI', icon: IconFingerprint },
 ];
 
 function Navbar() {
@@ -30,7 +30,6 @@ function Navbar() {
       href={item.link}
       key={item.label}
       onClick={(event) => {
-        event.preventDefault();
         setActive(item.label);
       }}
     >
@@ -46,7 +45,7 @@ function Navbar() {
       </div>
 
       <div className="footer">
-        <a href="#" className="link" onClick={(event) => event.preventDefault()}>
+        <a href="#" className="link">
           <IconSettings className="linkIcon" stroke={1.5} />
           <span>Settings</span>
         </a>

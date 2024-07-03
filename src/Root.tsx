@@ -10,7 +10,7 @@ function renderAppRoot(param: State) {
         case State.NEW:
             return <Onboarding/>;
         case State.LOADING:
-            return <Shell/>;
+            return <Loading/>;
         case State.READY:
             return <Shell/>;
     }

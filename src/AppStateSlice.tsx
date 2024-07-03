@@ -9,12 +9,13 @@ export enum State {
 export interface AppState {
     value: State,
     source: string,
+    analysisProgress: number,
 }
 
-// Define the initial state using that type
 const initialState: AppState = {
     value: State.NEW,
-    source: ''
+    source: '',
+    analysisProgress: 0,
 }
 
 export const appStateSlice = createSlice({

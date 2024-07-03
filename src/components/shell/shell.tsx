@@ -1,37 +1,30 @@
 import { AppShell, Burger } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import Navbar from './navbar';
+import Group from '@/components/group/group'
+import Settings from '@/components/settings/settings'
+import Summary from '@/components/summary/summary'
+import Wizard from '@/components/wizard/wizard'
 
 function Shell() {
     const [opened, { toggle }] = useDisclosure();
     return (
         <AppShell
-            header={{ height: 60 }}
             navbar={{
                 width: 300,
-                    breakpoint: 'sm',
-                    collapsed: { mobile: !opened },
+                breakpoint: 'sm',
+                collapsed: { mobile: !opened },
             }}
-            padding="md"
-        >
-            <AppShell.Header>
-                <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                />
-                <div>Logo</div>
-            </AppShell.Header>
+            padding="md">
 
-            <AppShell.Navbar p="md">
+            <AppShell.Navbar>
                 <Navbar/>
             </AppShell.Navbar>
 
-            <AppShell.Main>Main</AppShell.Main>
+            <AppShell.Main>
+                <Settings/>
+            </AppShell.Main>
         </AppShell>
-
-
     )
 }
 
