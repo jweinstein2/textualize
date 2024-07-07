@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import '@mantine/core/styles.css'
 import { createTheme, MantineProvider } from '@mantine/core'
 import store from './store/store'
-import Root from './Root'
+import Shell from './components/shell/shell'
 import { BrowserRouter } from 'react-router-dom'
 
 
@@ -18,7 +18,7 @@ function App() {
         <Provider store={store}>
             <MantineProvider theme={theme}>
                 <BrowserRouter>
-                    <Root/>
+                    <Shell/>
                 </BrowserRouter>
             </MantineProvider>
         </Provider>
