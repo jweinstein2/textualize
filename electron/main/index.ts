@@ -4,11 +4,79 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
 import { update } from './update'
+import isDev from 'electron-is-dev';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const fs = require("fs");
+
+
+/*************************************************************
+ * py process
+ *************************************************************/
+const PY_DIST_FOLDER = 'api'
+const PY_FOLDER = 'backend'
+const PY_MODULE = 'api' // without .py suffix
+const PY_PORT = 4242
+
+let pyProc: any = undefined;
+
+const getScriptPath = () => {
+    if (isDev) {
+        return path.join(__dirname, '../..', PY_FOLDER, PY_MODULE + '.py')
+    }
+    if (process.platform === 'win32') {
+        return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
+    }
+    return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE)
+}
+
+const selectPort = () => {
+    return PY_PORT;
+}
+
+const createPyProc = () => {
+    let script = getScriptPath()
+    let port = selectPort();
+
+    if (!isDev) {
+        console.log('PACKAGED VERSION')
+        pyProc = require('child_process').execFile(script, [port], (error, stdout, stderr) => {
+            if (error) {
+                throw error;
+            }
+            console.log(stdout);
+            console.log(stderr);
+        });
+    } else {
+        const devPath = getScriptPath()
+        pyProc = require('child_process').spawn('python3', [devPath]);
+        pyProc.stdout.on('data', function (data: any) {
+            console.log("data: ", data.toString('utf8'));
+        });
+        pyProc.stderr.on('data', (data: any) => {
+            console.log(`stderr: ${data}`); // when error
+        });
+        pyProc.on('close', (code: number) => {
+            console.log(`child process exited with code ${code}`);
+        });
+    }
+
+    if (pyProc != null) {
+        console.log('child process success on port ' + port)
+    }
+}
+
+const exitPyProc = () => {
+    if (pyProc != null) {
+        pyProc.kill()
+    }
+    pyProc = undefined
+}
+
+app.on('ready', createPyProc)
+app.on('will-quit', exitPyProc)
 
 // The built directory structure
 //

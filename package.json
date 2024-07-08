@@ -15,6 +15,7 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build && electron-builder",
+    "pybuild": "pyinstaller backend/api.py -F --clean --workpath ./build-python --distpath ./dist-python",
     "deploy": "tsc && vite build && electron-builder build --mac --publish always",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
@@ -25,8 +26,11 @@
     "@mantine/hooks": "^7.10.2",
     "@reduxjs/toolkit": "^2.2.5",
     "@tabler/icons-react": "^3.6.0",
+    "axios": "^1.7.2",
+    "electron-is-dev": "^3.0.1",
     "electron-updater": "^6.2.1",
-    "react-redux": "^9.1.2"
+    "react-redux": "^9.1.2",
+    "zeromq": "^6.0.0-beta.20"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",

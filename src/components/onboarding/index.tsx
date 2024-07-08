@@ -20,8 +20,7 @@ function Onboarding() {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const path = IOS_BACKUP_PATH_MAC
-        window.ipcRenderer.invoke('listBackups', path)
+        window.ipcRenderer.invoke('listBackups', IOS_BACKUP_PATH_MAC)
             .then(setBackupOptions)
             .catch(setError);
     }, []);
@@ -87,6 +86,14 @@ function Onboarding() {
                     </Stack>
                 </Radio.Group>
                 <Button disabled={source == null} className="next" onClick={nextStep}>
+                    Next
+                </Button>
+            </Stepper.Step>
+            <Stepper.Step icon={<IconMailOpened/>} >
+                Create an unencrypted iPhone backup
+
+                This is required to parse message data on your Mac.
+                <Button disabled={backup == null} className="next" onClick={nextStep}>
                     Next
                 </Button>
             </Stepper.Step>
