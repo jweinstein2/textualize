@@ -20,21 +20,20 @@ def heartbeat():
     print('heartbeat')
     return "", HTTPStatus.OK
 
-@app.route('/source', methods=['GET', 'POST'])
+@app.route('/source', methods=['GET', 'POST', 'DELETE'])
 def source():
     if request.method == 'GET':
         path =  config.get_backup_path();
         return {"source": path}
-    else:
+    elif request.method == 'POST':
         path = request.json['source']
         config.set_backup_path(path)
         print(config.get_backup_path())
         return "", HTTPStatus.CREATED
-
-def clear_src():
-    config.reset();
-    data_manager.clear();
-    return True
+    elif request.method == 'DELETE':
+        config.reset();
+        data_manager.clear();
+        return "", HTTPStatus.OK
 
 def process():
     return data_manager.start_process()
