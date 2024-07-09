@@ -77,48 +77,52 @@ function Onboarding() {
     }
 
     return (
-        <Stepper active={activeStep} onStepClick={setActiveStep} allowNextStepsSelect={false}>
-            <Stepper.Step icon={<IconUserCheck/>} >
-                <Radio.Group
-                    value={source}
-                    onChange={setSource}
-                    label="Pick a message data source"
-                    description="What messages do you want to analyze?">
-                    <Stack pt="md" gap="xs">
-                        {renderSourceCards()}
-                    </Stack>
-                </Radio.Group>
-                <Button disabled={source == null} className="next" onClick={nextStep}>
-                    Next
-                </Button>
-            </Stepper.Step>
-            <Stepper.Step icon={<IconMailOpened/>} >
-                Create an unencrypted iPhone backup
+        <div className="wrapper">
+            <div className="body">
+                <Stepper active={activeStep} onStepClick={setActiveStep} allowNextStepsSelect={false}>
+                    <Stepper.Step icon={<IconUserCheck/>} >
+                        <Radio.Group
+                            value={source}
+                            onChange={setSource}
+                            label="Pick a message data source"
+                            description="What messages do you want to analyze?">
+                            <Stack pt="md" gap="xs">
+                                {renderSourceCards()}
+                            </Stack>
+                        </Radio.Group>
+                        <Button disabled={source == null} className="next" onClick={nextStep}>
+                            Next
+                        </Button>
+                    </Stepper.Step>
+                    <Stepper.Step icon={<IconMailOpened/>} >
+                        Create an unencrypted iPhone backup
 
 
-                This is required to parse message data on your Mac.
-                <Button className="next" onClick={nextStep}>
-                    Next
-                </Button>
-            </Stepper.Step>
-            <Stepper.Step icon={<IconMailOpened/>} >
-                <Radio.Group
-                    value={backup}
-                    onChange={setBackup}
-                    label="What backup would you like to use?">
-                    <Stack pt="md" gap="xs">
-                        {renderBackupCards()}
-                    </Stack>
-                </Radio.Group>
-                <Button disabled={backup == null} className="next" onClick={nextStep}>
-                    Next
-                </Button>
-            </Stepper.Step>
-            <Stepper.Step icon={<IconShieldCheck/>}>
-                We understand your data is important and private. That's why your messages never leave your device.
-                <Button className="analyze" onClick={analyze}>Analyze</Button>
-            </Stepper.Step>
-        </Stepper>
+                        This is required to parse message data on your Mac.
+                        <Button className="next" onClick={nextStep}>
+                            Next
+                        </Button>
+                    </Stepper.Step>
+                    <Stepper.Step icon={<IconMailOpened/>} >
+                        <Radio.Group
+                            value={backup}
+                            onChange={setBackup}
+                            label="What backup would you like to use?">
+                            <Stack pt="md" gap="xs">
+                                {renderBackupCards()}
+                            </Stack>
+                        </Radio.Group>
+                        <Button disabled={backup == null} className="next" onClick={nextStep}>
+                            Next
+                        </Button>
+                    </Stepper.Step>
+                    <Stepper.Step icon={<IconShieldCheck/>}>
+                        We understand your data is important and private. That's why your messages never leave your device.
+                        <Button className="analyze" onClick={analyze}>Analyze</Button>
+                    </Stepper.Step>
+                </Stepper>
+            </div>
+        </div>
     );
 }
 
