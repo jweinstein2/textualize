@@ -7,9 +7,10 @@ import src.stats.general as general_stats
 import src.stats.language as language_stats
 import src.stats.emoji as emoji_stats
 import src.stats.sentiment as sentiment_stats
+from http import HTTPStatus
 
 from flask_cors import CORS
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 CORS(app)
@@ -17,30 +18,18 @@ CORS(app)
 @app.route('/')
 def heartbeat():
     print('heartbeat')
-    return
+    return "", HTTPStatus.OK
 
-@app.route('/state')
-def state():
-    status, additional = data_manager.process_progress()
-    if status == "completed":
-        state = 3
-    elif status == "failed":
-        state = 2
-    elif status == "in_progress":
-        state = 2
-    elif status == "unstarted":
-        state = 1
+@app.route('/source', methods=['GET', 'POST'])
+def source():
+    if request.method == 'GET':
+        path =  config.get_backup_path();
+        return {"source": path}
     else:
-        print("unexpected state")
-        state = 0
-
-    return {"state": state}
-
-def set_source(path):
-    if file_util.is_valid_source(path):
+        path = request.json['source']
         config.set_backup_path(path)
-        return True
-    return False
+        print(config.get_backup_path())
+        return "", HTTPStatus.CREATED
 
 def clear_src():
     config.reset();

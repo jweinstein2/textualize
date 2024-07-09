@@ -10,7 +10,7 @@ const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const fs = require("fs");
-
+const {spawn, execFile, ChildProcess} = require('child_process');
 
 /*************************************************************
  * py process
@@ -20,7 +20,7 @@ const PY_FOLDER = 'backend'
 const PY_MODULE = 'api' // without .py suffix
 const PY_PORT = 4242
 
-let pyProc: any = undefined;
+let pyProc: typeof ChildProcess | undefined;
 
 const getScriptPath = () => {
     if (isDev) {
@@ -41,26 +41,28 @@ const createPyProc = () => {
     let port = selectPort();
 
     if (!isDev) {
-        console.log('PACKAGED VERSION')
-        pyProc = require('child_process').execFile(script, [port], (error, stdout, stderr) => {
-            if (error) {
-                throw error;
-            }
-            console.log(stdout);
-            console.log(stderr);
-        });
+        //console.log('PACKAGED VERSION')
+        //pyProc = execFile(script, [port], (error, stdout, stderr) => {
+        //    if (error) {
+        //        throw error;
+        //    }
+        //    console.log(stdout);
+        //    console.log(stderr);
+        //});
     } else {
         const devPath = getScriptPath()
-        pyProc = require('child_process').spawn('python3', [devPath]);
-        pyProc.stdout.on('data', function (data: any) {
-            console.log("data: ", data.toString('utf8'));
+        pyProc = spawn('python3', [devPath])
+        pyProc.stdout.on('data', (data: any) => {
+            console.log(`stdout: ${data}`);
         });
         pyProc.stderr.on('data', (data: any) => {
-            console.log(`stderr: ${data}`); // when error
+            console.error(`stderr: ${data}`);
         });
-        pyProc.on('close', (code: number) => {
+        pyProc.on('close', (code: any) => {
             console.log(`child process exited with code ${code}`);
         });
+
+
     }
 
     if (pyProc != null) {

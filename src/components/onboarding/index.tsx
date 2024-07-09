@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Stepper, rem } from '@mantine/core';
+import axios from 'axios';
 import {Button, Radio, Group, Stack, Text } from '@mantine/core';
 import { Container } from '@mantine/core';
 import './onboarding.css';
-import {completeOnboarding} from '@/AppStateSlice';
-import {useAppDispatch} from '@/store/hooks';
+import {useNavigate } from "react-router-dom";
 
 import { IconUserCheck, IconMailOpened, IconShieldCheck } from '@tabler/icons-react';
 
 const IOS_BACKUP_PATH_MAC = '/Library/Application Support/MobileSync/Backup/'
 
 function Onboarding() {
-    const [active, setActive] = useState(0);
+    const [activeStep, setActiveStep] = useState(0);
     const [source, setSource] = useState<string | undefined>(undefined);
     const [backup, setBackup] = useState<string | undefined>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
     const [backupOptions, setBackupOptions] = useState<string[]>([]);
 
-    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.ipcRenderer.invoke('listBackups', IOS_BACKUP_PATH_MAC)
@@ -26,16 +26,19 @@ function Onboarding() {
     }, []);
 
     function nextStep() {
-        setActive((current) => (current < 3 ? current + 1 : current))
+        setActiveStep((current) => (current < 3 ? current + 1 : current))
     }
 
     const readFiles = async () => {
-        const path = '/Library/Application Support/MobileSync/Backup/'
+        const path = IOS_BACKUP_PATH_MAC
         const filePath = await window.ipcRenderer.invoke('lsDir', path)
     }
 
     function analyze() {
-        dispatch(completeOnboarding(backup));
+        const source = IOS_BACKUP_PATH_MAC + backup;
+        axios.post('http://127.0.0.1:5000/source', {source})
+            .then(() => navigate('/'))
+            .catch((error) => console.log(error.response))
     }
 
     const data = [
@@ -74,7 +77,7 @@ function Onboarding() {
     }
 
     return (
-        <Stepper active={active} onStepClick={setActive} allowNextStepsSelect={false}>
+        <Stepper active={activeStep} onStepClick={setActiveStep} allowNextStepsSelect={false}>
             <Stepper.Step icon={<IconUserCheck/>} >
                 <Radio.Group
                     value={source}
@@ -92,8 +95,9 @@ function Onboarding() {
             <Stepper.Step icon={<IconMailOpened/>} >
                 Create an unencrypted iPhone backup
 
+
                 This is required to parse message data on your Mac.
-                <Button disabled={backup == null} className="next" onClick={nextStep}>
+                <Button className="next" onClick={nextStep}>
                     Next
                 </Button>
             </Stepper.Step>

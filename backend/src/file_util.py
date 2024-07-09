@@ -16,15 +16,6 @@ def app_data_path(filename):
     res = Path.mkdir(path.parent, parents=True, exist_ok=True)
     return path
 
-# Checks if the path is a valid source
-# TODO: check if it is unencrypted iphone packup.
-def is_valid_source(path_string):
-    path = Path(path_string)
-    path = path.expanduser()
-    if not path.is_dir():
-        return False
-    return True
-
 # Finds possible sources
 # TODO: Add iMessage desktop app backup location
 # TODO: display timestamps if multiple backups exists
