@@ -6,7 +6,7 @@ import Group from '@/components/group/group'
 import Settings from '@/components/settings/settings'
 import Summary from '@/components/summary/summary'
 import Wizard from '@/components/wizard/wizard'
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import axios from 'axios';
 
 function Shell() {
@@ -37,8 +37,6 @@ function Shell() {
             </AppShell.Navbar>
 
             <AppShell.Main>
-                {stage}
-                <Breadcrumbs children='replace > this > component'></Breadcrumbs>
                 <Routes>
                     <Route path="/" element={<Summary />} />
                     <Route path="/summary" element={<Summary />} />
