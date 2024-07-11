@@ -2,7 +2,7 @@ import { AppShell, Burger, Breadcrumbs } from '@mantine/core';
 import { useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import Navbar from './navbar';
-import Group from '@/components/group/group'
+import GroupList from '@/components/group_list/group_list'
 import Settings from '@/components/settings/settings'
 import Summary from '@/components/summary/summary'
 import Wizard from '@/components/wizard/wizard'
@@ -63,7 +63,7 @@ function Shell() {
                             <Route path="/" element={<Summary />} />
                             <Route path="/summary" element={<Summary />} />
                             <Route path="/contacts" element={<h2>Contacts</h2>} />
-                            <Route path="/groups" element={<Group />} />
+                            <Route path="/groups" element={<GroupList />} />
                             <Route path="/ai" element={<Wizard />} />
                             <Route path="/settings" element={<Settings />} />
                             <Route path="*" element={<p>404</p>} />
