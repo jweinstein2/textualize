@@ -1,5 +1,5 @@
 import { AppShell, Burger, Breadcrumbs } from '@mantine/core';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import Navbar from './navbar';
 import Group from '@/components/group/group'
@@ -32,11 +32,13 @@ function Shell() {
     function checkProcessed() {
          axios.get('http://127.0.0.1:5000/process')
              .then((response) => {
-                 console.log(response.data)
-                 navigate('/loading')
-                 //if (response.data.source == null) {
-                 //    navigate('/onboarding')
-                 //}
+                 if (response.data.error) {
+                     // TODO(jaredweinstein): Handle error case
+                 }
+                 const status = response.data.status
+                 if (status === "unstarted" || status === "in_progress") {
+                     navigate('/loading')
+                 }
              })
 
     }
