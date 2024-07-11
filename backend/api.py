@@ -69,48 +69,56 @@ def list_groups(start=None, end=None, n=100):
     groups = groups[:n]
     return groups.to_dict(orient='records')
 
-# use the saved database
+@app.route('/contact/<number>', methods=['GET'])
 def contact_info(number):
     content = general_stats.contact_info(number)
     return content
 
 # use the saved database
+@app.route('/group/<id>', methods=['GET'])
 def group_info(id):
     content = general_stats.group_info(int(id))
     return content
 
+@app.route('/language/<number>', methods=['GET'])
 def language_stats(number, start=None, end=None):
     msg = data_manager.messages(number=number, start=start, end=end)
     result = language_stats.contact_summary(msg)
     return result
 
+@app.route('/frequency/<number>', methods=['GET'])
 def frequency(number=None, start=None, end=None):
     msg = data_manager.messages(number=number, start=start, end=end)
     result = general_stats.frequency(msg, period='M')
 
     return result
 
-def group_frequency(group_id, start=None, end=None):
+@app.route('/group_frequency/<id>', methods=['GET'])
+def group_frequency(id, start=None, end=None):
     msg = data_manager.group_messages(int(group_id))
     result = general_stats.frequency(msg, period='M')
     return result
 
+@app.route('/summary', methods=['GET'])
 def summary(start=None, end=None):
     msg = data_manager.messages(start=start, end=end)
     result = general_stats.summary(msg)
     return result
 
+@app.route('/sentiment/<number>', methods=['GET'])
 def sentiment(number, start=None, end=None):
     msg = data_manager.messages(number=number, start=start, end=end)
     result = sentiment_stats.contact_summary(msg)
     return result
 
+@app.route('/emoji/<number>', methods=['GET'])
 def emoji(number, start=None, end=None):
     n = 5
     msg = data_manager.messages(number=number, start=start, end=end)
     result = emoji_stats.contact_summary(msg, n)
     return result
 
+@app.route('/group_connection_graph', methods=['GET'])
 def group_connection_graph(start=None, end=None):
     return general_stats.group_connection_graph()
 
