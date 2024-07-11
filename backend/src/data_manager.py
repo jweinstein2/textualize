@@ -122,7 +122,7 @@ process_lock = threading.Lock()
 def process_progress():
     progress = config.get_process_progress()
     if process_lock.locked():
-        return "", progress, None
+        return "in_progress", progress, None
     elif progress == -1:
         return "failed", progress, config.get_last_error()
     elif progress == 100:
