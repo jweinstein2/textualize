@@ -1,3 +1,7 @@
+#root {
+    width: 100%;
+}
+
 .navbar {
   height: rem(700px);
   width: rem(300px);

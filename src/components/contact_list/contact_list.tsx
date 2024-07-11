@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Table } from '@mantine/core';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export type Contact = {
     name: string;
@@ -10,6 +11,8 @@ export type Contact = {
 
 function ContactList() {
     const [contacts, setContacts] = useState<Contact[]>([]);
+
+    const navigate = useNavigate();
 
      useEffect(() => {
          axios.get('http://127.0.0.1:5000/list_numbers')
@@ -27,9 +30,9 @@ function ContactList() {
 
     function renderRows() {
         return contacts.map((contact) =>
-        <Table.Tr key={contact.number}>
-            <Table.Td>{contact.name}</Table.Td>
-            <Table.Td>{contact.message_count}</Table.Td>
+        <Table.Tr key={contact.number} onClick={() => navigate(contact.number)}>
+                <Table.Td>{contact.name}</Table.Td>
+                <Table.Td>{contact.message_count}</Table.Td>
         </Table.Tr>);
     }
 

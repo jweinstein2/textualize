@@ -22,6 +22,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@mantine/charts": "^7.11.1",
     "@mantine/core": "^7.10.2",
     "@mantine/hooks": "^7.10.2",
     "@reduxjs/toolkit": "^2.2.5",
