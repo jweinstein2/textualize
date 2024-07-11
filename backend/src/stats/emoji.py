@@ -7,10 +7,7 @@ from src.util import *
 def _extract_emoji(text):
     emoji_list = []
     data = regex.findall(r'\X', text)
-    for word in data:
-        if any(char in emoji.UNICODE_EMOJI['en'] for char in word):
-            emoji_list.append(word)
-    return emoji_list
+    return [e.chars[0] for e in emoji.analyze(data)]
 
 # TODO: Expensive. This should be cached.
 def _all_emojis():
