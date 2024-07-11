@@ -1,6 +1,7 @@
 import { Progress } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import {Center} from '@mantine/core';
+import './loading.css';
 
 const STATIC_MESSAGES = [
     'Built with your privacy in mind: your messages never leave your device',
@@ -20,9 +21,11 @@ function Loading() {
     const [message, setMessage] = useState(STATIC_MESSAGES[0]);
 
     return (
-        <div>
-            <Progress value={0}/>
-            <Center><p>{message}</p></Center>
+        <div className="wrapper">
+            <div className="body">
+                <Progress value={0}/>
+                <Center><p>{message}</p></Center>
+            </div>
         </div>
     )
 }

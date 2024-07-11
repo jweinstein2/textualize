@@ -16,27 +16,6 @@ def app_data_path(filename):
     res = Path.mkdir(path.parent, parents=True, exist_ok=True)
     return path
 
-# Finds possible sources
-# TODO: Add iMessage desktop app backup location
-# TODO: display timestamps if multiple backups exists
-# TODO: Windows Support
-def guess_src():
-    possible = {}
-
-    # iPhone backup location
-    backup_dir = Path('~/Library/Application Support/MobileSync/Backup/')
-    backup_dir = backup_dir.expanduser()
-    if backup_dir.is_dir():
-        for item in backup_dir.iterdir():
-            if item.stem[0] == '.':
-                continue
-            possible['iphone'] = str(PurePath(backup_dir, item))
-
-    # MacOS iMessage backup location
-    # possible['desktop'] = Path(...)
-
-    return possible
-
 # Fetch any necessary message databases.
 # Returns False if an error occured.
 # Otherwise a tuple |4| containing:
@@ -45,10 +24,9 @@ def guess_src():
 #    3. ch_join
 #    4. cm_join
 def fetch_message_tables(backup_path):
-    try:
-        message_db = subprocess.check_output("find '" + backup_path + "' -iname '" + MESSAGES + "'", shell=True).splitlines()[0].decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        return e, None
+    message_db = Path.home() / backup_path / '3d' / MESSAGES
+    if (not Path.exists(message_db)):
+        raise Exception("Unable to find message table")
 
     connection = sqlite3.connect(message_db)
     cur = connection.cursor()

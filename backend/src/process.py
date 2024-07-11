@@ -20,11 +20,6 @@ MIN_MESSAGE_NUM = 50
 # been saved. So read from there directly.
 ##############################################
 
-def quick_stats():
-    return ['Analyzing over 200 messages',
-            'from over 68 contacts',
-            'in over 400 countries']
-
 def generate_number_table():
     df = data_manager.messages().number.value_counts()
     df = df[df > MIN_MESSAGE_NUM]

@@ -5,6 +5,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { update } from './update'
 import isDev from 'electron-is-dev';
+import {Backup} from 'src/components/onboarding'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -61,8 +62,6 @@ const createPyProc = () => {
         pyProc.on('close', (code: any) => {
             console.log(`child process exited with code ${code}`);
         });
-
-
     }
 
     if (pyProc != null) {
@@ -152,11 +151,18 @@ async function createWindow() {
   update(win)
 }
 
-async function listBackups (event: any, dir: String) {
+async function listBackups (event: any): Promise<Backup[]> {
+    const backup_path = '/Library/Application Support/MobileSync/Backup/'
     const home = app.getPath('home');
-    const dirPath = path.resolve(home + dir)
+    const dirPath = path.resolve(home + backup_path)
     const backups = await fs.readdirSync(dirPath)
-    return backups.filter((path: string) => path[0] !== '.');
+    const filtered = backups.filter((path: string) => path[0] !== '.');
+    return filtered.map((name: string) => ({
+        name,
+        path: dirPath + '/' + name,
+        size: 0,
+        date: new Date(),
+    }))
 }
 
 app.whenReady().then(() => {

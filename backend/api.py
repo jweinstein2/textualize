@@ -15,6 +15,10 @@ from flask import Flask, request
 app = Flask(__name__)
 CORS(app)
 
+##############################
+# CONFIGURATION
+##############################
+
 @app.route('/')
 def heartbeat():
     print('heartbeat')
@@ -35,12 +39,35 @@ def source():
         data_manager.clear();
         return "", HTTPStatus.OK
 
+@app.route('/process', methods=['GET', 'POST'])
 def process():
-    return data_manager.start_process()
+    if request.method == 'GET':
+        status, percent, error = data_manager.process_progress()
+        return {"status": status, "percent": percent, "error": error}
+    if request.method == 'POST':
+        error = data_manager.start_process();
+        if (error != None):
+            print(error)
+            return "", HTTPStatus.INTERNAL_SERVER_ERROR
+        return "", HTTPStatus.OK
 
-def get_process_progress():
-   status, msg = data_manager.process_progress()
-   return status, msg
+##############################
+# STATS
+##############################
+
+# return the first n numbers ordered by frequency
+@app.route('/list_numbers', methods=['GET'])
+def list_numbers(start=None, end=None, n=100):
+    numbers = data_manager.numbers()
+    numbers = numbers[:n]
+    return numbers.to_dict(orient='records')
+
+# return the first n groups ordered by frequency
+@app.route('/list_groups', methods=['GET'])
+def list_groups(start=None, end=None, n=100):
+    groups = data_manager.groups()
+    groups = groups[:n]
+    return groups.to_dict(orient='records')
 
 # use the saved database
 def contact_info(number):
@@ -51,18 +78,6 @@ def contact_info(number):
 def group_info(id):
     content = general_stats.group_info(int(id))
     return content
-
-# return the first n numbers ordered by frequency
-def get_numbers(start=None, end=None, n=100):
-    numbers = data_manager.numbers()
-    numbers = numbers[:n]
-    return numbers.to_dict(orient='records')
-
-# return the first n groups ordered by frequency
-def get_groups(start=None, end=None, n=100):
-    groups = data_manager.groups()
-    groups = groups[:n]
-    return groups.to_dict(orient='records')
 
 def language_stats(number, start=None, end=None):
     msg = data_manager.messages(number=number, start=start, end=end)

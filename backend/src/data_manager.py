@@ -120,17 +120,15 @@ process_lock = threading.Lock()
 # "completed",   None
 # "unstarted",   None
 def process_progress():
-    if process_lock.locked():
-        return "in_progress", config.get_process_progress()
-
     progress = config.get_process_progress()
-    if progress == -1:
-        # something went wrong
-        return "failed", config.get_last_error()
+    if process_lock.locked():
+        return "", progress, None
+    elif progress == -1:
+        return "failed", progress, config.get_last_error()
     elif progress == 100:
-        return "completed", None
+        return "completed", progress, None
     else:
-        return "unstarted", progress
+        return "unstarted", progress, None
 
 # TODO: shutdown process thread
 def clear():
@@ -145,17 +143,17 @@ def clear():
 def start_process():
     backup_path = config.get_backup_path()
     if backup_path == None:
-        return 'backup path has not been set', None
+        return 'backup path has not been set'
     if not process_lock.acquire(False):
-        return 'process already in progress', None
+        return 'process already in progress'
 
     start_time = time.time()
     err, dfs = file_util.fetch_message_tables(backup_path)
-    if err: return err, None
+    if err: return err
     message_df, handle_df, ch_join, cm_join, chat_df = dfs
 
     err, contact_df = file_util.fetch_contact_table(backup_path)
-    if err: return err, None
+    if err: return err
 
     contact_df = _format_contacts(contact_df)
     cm_join = _format_cm_join(cm_join)
@@ -176,7 +174,7 @@ def start_process():
                      name = 'processing',
                      args = [process_lock])
     t.start()
-    return None, process.quick_stats()
+    return None
 
 def async_process(lock):
     config.del_last_error()

@@ -7,13 +7,13 @@ import Settings from '@/components/settings/settings'
 import Summary from '@/components/summary/summary'
 import Wizard from '@/components/wizard/wizard'
 import Onboarding from '@/components/onboarding'
+import Loading from '@/components/onboarding/loading'
 import { Routes, Route } from "react-router-dom";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 function Shell() {
     const [opened, { toggle }] = useDisclosure();
-    const [stage, setStage] = useState(0);
 
     const navigate = useNavigate();
 
@@ -22,13 +22,30 @@ function Shell() {
              .then((response) => {
                  if (response.data.source == null) {
                      navigate('/onboarding')
+                 } else {
+                     checkProcessed()
+
                  }
              })
      }, []);
 
+    function checkProcessed() {
+         axios.get('http://127.0.0.1:5000/process')
+             .then((response) => {
+                 console.log(response.data)
+                 navigate('/loading')
+                 //if (response.data.source == null) {
+                 //    navigate('/onboarding')
+                 //}
+             })
+
+    }
+
+
     return (
         <Routes>
             <Route path="/onboarding" element={<Onboarding/>} />
+            <Route path="/loading" element={<Loading/>} />
             <Route path="/*" element={
                 <AppShell
                     navbar={{width: 300,

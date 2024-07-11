@@ -8,19 +8,25 @@ import {useNavigate } from "react-router-dom";
 
 import { IconUserCheck, IconMailOpened, IconShieldCheck } from '@tabler/icons-react';
 
-const IOS_BACKUP_PATH_MAC = '/Library/Application Support/MobileSync/Backup/'
+export type Backup = {
+  path: string;
+  name: string;
+  size: number;
+  date: Date;
+};
 
 function Onboarding() {
     const [activeStep, setActiveStep] = useState(0);
     const [source, setSource] = useState<string | undefined>(undefined);
-    const [backup, setBackup] = useState<string | undefined>(undefined);
+    const [backupPath, setBackupPath] = useState<string | undefined>(undefined);
     const [error, setError] = useState<Error | undefined>(undefined);
-    const [backupOptions, setBackupOptions] = useState<string[]>([]);
+    const [backupOptions, setBackupOptions] = useState<Backup[]>([]);
 
     const navigate = useNavigate();
 
+
     useEffect(() => {
-        window.ipcRenderer.invoke('listBackups', IOS_BACKUP_PATH_MAC)
+        window.ipcRenderer.invoke('listBackups')
             .then(setBackupOptions)
             .catch(setError);
     }, []);
@@ -29,14 +35,11 @@ function Onboarding() {
         setActiveStep((current) => (current < 3 ? current + 1 : current))
     }
 
-    const readFiles = async () => {
-        const path = IOS_BACKUP_PATH_MAC
-        const filePath = await window.ipcRenderer.invoke('lsDir', path)
-    }
-
     function analyze() {
-        const source = IOS_BACKUP_PATH_MAC + backup;
-        axios.post('http://127.0.0.1:5000/source', {source})
+        if (!backupPath) {
+            // TODO(jaredweinstein): Display error or remove possibility of hitting this case
+        };
+        axios.post('http://127.0.0.1:5000/source', {source: backupPath})
             .then(() => navigate('/'))
             .catch((error) => console.log(error.response))
     }
@@ -63,12 +66,12 @@ function Onboarding() {
     }
 
     function renderBackupCards() {
-        return backupOptions.map((item) => (
-            <Radio.Card className="card" radius="md" value={item} key={item}>
+        return backupOptions.map((backup) => (
+            <Radio.Card className="card" radius="md" value={backup.name} key={backup.path}>
                 <Group wrap="nowrap" align="flex-start">
                     <Radio.Indicator />
                     <div>
-                        <Text className="label">{item}</Text>
+                        <Text className="label">{backup.name}</Text>
                     </div>
                 </Group>
             </Radio.Card>
@@ -105,14 +108,14 @@ function Onboarding() {
                     </Stepper.Step>
                     <Stepper.Step icon={<IconMailOpened/>} >
                         <Radio.Group
-                            value={backup}
-                            onChange={setBackup}
+                            value={backupPath}
+                            onChange={setBackupPath}
                             label="What backup would you like to use?">
                             <Stack pt="md" gap="xs">
                                 {renderBackupCards()}
                             </Stack>
                         </Radio.Group>
-                        <Button disabled={backup == null} className="next" onClick={nextStep}>
+                        <Button disabled={backupPath == null} className="next" onClick={nextStep}>
                             Next
                         </Button>
                     </Stepper.Step>
