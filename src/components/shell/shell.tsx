@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import Navbar from './navbar';
 import GroupList from '@/components/group_list/group_list'
+import Group from '@/components/group/group'
 import ContactList from '@/components/contact_list/contact_list'
 import Contact from '@/components/contact/contact'
 import Settings from '@/components/settings/settings'
@@ -66,6 +67,7 @@ function Shell() {
                             <Route path="/contacts" element={<ContactList />} />
                             <Route path="/contacts/:number" element={<Contact />} />
                             <Route path="/groups" element={<GroupList />} />
+                            <Route path="/groups/:id" element={<Group />} />
                             <Route path="/ai" element={<Wizard />} />
                             <Route path="/settings" element={<Settings />} />
                             <Route path="*" element={<p>404</p>} />

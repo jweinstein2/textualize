@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Table } from '@mantine/core';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export type Group = {
   name: string;
@@ -11,6 +12,8 @@ export type Group = {
 
 function GroupList() {
     const [groups, setGroups] = useState<Group[]>([]);
+
+    const navigate = useNavigate();
 
      useEffect(() => {
          axios.get('http://127.0.0.1:5000/list_groups')
@@ -28,10 +31,10 @@ function GroupList() {
 
     function renderRows() {
         return groups.map((group) =>
-        <Table.Tr key={group.id}>
-            <Table.Td>{group.name}</Table.Td>
-            <Table.Td>{group.message_count}</Table.Td>
-        </Table.Tr>);
+            <Table.Tr key={group.id} onClick={() => navigate(`/groups/${group.id}`)}>
+                <Table.Td>{group.name}</Table.Td>
+                <Table.Td>{group.message_count}</Table.Td>
+            </Table.Tr>);
     }
 
     return (

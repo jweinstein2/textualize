@@ -93,8 +93,8 @@ def frequency(number=None, start=None, end=None):
 
     return result
 
-@app.route('/group_frequency/<id>', methods=['GET'])
-def group_frequency(id, start=None, end=None):
+@app.route('/group_frequency/<group_id>', methods=['GET'])
+def group_frequency(group_id, start=None, end=None):
     msg = data_manager.group_messages(int(group_id))
     result = general_stats.frequency(msg, period='MS')
     return result

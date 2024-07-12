@@ -6,8 +6,7 @@ import { LineChart } from '@mantine/charts';
 import { notifications } from '@mantine/notifications';
 import { showError } from '@/util'
 
-
-type FrequencyDay = {
+export type FrequencyDay = {
     date: string;
     sent: number;
     recieved: number;
