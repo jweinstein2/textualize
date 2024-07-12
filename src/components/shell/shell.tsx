@@ -1,5 +1,5 @@
-import { AppShell, Burger, Breadcrumbs } from '@mantine/core';
-import { useEffect } from 'react';
+import { Center, AppShell, Burger, Breadcrumbs, Loader } from '@mantine/core';
+import { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import Navbar from './navbar';
 import GroupList from '@/components/group_list/group_list'
@@ -17,21 +17,33 @@ import { useNavigate } from "react-router-dom";
 import { showError } from '@/util'
 
 function Shell() {
-    const [opened, { toggle }] = useDisclosure();
+    const [opened, { toggle }] = useDisclosure()
+    const [loading, setLoading] = useState(true)
+    const [retries, setRetries] = useState(5)
 
     const navigate = useNavigate();
 
+    // In production the server takes non-trivial time to spin up
+    // Retry 5 times at a 1 second interval.
+    //
+    // TODO(jaredweinstein): Use axios-retry to clean this up
      useEffect(() => {
          axios.get('http://127.0.0.1:4242/source')
              .then((response) => {
                  if (response.data.source == null) {
+                     setLoading(false)
                      navigate('/onboarding')
                  } else {
                      checkProcessed()
                  }
              })
-             .catch(() => showError("Something has gone horribly wrong", "File a bug!"))
-     }, []);
+             .catch(() => {
+                 if (retries === 0) {
+                     showError("Critical error", "Server failed to load");
+                 }
+                 setTimeout(() => setRetries(retries - 1), 1000)
+             })
+     }, [retries])
 
     function checkProcessed() {
          axios.get('http://127.0.0.1:4242/process')
@@ -39,11 +51,16 @@ function Shell() {
                  if (response.data.error) {
                      showError("Fatal error while processing messages", response.data.error)
                  }
+                 setLoading(false)
                  const status = response.data.status
                  if (status === "unstarted" || status === "in_progress") {
                      navigate('/loading')
                  }
              })
+    }
+
+    if (loading) {
+        return <Center><Loader color="blue" />{retries}</Center>;
     }
 
     return (

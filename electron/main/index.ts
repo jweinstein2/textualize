@@ -37,7 +37,6 @@ const createPyProc = () => {
     let script = getScriptPath()
 
     if (!isDev) {
-        console.log('PACKAGED VERSION')
         pyProc = execFile(script, [PY_PORT], (error: any, stdout: any, stderr: any) => {
             if (error) {
                 throw error;
@@ -48,11 +47,8 @@ const createPyProc = () => {
     } else {
         const devPath = getScriptPath()
         pyProc = spawn('python3', [devPath])
-        pyProc.stdout.on('data', (data: any) => {
-            console.log(`stdout: ${data}`);
-        });
         pyProc.stderr.on('data', (data: any) => {
-            console.error(`stderr: ${data}`);
+            console.error(`[PY BACKEND]: ${data}`);
         });
         pyProc.on('close', (code: any) => {
             console.log(`child process exited with code ${code}`);

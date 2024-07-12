@@ -123,7 +123,7 @@ def group_connection_graph(start=None, end=None):
     return general_stats.group_connection_graph()
 
 def parse_port():
-    port = 5000
+    port = 4242
     try:
         port = int(sys.argv[1])
     except Exception as e:

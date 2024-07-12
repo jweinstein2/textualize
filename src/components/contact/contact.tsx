@@ -29,7 +29,7 @@ function Contact() {
                  })
                  setFrequency(fetched)
              })
-             .catch(() => showError("Failed to load data", "Frequency graph could not be generated"))
+             .catch(() => showError("Failed to load contact data", "Frequency graph could not be generated"))
      }, []);
 
      useEffect(() => {
