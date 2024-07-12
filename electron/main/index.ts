@@ -30,7 +30,7 @@ const getScriptPath = () => {
     if (process.platform === 'win32') {
         return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
     }
-    return path.join(process.resourcesPath, PY_DIST_FOLDER, PY_MODULE)
+    return path.join(process.resourcesPath, PY_DIST_FOLDER, PY_MODULE, PY_MODULE)
 }
 
 const createPyProc = () => {
