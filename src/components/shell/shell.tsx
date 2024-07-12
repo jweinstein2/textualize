@@ -13,6 +13,7 @@ import Loading from '@/components/onboarding/loading'
 import { Routes, Route } from "react-router-dom";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { showError } from '@/util'
 
 function Shell() {
     const [opened, { toggle }] = useDisclosure();
@@ -26,25 +27,23 @@ function Shell() {
                      navigate('/onboarding')
                  } else {
                      checkProcessed()
-
                  }
              })
+             .catch(() => showError("Something has gone horribly wrong", "File a bug!"))
      }, []);
 
     function checkProcessed() {
          axios.get('http://127.0.0.1:5000/process')
              .then((response) => {
                  if (response.data.error) {
-                     // TODO(jaredweinstein): Handle error case
+                     showError("Fatal error while rocessing messages", response.data.error)
                  }
                  const status = response.data.status
                  if (status === "unstarted" || status === "in_progress") {
                      navigate('/loading')
                  }
              })
-
     }
-
 
     return (
         <Routes>

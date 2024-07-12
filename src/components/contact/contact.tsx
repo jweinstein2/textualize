@@ -3,6 +3,9 @@ import axios from 'axios';
 import { Grid, Skeleton, Container } from '@mantine/core';
 import { useParams } from 'react-router';
 import { LineChart } from '@mantine/charts';
+import { notifications } from '@mantine/notifications';
+import { showError } from '@/util'
+
 
 type FrequencyDay = {
     date: string;
@@ -27,11 +30,13 @@ function Contact() {
                  })
                  setFrequency(fetched)
              })
+             .catch(() => showError("Failed to load data", "Frequency graph could not be generated"))
      }, []);
 
      useEffect(() => {
          axios.get(`http://127.0.0.1:5000/contact/${params.number}`)
              .then((response) => setName(response.data.name))
+             .catch(() => showError("Failed to load data", "Contact info not found"))
      }, []);
 
     return (

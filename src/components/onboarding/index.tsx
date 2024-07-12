@@ -4,6 +4,7 @@ import axios from 'axios';
 import {Button, Radio, Group, Stack, Text } from '@mantine/core';
 import { Container } from '@mantine/core';
 import './onboarding.css';
+import { showError } from '@/util'
 import {useNavigate } from "react-router-dom";
 
 import { IconUserCheck, IconMailOpened, IconShieldCheck } from '@tabler/icons-react';
@@ -37,11 +38,11 @@ function Onboarding() {
 
     function analyze() {
         if (!backupPath) {
-            // TODO(jaredweinstein): Display error or remove possibility of hitting this case
+            showError("Invalid backup", "Select a backup source and try again")
         };
         axios.post('http://127.0.0.1:5000/source', {source: backupPath})
             .then(() => navigate('/'))
-            .catch((error) => console.log(error.response))
+            .catch(() => showError("Fatal error", "Unable to start processing data"))
     }
 
     const data = [
