@@ -60,7 +60,7 @@ function Shell() {
     }
 
     if (loading) {
-        return <Center><Loader color="blue" />{retries}</Center>;
+        return <Center><Loader color="blue" /></Center>;
     }
 
     return (

@@ -20,17 +20,26 @@ function Onboarding() {
     const [activeStep, setActiveStep] = useState(0);
     const [source, setSource] = useState<string | undefined>(undefined);
     const [backupPath, setBackupPath] = useState<string | undefined>(undefined);
-    const [error, setError] = useState<Error | undefined>(undefined);
+    const [needsDiskAccess, setNeedsDiskAccess] = useState(false);
     const [backupOptions, setBackupOptions] = useState<Backup[]>([]);
 
     const navigate = useNavigate();
 
 
     useEffect(() => {
-        window.ipcRenderer.invoke('listBackups')
-            .then(setBackupOptions)
-            .catch(setError);
-    }, []);
+        if (source == null) {return}
+            window.ipcRenderer.invoke('listBackups')
+                .then(setBackupOptions)
+                .catch((error) => {
+                    // TODO: Better way to check EPERM errors
+                    if (error.toString().includes('EPERM: operation not permitted')) {
+                        setNeedsDiskAccess(true)
+                    } else {
+                        showError('Unexpected error loading backups', 'Try again')
+                    }
+
+                })
+    }, [source, needsDiskAccess]);
 
     function nextStep() {
         setActiveStep((current) => (current < 3 ? current + 1 : current))
@@ -77,7 +86,6 @@ function Onboarding() {
                 </Group>
             </Radio.Card>
         ));
-
     }
 
     return (
@@ -108,14 +116,20 @@ function Onboarding() {
                         </Button>
                     </Stepper.Step>
                     <Stepper.Step icon={<IconMailOpened/>} >
-                        <Radio.Group
-                            value={backupPath}
-                            onChange={setBackupPath}
-                            label="What backup would you like to use?">
-                            <Stack pt="md" gap="xs">
-                                {renderBackupCards()}
-                            </Stack>
-                        </Radio.Group>
+                        {needsDiskAccess
+                            ? <div>
+                                Make sure full disk access in enabled!
+                                <Button onClick={() => setNeedsDiskAccess(false)}>Try again</Button>
+                              </div>
+                            : <Radio.Group
+                                value={backupPath}
+                                onChange={setBackupPath}
+                                label="What backup would you like to use?">
+                                <Stack pt="md" gap="xs">
+                                    {renderBackupCards()}
+                                </Stack>
+                            </Radio.Group>
+                        }
                         <Button disabled={backupPath == null} className="next" onClick={nextStep}>
                             Next
                         </Button>
