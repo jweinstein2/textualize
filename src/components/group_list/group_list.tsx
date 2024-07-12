@@ -16,7 +16,7 @@ function GroupList() {
     const navigate = useNavigate();
 
      useEffect(() => {
-         axios.get('http://127.0.0.1:5000/list_groups')
+         axios.get('http://127.0.0.1:4242/list_groups')
              .then((response) => {
                  const fetched = response.data.map((entry: any) => {
                      const name = entry.name

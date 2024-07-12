@@ -40,7 +40,7 @@ function Onboarding() {
         if (!backupPath) {
             showError("Invalid backup", "Select a backup source and try again")
         };
-        axios.post('http://127.0.0.1:5000/source', {source: backupPath})
+        axios.post('http://127.0.0.1:4242/source', {source: backupPath})
             .then(() => navigate('/'))
             .catch(() => showError("Fatal error", "Unable to start processing data"))
     }

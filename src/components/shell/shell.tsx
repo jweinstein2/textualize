@@ -22,7 +22,7 @@ function Shell() {
     const navigate = useNavigate();
 
      useEffect(() => {
-         axios.get('http://127.0.0.1:5000/source')
+         axios.get('http://127.0.0.1:4242/source')
              .then((response) => {
                  if (response.data.source == null) {
                      navigate('/onboarding')
@@ -34,10 +34,10 @@ function Shell() {
      }, []);
 
     function checkProcessed() {
-         axios.get('http://127.0.0.1:5000/process')
+         axios.get('http://127.0.0.1:4242/process')
              .then((response) => {
                  if (response.data.error) {
-                     showError("Fatal error while rocessing messages", response.data.error)
+                     showError("Fatal error while processing messages", response.data.error)
                  }
                  const status = response.data.status
                  if (status === "unstarted" || status === "in_progress") {

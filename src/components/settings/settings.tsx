@@ -6,7 +6,7 @@ function Settings() {
     const navigate = useNavigate();
 
     function clearSource() {
-        axios.delete('http://127.0.0.1:5000/source')
+        axios.delete('http://127.0.0.1:4242/source')
             .then(() => navigate('/onboarding'))
             .catch((error) => console.log(error.response))
     }

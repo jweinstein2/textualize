@@ -122,8 +122,17 @@ def emoji(number, start=None, end=None):
 def group_connection_graph(start=None, end=None):
     return general_stats.group_connection_graph()
 
+def parse_port():
+    port = 5000
+    try:
+        port = int(sys.argv[1])
+    except Exception as e:
+        pass
+    return '{}'.format(port)
+
 def main():
-    app.run(host='127.0.0.1', port=5000)
+    port = parse_port()
+    app.run(host='127.0.0.1', port=port)
     print('start running on {}'.format(addr))
 
 if __name__ == '__main__':

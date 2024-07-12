@@ -2,7 +2,7 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  "appId": "YourAppID",
+  "appId": "com.jared.textualize",
   "asar": true,
   "directories": {
     "output": "release/${version}"
@@ -11,6 +11,16 @@
     "dist-electron",
     "dist"
   ],
+  "asarUnpack":"./dist/*",
+  "extraResources": [
+    {
+      "from": "./dist-python/",
+      "to": "dist/",
+      "filter": [
+        "**/*"
+      ]
+    }
+    ],
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
     "target": [

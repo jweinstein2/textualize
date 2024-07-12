@@ -19,7 +19,7 @@ function Contact() {
     const params= useParams()
 
      useEffect(() => {
-         axios.get(`http://127.0.0.1:5000/frequency/${params.number}`)
+         axios.get(`http://127.0.0.1:4242/frequency/${params.number}`)
              .then((response) => {
                  const fetched = response.data.map((entry: any) => {
                      const date = entry.Label
@@ -33,7 +33,7 @@ function Contact() {
      }, []);
 
      useEffect(() => {
-         axios.get(`http://127.0.0.1:5000/contact/${params.number}`)
+         axios.get(`http://127.0.0.1:4242/contact/${params.number}`)
              .then((response) => setName(response.data.name))
              .catch(() => showError("Failed to load data", "Contact info not found"))
      }, []);

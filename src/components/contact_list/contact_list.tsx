@@ -15,7 +15,7 @@ function ContactList() {
     const navigate = useNavigate();
 
      useEffect(() => {
-         axios.get('http://127.0.0.1:5000/list_numbers')
+         axios.get('http://127.0.0.1:4242/list_numbers')
              .then((response) => {
                  const fetched = response.data.map((entry: any) => {
                      const name = entry.name

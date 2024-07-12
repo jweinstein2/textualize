@@ -12,7 +12,7 @@ function Group () {
     const params= useParams()
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:5000/group_frequency/${params.id}`)
+        axios.get(`http://127.0.0.1:4242/group_frequency/${params.id}`)
             .then((response) => {
                 const fetched = response.data.map((entry: any) => {
                     const date = entry.Label

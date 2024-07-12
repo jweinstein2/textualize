@@ -16,7 +16,7 @@ const {spawn, execFile, ChildProcess} = require('child_process');
 /*************************************************************
  * py process
  *************************************************************/
-const PY_DIST_FOLDER = 'api'
+const PY_DIST_FOLDER = 'dist'
 const PY_FOLDER = 'backend'
 const PY_MODULE = 'api' // without .py suffix
 const PY_PORT = 4242
@@ -30,26 +30,21 @@ const getScriptPath = () => {
     if (process.platform === 'win32') {
         return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
     }
-    return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE)
-}
-
-const selectPort = () => {
-    return PY_PORT;
+    return path.join(process.resourcesPath, PY_DIST_FOLDER, PY_MODULE)
 }
 
 const createPyProc = () => {
     let script = getScriptPath()
-    let port = selectPort();
 
     if (!isDev) {
-        //console.log('PACKAGED VERSION')
-        //pyProc = execFile(script, [port], (error, stdout, stderr) => {
-        //    if (error) {
-        //        throw error;
-        //    }
-        //    console.log(stdout);
-        //    console.log(stderr);
-        //});
+        console.log('PACKAGED VERSION')
+        pyProc = execFile(script, [PY_PORT], (error: any, stdout: any, stderr: any) => {
+            if (error) {
+                throw error;
+            }
+            console.log(stdout);
+            console.log(stderr);
+        });
     } else {
         const devPath = getScriptPath()
         pyProc = spawn('python3', [devPath])
@@ -65,7 +60,7 @@ const createPyProc = () => {
     }
 
     if (pyProc != null) {
-        console.log('child process success on port ' + port)
+        console.log('child process success on port ' + PY_PORT)
     }
 }
 
@@ -128,6 +123,7 @@ async function createWindow() {
       // contextIsolation: false,
     },
   })
+    win.webContents.openDevTools()
 
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
