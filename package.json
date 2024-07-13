@@ -1,6 +1,6 @@
 {
   "name": "textualize",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist-electron/main/index.js",
   "description": "Pulling insights from personalized imessage data",
   "author": "Jared Weinstein <jaredweinstein1@gmail.com>",
@@ -14,7 +14,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build && electron-builder",
+    "build": "tsc && vite build && electron-builder -c.mac.identity=null",
     "pybuild": "pyinstaller backend/api.py -D --clean --workpath ./build-python --distpath ./dist-python",
     "deploy": "tsc && vite build && electron-builder build --mac --publish always",
     "preview": "vite preview",
