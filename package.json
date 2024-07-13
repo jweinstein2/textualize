@@ -15,7 +15,7 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build && electron-builder -c.mac.identity=null",
-    "pybuild": "pyinstaller backend/api.py -D --clean --workpath ./build-python --distpath ./dist-python",
+    "pybuild": "pyinstaller backend/api.py -D --noconfirm --clean --workpath ./build-python --distpath ./dist-python",
     "deploy": "tsc && vite build && electron-builder build --mac --publish always",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",

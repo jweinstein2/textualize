@@ -37,26 +37,23 @@ const createPyProc = () => {
     let script = getScriptPath()
 
     if (!isDev) {
-        pyProc = execFile(script, [PY_PORT], (error: any, stdout: any, stderr: any) => {
-            if (error) {
-                throw error;
-            }
-            console.log(stdout);
-            console.log(stderr);
-        });
+        pyProc = spawn(script, [PY_PORT])
     } else {
         const devPath = getScriptPath()
-        pyProc = spawn('python3', [devPath])
+        pyProc = spawn('python3', ['-u', devPath])
+    }
+
+    if (pyProc != null) {
+        console.log('child process success on port ' + PY_PORT)
+        pyProc.stdout.on('data', (data: any) => {
+            console.error(`[PY LOG]: ${data}`)
+        })
         pyProc.stderr.on('data', (data: any) => {
             console.error(`[PY BACKEND]: ${data}`);
         });
         pyProc.on('close', (code: any) => {
             console.log(`child process exited with code ${code}`);
         });
-    }
-
-    if (pyProc != null) {
-        console.log('child process success on port ' + PY_PORT)
     }
 }
 
