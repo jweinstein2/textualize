@@ -8,6 +8,7 @@ import src.stats.language as language_stats
 import src.stats.emoji as emoji_stats
 import src.stats.sentiment as sentiment_stats
 from http import HTTPStatus
+import multiprocessing
 
 from flask_cors import CORS
 from flask import Flask, request
@@ -39,8 +40,11 @@ def source():
         data_manager.clear();
         return "", HTTPStatus.OK
 
-@app.route('/process', methods=['GET', 'POST'])
+@app.route('/process', methods=['GET', 'POST', 'DELETE'])
 def process():
+    if request.method == 'DELETE':
+        data_manager.clear()
+        return "", HTTPStatus.OK
     if request.method == 'GET':
         status, percent, error = data_manager.process_progress()
         return {"status": status, "percent": percent, "error": error}
@@ -48,7 +52,7 @@ def process():
         error = data_manager.start_process();
         if (error != None):
             print(error)
-            return "", HTTPStatus.INTERNAL_SERVER_ERROR
+            return "Backup Already in Progress", HTTPStatus.INTERNAL_SERVER_ERROR
         return "", HTTPStatus.OK
 
 ##############################
@@ -133,11 +137,12 @@ def parse_port():
 def main():
     port = parse_port()
     try:
-        app.run(host='127.0.0.1', port=port)
+        app.run(host='127.0.0.1', port=port, debug=False)
     except KeyboardInterrupt:
         if sys.excepthook is sys.__excepthook__:
             sys.excepthook = _no_traceback_excepthook
         raise
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     main()
