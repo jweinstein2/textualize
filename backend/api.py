@@ -132,8 +132,12 @@ def parse_port():
 
 def main():
     port = parse_port()
-    app.run(host='127.0.0.1', port=port)
-    print('start running on {}'.format(addr))
+    try:
+        app.run(host='127.0.0.1', port=port)
+    except KeyboardInterrupt:
+        if sys.excepthook is sys.__excepthook__:
+            sys.excepthook = _no_traceback_excepthook
+        raise
 
 if __name__ == '__main__':
     main()
