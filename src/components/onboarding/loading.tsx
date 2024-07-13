@@ -1,7 +1,10 @@
 import { Progress } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import {Center} from '@mantine/core';
+import {Center, Button} from '@mantine/core';
+import axios from 'axios';
 import './loading.css';
+import { showError } from '@/util'
+import { useNavigate } from "react-router-dom";
 
 const STATIC_MESSAGES = [
     'Built with your privacy in mind: your messages never leave your device',
@@ -16,14 +19,67 @@ const personalizedMessages = [
     'Text your mom back',
 ]
 
-
+// Please excuse this terrible code.
+// TODO: switch to redux approach or dedup checkProcess calls
 function Loading() {
     const [message, setMessage] = useState(STATIC_MESSAGES[0]);
+    const [progress, setProgress] = useState(0);
+    const [error, setError] = useState(undefined);
+
+    const navigate = useNavigate()
+
+    function startProcessing() {
+        axios.post('http://127.0.0.1:4242/process')
+            .then(() => setTimeout(() => checkProcess(), 500))
+            .catch((error) => {
+                showError('Fatal Error', 'Unable to begin processing data')
+            })
+    }
+
+    function checkProcess() {
+        axios.get('http://127.0.0.1:4242/process')
+            .then((response) => {
+                if (response.data.error) {
+                    setError(response.data.error)
+                    return
+                }
+                const status = response.data.status
+                const percent = response.data.percent
+                if (status === "unstarted") {
+                    startProcessing()
+                } else if (status === "in_progress") {
+                    setProgress(percent)
+                    setTimeout(() => checkProcess(), 500)
+                } else {
+                    setProgress(percent)
+                }
+            })
+    }
+
+    useEffect(checkProcess)
+
+    if (error) {
+        return (
+            <Center>
+                <p>Processing Failed</p>
+                <Button>Try Again</Button>
+            </Center>
+        )
+    }
+
+    if (progress === 100) {
+        return (
+            <Center>
+                <Button onClick={() => navigate('/')}>EXPLORE</Button>
+            </Center>
+        )
+
+    }
 
     return (
         <div className="wrapper">
             <div className="body">
-                <Progress value={0}/>
+                <Progress value={progress}/>
                 <Center><p>{message}</p></Center>
             </div>
         </div>

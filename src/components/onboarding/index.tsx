@@ -50,8 +50,8 @@ function Onboarding() {
             showError("Invalid backup", "Select a backup source and try again")
         };
         axios.post('http://127.0.0.1:4242/source', {source: backupPath})
-            .then(() => navigate('/'))
-            .catch(() => showError("Fatal error", "Unable to start processing data"))
+            .then(() => navigate('/loading'))
+            .catch(() => showError("Invalid data source", "Select another backup and try again"))
     }
 
     const data = [
@@ -77,7 +77,7 @@ function Onboarding() {
 
     function renderBackupCards() {
         return backupOptions.map((backup) => (
-            <Radio.Card className="card" radius="md" value={backup.name} key={backup.path}>
+            <Radio.Card className="card" radius="md" value={backup.path} key={backup.path}>
                 <Group wrap="nowrap" align="flex-start">
                     <Radio.Indicator />
                     <div>

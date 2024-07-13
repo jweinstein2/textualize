@@ -168,6 +168,7 @@ def start_process():
     _set(chat_df, CHAT_PATH)
 
     print('completed synchronous processing work (%s seconds)' % round((time.time() - start_time), 2))
+    config.set_process_progress(5)
 
     # start non-blocking thread for heavy processing
     t = threading.Thread(target = async_process,
@@ -183,6 +184,8 @@ def async_process(lock):
         number_stats = process.generate_number_table()
         _set(number_stats, NUMBER_TABLE_PATH)
         print('generated and saved number stats (%s seconds)' % round((time.time() - start_time), 2))
+
+        config.set_process_progress(40)
 
         start_time = time.time()
         group_table = process.generate_group_table()
