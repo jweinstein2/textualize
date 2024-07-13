@@ -11,6 +11,7 @@ import Summary from '@/components/summary/summary'
 import Wizard from '@/components/wizard/wizard'
 import Onboarding from '@/components/onboarding'
 import Loading from '@/components/onboarding/loading'
+import NotFound from '@/components/notfound/notfound'
 import { Routes, Route } from "react-router-dom";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
@@ -87,7 +88,7 @@ function Shell() {
                             <Route path="/groups/:id" element={<Group />} />
                             <Route path="/ai" element={<Wizard />} />
                             <Route path="/settings" element={<Settings />} />
-                            <Route path="*" element={<p>404</p>} />
+                            <Route path="*" element={<NotFound/>} />
                         </Routes>
                     </AppShell.Main>
                 </AppShell>

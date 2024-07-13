@@ -11,6 +11,7 @@ const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const fs = require("fs");
+const url = require('url');
 const {spawn, execFile, ChildProcess} = require('child_process');
 
 /*************************************************************
@@ -129,6 +130,15 @@ async function createWindow() {
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
   })
+
+  win.webContents.on('did-fail-load', () => {
+      win?.loadURL(url.format({
+          pathname: path.join(__dirname, 'dist/index.html'),
+          protocol: 'file:',
+          slashes: true
+      }));
+      // REDIRECT TO FIRST WEBPAGE AGAIN
+  });
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {

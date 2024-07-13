@@ -7,7 +7,7 @@ import '@mantine/notifications/styles.css';
 import { createTheme, MantineProvider } from '@mantine/core'
 import store from './store/store'
 import Shell from './components/shell/shell'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import { Notifications } from '@mantine/notifications';
 
 const theme = createTheme({
@@ -19,10 +19,10 @@ function App() {
     return (
         <Provider store={store}>
             <MantineProvider theme={theme}>
-                <BrowserRouter>
+                <HashRouter>
                     <Notifications/>
                     <Shell/>
-                </BrowserRouter>
+                </HashRouter>
             </MantineProvider>
         </Provider>
     )

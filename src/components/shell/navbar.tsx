@@ -13,7 +13,7 @@ import {
   IconUsersGroup,
 } from '@tabler/icons-react';
 import './navbar.css';
-import {useLocation} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import {useEffect} from 'react';
 
 
@@ -40,15 +40,15 @@ function Navbar() {
 
     function renderLinks(data: any) {
         return data.map((item: any) => (
-            <a
+            <Link
                 className="link"
                 data-active={item.label === active || undefined}
-                href={item.link}
+                to={item.link}
                 key={item.label}
                 onClick={(event) => {setActive(item.label)}} >
                 <item.icon className="linkIcon" stroke={1.5} />
                 <span>{item.label}</span>
-            </a>
+            </Link>
         ));
     }
 
