@@ -34,3 +34,4 @@ yarn.lock
 /playwright-report/
 /playwright/.cache/
 api.spec
+.env

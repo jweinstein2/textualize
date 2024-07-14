@@ -2,7 +2,7 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  "appId": "com.jared.textualize",
+  "appId": "com.contripity.textualize",
   "asar": true,
   "directories": {
     "output": "release/${version}"
@@ -11,7 +11,6 @@
     "dist-electron",
     "dist"
   ],
-  "asarUnpack":"./dist/*",
   "extraResources": [
     {
       "from": "./dist-python/",
@@ -22,10 +21,14 @@
     }
     ],
   "mac": {
+    "gatekeeperAssess": false,
+    "hardenedRuntime": true,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist",
     "artifactName": "${productName}_${version}.${ext}",
     "target": [
-      "dmg",
-      "zip"
+        "dmg",
+        "zip"
     ]
   },
   "win": {
@@ -38,6 +41,9 @@
       }
     ],
     "artifactName": "${productName}_${version}.${ext}"
+  },
+  "dmg": {
+    sign: false,
   },
   "nsis": {
     "oneClick": false,
