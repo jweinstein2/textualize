@@ -17,7 +17,7 @@ const {spawn, execFile, ChildProcess} = require('child_process');
 /*************************************************************
  * py process
  *************************************************************/
-const PY_DIST_FOLDER = 'dist'
+const PY_DIST_FOLDER = 'dist-python'
 const PY_FOLDER = 'backend'
 const PY_MODULE = 'api' // without .py suffix
 const PY_PORT = 4242

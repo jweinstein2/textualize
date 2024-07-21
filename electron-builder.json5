@@ -5,7 +5,7 @@
   "appId": "com.contripity.textualize",
   "asar": true,
   "directories": {
-    "output": "release/${version}"
+    "output": "release/${version}",
   },
   "files": [
     "dist-electron",
@@ -14,12 +14,13 @@
   "extraResources": [
     {
       "from": "./dist-python/",
-      "to": "dist/",
+      "to": "dist-python/",
       "filter": [
         "**/*"
       ]
     }
     ],
+  "afterSign": "scripts/notarize.cjs",
   "mac": {
     "gatekeeperAssess": false,
     "hardenedRuntime": true,
