@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table } from '@mantine/core';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ function GroupList() {
      useEffect(() => {
          axios.get('http://127.0.0.1:4242/list_groups')
              .then((response) => {
+                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                  const fetched = response.data.map((entry: any) => {
                      const name = entry.name
                      const id = entry.id

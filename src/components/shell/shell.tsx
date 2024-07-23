@@ -1,4 +1,4 @@
-import { Center, AppShell, Burger, Breadcrumbs, Loader } from '@mantine/core';
+import { Center, AppShell,  Loader } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import Navbar from './navbar';
@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { showError } from '@/util'
 
 function Shell() {
-    const [opened, { toggle }] = useDisclosure()
+    const [opened, ] = useDisclosure()
     const [loading, setLoading] = useState(true)
     const [retries, setRetries] = useState(5)
 

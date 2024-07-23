@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import UpdateElectron from '@/components/update'
+import React from 'react';
 import { Provider } from 'react-redux'
 import '@mantine/core/styles.css'
 import '@mantine/charts/styles.css'

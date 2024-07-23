@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Grid, Skeleton, Container } from '@mantine/core';
+import { Container } from '@mantine/core';
 import { useParams } from 'react-router';
 import { LineChart } from '@mantine/charts';
 import { Loader, Center } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { showError } from '@/util'
 import Bubble from '@/components/message/bubble'
 
@@ -39,6 +38,7 @@ function Contact() {
      useEffect(() => {
          axios.get(`http://127.0.0.1:4242/frequency/${params.number}`)
              .then((response) => {
+                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                  const fetched = response.data.map((entry: any) => {
                      const date = entry.Label
                      const sent = entry.Sent

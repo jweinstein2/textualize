@@ -12,17 +12,10 @@ const STATIC_MESSAGES = [
     'Who have you forgotten to text back?',
 ]
 
-// TODO(jaredweinstein): Replace w. actual content
-const personalizedMessages = [
-    'Compiling 20058 messages.',
-    'Compiling messages from 158 contacts',
-    'Text your mom back',
-]
-
 // Please excuse this terrible code.
 // TODO: switch to redux approach or dedup checkProcess calls
 function Loading() {
-    const [message, setMessage] = useState(STATIC_MESSAGES[0]);
+    const [message, ] = useState(STATIC_MESSAGES[0]);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState(undefined);
 
@@ -31,9 +24,7 @@ function Loading() {
     function startProcessing() {
         axios.post('http://127.0.0.1:4242/process')
             .then(() => setTimeout(() => checkProcess(), 500))
-            .catch((error) => {
-                showError('Fatal Error', 'Unable to begin processing data')
-            })
+            .catch(() => showError('Fatal Error', 'Unable to begin processing data'))
     }
 
     function checkProcess() {

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Stepper, rem } from '@mantine/core';
+import { Stepper, } from '@mantine/core';
 import axios from 'axios';
 import {Button, Radio, Group, Stack, Text } from '@mantine/core';
-import { Container } from '@mantine/core';
 import './onboarding.css';
 import { showError } from '@/util'
 import {useNavigate } from "react-router-dom";
@@ -135,9 +134,7 @@ function Onboarding() {
                         </Button>
                     </Stepper.Step>
                     <Stepper.Step icon={<IconShieldCheck/>}>
-                        We understand your data is important and private. That's why your messages never leave your device.
-                        <Button className="analyze" onClick={analyze}>Analyze</Button>
-                    </Stepper.Step>
+                        We understand your data is important and private. That&apos;s why your messages never leave your device.  <Button className="analyze" onClick={analyze}>Analyze</Button> </Stepper.Step>
                 </Stepper>
             </div>
         </div>

@@ -1,6 +1,6 @@
-import { Grid, Skeleton, Container } from '@mantine/core';
+import { Container } from '@mantine/core';
 import { LineChart } from '@mantine/charts';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { FrequencyDay } from '@/components/contact/contact'
 import axios from 'axios';
@@ -14,6 +14,7 @@ function Group () {
     useEffect(() => {
         axios.get(`http://127.0.0.1:4242/group_frequency/${params.id}`)
             .then((response) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const fetched = response.data.map((entry: any) => {
                     const date = entry.Label
                     const sent = entry.Sent
