@@ -1,11 +1,12 @@
-import { app, dialog, BrowserWindow, shell, ipcMain } from "electron";
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import os from "node:os";
-import { update } from "./update";
+import { BrowserWindow, app, dialog, ipcMain, shell } from "electron";
 import isDev from "electron-is-dev";
+import { createRequire } from "node:module";
+import os from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { Backup } from "src/components/onboarding";
+
+import { update } from "./update";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

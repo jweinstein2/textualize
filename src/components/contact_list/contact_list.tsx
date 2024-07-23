@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
 import { Table } from "@mantine/core";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export type Contact = {

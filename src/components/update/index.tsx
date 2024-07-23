@@ -1,7 +1,8 @@
-import type { ProgressInfo } from "electron-updater";
-import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/update/Modal";
 import Progress from "@/components/update/Progress";
+import type { ProgressInfo } from "electron-updater";
+import { useCallback, useEffect, useState } from "react";
+
 import "./update.css";
 
 const Update = () => {

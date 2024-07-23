@@ -1,15 +1,16 @@
-import { useState } from "react";
 import {
     Icon,
-    IconSettings,
     IconChartAreaLine,
     IconFingerprint,
     IconMessage,
+    IconSettings,
     IconUsersGroup,
 } from "@tabler/icons-react";
-import "./navbar.css";
-import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+
+import "./navbar.css";
 
 interface NavBarItem {
     link: string;

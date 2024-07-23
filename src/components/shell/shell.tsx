@@ -1,21 +1,22 @@
-import { Center, AppShell, Loader } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
-import Navbar from "./navbar";
-import GroupList from "@/components/group_list/group_list";
-import Group from "@/components/group/group";
-import ContactList from "@/components/contact_list/contact_list";
 import Contact from "@/components/contact/contact";
-import Settings from "@/components/settings/settings";
-import Wizard from "@/components/wizard/wizard";
-import Onboarding from "@/components/onboarding";
-import Summary from "@/components/summary/summary";
-import Loading from "@/components/onboarding/loading";
+import ContactList from "@/components/contact_list/contact_list";
+import Group from "@/components/group/group";
+import GroupList from "@/components/group_list/group_list";
 import NotFound from "@/components/notfound/notfound";
-import { Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import Onboarding from "@/components/onboarding";
+import Loading from "@/components/onboarding/loading";
+import Settings from "@/components/settings/settings";
+import Summary from "@/components/summary/summary";
+import Wizard from "@/components/wizard/wizard";
 import { showError } from "@/util";
+import { AppShell, Center, Loader } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import Navbar from "./navbar";
 
 function Shell() {
     const [opened] = useDisclosure();

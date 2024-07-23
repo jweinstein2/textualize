@@ -1,4 +1,5 @@
 import { Paper } from "@mantine/core";
+
 import classes from "./bubble.module.css";
 
 interface BubbleProps {

@@ -1,6 +1,6 @@
 import { Button } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Settings() {
     const navigate = useNavigate();

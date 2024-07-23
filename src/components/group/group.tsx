@@ -1,10 +1,10 @@
-import { Container } from "@mantine/core";
-import { LineChart } from "@mantine/charts";
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
 import { FrequencyDay } from "@/components/contact/contact";
-import axios from "axios";
 import { showError } from "@/util";
+import { LineChart } from "@mantine/charts";
+import { Container } from "@mantine/core";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 function Group() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);

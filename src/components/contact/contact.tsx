@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Container } from "@mantine/core";
-import { useParams } from "react-router";
-import { LineChart } from "@mantine/charts";
-import { Loader, Center } from "@mantine/core";
-import { showError } from "@/util";
 import Bubble from "@/components/message/bubble";
+import { showError } from "@/util";
+import { LineChart } from "@mantine/charts";
+import { Container } from "@mantine/core";
+import { Center, Loader } from "@mantine/core";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 export type FrequencyDay = {
     date: string;

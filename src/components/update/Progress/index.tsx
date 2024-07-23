@@ -1,4 +1,5 @@
 import React from "react";
+
 import "./progress.css";
 
 const Progress: React.FC<

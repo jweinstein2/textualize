@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { Stepper } from "@mantine/core";
-import axios from "axios";
-import { Button, Radio, Group, Stack, Text } from "@mantine/core";
-import "./onboarding.css";
 import { showError } from "@/util";
-import { useNavigate } from "react-router-dom";
-
+import { Stepper } from "@mantine/core";
+import { Button, Group, Radio, Stack, Text } from "@mantine/core";
 import {
-    IconUserCheck,
     IconMailOpened,
     IconShieldCheck,
+    IconUserCheck,
 } from "@tabler/icons-react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import "./onboarding.css";
 
 export type Backup = {
     path: string;

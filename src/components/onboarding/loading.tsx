@@ -1,10 +1,11 @@
-import { Progress } from "@mantine/core";
-import { useState, useEffect } from "react";
-import { Center, Button } from "@mantine/core";
-import axios from "axios";
-import "./loading.css";
 import { showError } from "@/util";
+import { Progress } from "@mantine/core";
+import { Button, Center } from "@mantine/core";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import "./loading.css";
 
 const STATIC_MESSAGES = [
     "Built with your privacy in mind: your messages never leave your device",

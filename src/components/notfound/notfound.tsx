@@ -1,4 +1,5 @@
-import { Container, Title, Text, Button, SimpleGrid } from "@mantine/core";
+import { Button, Container, SimpleGrid, Text, Title } from "@mantine/core";
+
 import classes from "./notfound.module.css";
 
 export default function NotFound() {
