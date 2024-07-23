@@ -117,7 +117,6 @@ async function createWindow() {
       // contextIsolation: false,
     },
   })
-    win.webContents.openDevTools()
 
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)

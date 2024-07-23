@@ -85,7 +85,7 @@ def group_info(id):
     return content
 
 @app.route('/language/<number>', methods=['GET'])
-def language_stats(number, start=None, end=None):
+def language(number, start=None, end=None):
     msg = data_manager.messages(number=number, start=start, end=end)
     result = language_stats.contact_summary(msg)
     return result

@@ -26,11 +26,11 @@
     "hardenedRuntime": true,
     "entitlements": "build/entitlements.mac.plist",
     "entitlementsInherit": "build/entitlements.mac.plist",
-    "artifactName": "${productName}_${version}.${ext}",
+    "artifactName": "${productName}_${version}-${arch}.${ext}",
     "target": [
-        "dmg",
-        "zip"
-    ]
+        {target: "dmg", "arch": ["x64", "arm64"]},
+        //{target: "zip", "arch": ["x64", "arm64"]},
+    ],
   },
   "win": {
     "target": [
