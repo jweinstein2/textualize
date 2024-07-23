@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Icon,
   IconSettings,
@@ -6,10 +6,10 @@ import {
   IconFingerprint,
   IconMessage,
   IconUsersGroup,
-} from '@tabler/icons-react';
-import './navbar.css';
-import {Link, useLocation} from 'react-router-dom';
-import {useEffect} from 'react';
+} from "@tabler/icons-react";
+import "./navbar.css";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 interface NavBarItem {
   link: string;
@@ -18,50 +18,49 @@ interface NavBarItem {
 }
 
 const data: NavBarItem[] = [
-  { link: '/summary', label: 'Summary', icon: IconChartAreaLine },
-  { link: '/contacts', label: 'Contacts', icon: IconMessage },
-  { link: '/groups', label: 'Groups', icon: IconUsersGroup },
-  { link: '/ai', label: 'AI', icon: IconFingerprint },
-  { link: '/settings', label: 'Settings', icon: IconSettings },
+  { link: "/summary", label: "Summary", icon: IconChartAreaLine },
+  { link: "/contacts", label: "Contacts", icon: IconMessage },
+  { link: "/groups", label: "Groups", icon: IconUsersGroup },
+  { link: "/ai", label: "AI", icon: IconFingerprint },
+  { link: "/settings", label: "Settings", icon: IconSettings },
 ];
 
 function Navbar() {
-    const [active, setActive] = useState('Summary');
+  const [active, setActive] = useState("Summary");
 
-    const location = useLocation();
+  const location = useLocation();
 
-    useEffect(() => {
-        const activeIndex = data.find((item) => item.link === location.pathname)
-        if (activeIndex?.label != undefined) {
-            setActive(activeIndex.label)
-        }
-    }, [location]);
-
-    function renderLinks(data: NavBarItem[]) {
-        return data.map((item: NavBarItem) => (
-            <Link
-                className="link"
-                data-active={item.label === active || undefined}
-                to={item.link}
-                key={item.label}
-                onClick={() => {setActive(item.label)}} >
-                <item.icon className="linkIcon" stroke={1.5} />
-                <span>{item.label}</span>
-            </Link>
-        ));
+  useEffect(() => {
+    const activeIndex = data.find((item) => item.link === location.pathname);
+    if (activeIndex?.label != undefined) {
+      setActive(activeIndex.label);
     }
+  }, [location]);
+
+  function renderLinks(data: NavBarItem[]) {
+    return data.map((item: NavBarItem) => (
+      <Link
+        className="link"
+        data-active={item.label === active || undefined}
+        to={item.link}
+        key={item.label}
+        onClick={() => {
+          setActive(item.label);
+        }}
+      >
+        <item.icon className="linkIcon" stroke={1.5} />
+        <span>{item.label}</span>
+      </Link>
+    ));
+  }
 
   return (
     <nav className="navbar">
-      <div className="navbarMain">
-          {renderLinks(data.slice(0,4))}
-      </div>
+      <div className="navbarMain">{renderLinks(data.slice(0, 4))}</div>
 
-      <div className="footer">
-         {renderLinks(data.slice(4,5))}
-      </div>
+      <div className="footer">{renderLinks(data.slice(4, 5))}</div>
     </nav>
   );
 }
 
-export default Navbar
+export default Navbar;
