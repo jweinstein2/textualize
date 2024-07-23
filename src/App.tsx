@@ -1,11 +1,12 @@
-import "@mantine/charts/styles.css";
 import { MantineProvider, createTheme } from "@mantine/core";
-import "@mantine/core/styles.css";
 import { Notifications } from "@mantine/notifications";
-import "@mantine/notifications/styles.css";
 import React from "react";
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
+
+import "@mantine/charts/styles.css";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 
 import Shell from "./components/shell/shell";
 import store from "./store/store";
