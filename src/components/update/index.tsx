@@ -71,8 +71,8 @@ const Update = () => {
         [],
     );
 
-    // eslint-disable-next-line
     const onUpdateDownloaded = useCallback(
+        // eslint-disable-next-line
         (_event: Electron.IpcRendererEvent, ...args: any[]) => {
             setProgressInfo({ percent: 100 });
             setModalBtn((state) => ({

@@ -15,6 +15,7 @@
     "scripts": {
         "start": "vite",
         "lint": "npx eslint src/",
+        "format": "npx prettier . --write",
         "pybuild": "pyinstaller backend/api.py -D --noconfirm --clean --workpath ./build-python --distpath ./dist-python",
         "build": "npm run pybuild && tsc && vite build && electron-builder -c.mac.identity=null",
         "deploy": "npm run pybuild && tsc && vite build && electron-builder build --mac --publish always",
