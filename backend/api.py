@@ -33,7 +33,6 @@ def source():
     elif request.method == 'POST':
         path = request.json['source']
         config.set_backup_path(path)
-        print(config.get_backup_path())
         return "", HTTPStatus.CREATED
     elif request.method == 'DELETE':
         config.reset();
@@ -116,7 +115,7 @@ def sentiment(number, start=None, end=None):
 
 @app.route('/emoji/<number>', methods=['GET'])
 def emoji(number, start=None, end=None):
-    n = 5
+    n = 3
     msg = data_manager.messages(number=number, start=start, end=end)
     result = emoji_stats.contact_summary(msg, n)
     return result
