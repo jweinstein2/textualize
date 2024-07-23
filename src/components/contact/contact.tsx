@@ -1,3 +1,4 @@
+import { Button  } from 'framework7-react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Grid, Skeleton, Container } from '@mantine/core';
@@ -5,12 +6,20 @@ import { useParams } from 'react-router';
 import { LineChart } from '@mantine/charts';
 import { notifications } from '@mantine/notifications';
 import { showError } from '@/util'
+import Bubble from '@/components/message/bubble'
 
 export type FrequencyDay = {
     date: string;
     sent: number;
     recieved: number;
 };
+
+export type Sentiment = {
+    pos_sent: string[];
+    neg_sent: string[];
+    pos_received: string[];
+    neg_received: string[];
+}
 
 function Contact() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
@@ -38,6 +47,12 @@ function Contact() {
              .catch(() => showError("Failed to load data", "Contact info not found"))
      }, []);
 
+     useEffect(() => {
+         axios.get(`http://127.0.0.1:4242/sentiment/${params.number}`)
+             .then((response) => {setSentiment(response.data); console.log(response.data)})
+             .catch(() => showError("Failed to load data", "Sentiment info not found"))
+     }, []);
+
     return (
         <Container fluid>
             <h2>{name}</h2>
@@ -52,6 +67,23 @@ function Contact() {
                 tickLine="x"
                 withDots={false}
             />
+            <h3>Sentiment</h3>
+            <h5>Positive</h5>
+            <div>
+                <Bubble message={sentiment?.pos_sent[0]} isSent></Bubble>
+                <Bubble message={sentiment?.pos_sent[1]} isSent></Bubble>
+                <Bubble message={sentiment?.pos_sent[2]} isSent></Bubble>
+                <Bubble message={sentiment?.pos_received[0]}></Bubble>
+                <Bubble message={sentiment?.pos_received[1]}></Bubble>
+                <Bubble message={sentiment?.pos_received[2]}></Bubble>
+            </div>
+            <h5>Negative</h5>
+                <Bubble message={sentiment?.neg_sent[0]} isSent></Bubble>
+                <Bubble message={sentiment?.neg_sent[1]} isSent></Bubble>
+                <Bubble message={sentiment?.neg_sent[2]} isSent></Bubble>
+                <Bubble message={sentiment?.neg_received[0]}></Bubble>
+                <Bubble message={sentiment?.neg_received[1]}></Bubble>
+                <Bubble message={sentiment?.neg_received[2]}></Bubble>
         </Container>
         )
 }

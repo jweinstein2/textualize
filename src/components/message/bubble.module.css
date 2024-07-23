@@ -1,0 +1,10 @@
+.bubble_sent {
+    background-color: #E9EBEE;
+    max-width: 600px;
+}
+
+.bubble_received {
+    color: white;
+    background-color: #218aff;
+    max-width: 600px;
+}

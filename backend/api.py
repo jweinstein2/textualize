@@ -51,7 +51,6 @@ def process():
     if request.method == 'POST':
         error = data_manager.start_process();
         if (error != None):
-            print(error)
             return "Backup Already in Progress", HTTPStatus.INTERNAL_SERVER_ERROR
         return "", HTTPStatus.OK
 
