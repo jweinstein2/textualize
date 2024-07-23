@@ -25,44 +25,54 @@ const PY_PORT = 4242;
 let pyProc: typeof ChildProcess | undefined;
 
 const getScriptPath = () => {
-  if (isDev) {
-    return path.join(__dirname, "../..", PY_FOLDER, PY_MODULE + ".py");
-  }
-  if (process.platform === "win32") {
-    return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + ".exe");
-  }
-  return path.join(process.resourcesPath, PY_DIST_FOLDER, PY_MODULE, PY_MODULE);
+    if (isDev) {
+        return path.join(__dirname, "../..", PY_FOLDER, PY_MODULE + ".py");
+    }
+    if (process.platform === "win32") {
+        return path.join(
+            __dirname,
+            PY_DIST_FOLDER,
+            PY_MODULE,
+            PY_MODULE + ".exe",
+        );
+    }
+    return path.join(
+        process.resourcesPath,
+        PY_DIST_FOLDER,
+        PY_MODULE,
+        PY_MODULE,
+    );
 };
 
 const createPyProc = () => {
-  let script = getScriptPath();
+    let script = getScriptPath();
 
-  if (!isDev) {
-    pyProc = spawn(script, [PY_PORT]);
-  } else {
-    const devPath = getScriptPath();
-    pyProc = spawn("python3", ["-u", devPath]);
-  }
+    if (!isDev) {
+        pyProc = spawn(script, [PY_PORT]);
+    } else {
+        const devPath = getScriptPath();
+        pyProc = spawn("python3", ["-u", devPath]);
+    }
 
-  if (pyProc != null) {
-    console.log("child process success on port " + PY_PORT);
-    pyProc.stdout.on("data", (data: any) => {
-      console.error(`[PY LOG]: ${data}`);
-    });
-    pyProc.stderr.on("data", (data: any) => {
-      console.error(`[PY BACKEND]: ${data}`);
-    });
-    pyProc.on("close", (code: any) => {
-      console.log(`child process exited with code ${code}`);
-    });
-  }
+    if (pyProc != null) {
+        console.log("child process success on port " + PY_PORT);
+        pyProc.stdout.on("data", (data: any) => {
+            console.error(`[PY LOG]: ${data}`);
+        });
+        pyProc.stderr.on("data", (data: any) => {
+            console.error(`[PY BACKEND]: ${data}`);
+        });
+        pyProc.on("close", (code: any) => {
+            console.log(`child process exited with code ${code}`);
+        });
+    }
 };
 
 const exitPyProc = () => {
-  if (pyProc != null) {
-    pyProc.kill();
-  }
-  pyProc = undefined;
+    if (pyProc != null) {
+        pyProc.kill();
+    }
+    pyProc = undefined;
 };
 
 app.on("ready", createPyProc);
@@ -85,8 +95,8 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL;
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
-  ? path.join(process.env.APP_ROOT, "public")
-  : RENDERER_DIST;
+    ? path.join(process.env.APP_ROOT, "public")
+    : RENDERER_DIST;
 
 // Disable GPU Acceleration for Windows 7
 if (os.release().startsWith("6.1")) app.disableHardwareAcceleration();
@@ -95,8 +105,8 @@ if (os.release().startsWith("6.1")) app.disableHardwareAcceleration();
 if (process.platform === "win32") app.setAppUserModelId(app.getName());
 
 if (!app.requestSingleInstanceLock()) {
-  app.quit();
-  process.exit(0);
+    app.quit();
+    process.exit(0);
 }
 
 let win: BrowserWindow | null = null;
@@ -104,108 +114,108 @@ const preload = path.join(__dirname, "../preload/index.mjs");
 const indexHtml = path.join(RENDERER_DIST, "index.html");
 
 async function createWindow() {
-  win = new BrowserWindow({
-    title: "Main window",
-    icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
-    webPreferences: {
-      preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // nodeIntegration: true,
+    win = new BrowserWindow({
+        title: "Main window",
+        icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
+        webPreferences: {
+            preload,
+            // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
+            // nodeIntegration: true,
 
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      // contextIsolation: false,
-    },
-  });
+            // Consider using contextBridge.exposeInMainWorld
+            // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
+            // contextIsolation: false,
+        },
+    });
 
-  if (VITE_DEV_SERVER_URL) {
-    // #298
-    win.loadURL(VITE_DEV_SERVER_URL);
-    // Open devTool if the app is not packaged
-    //win.webContents.openDevTools()
-  } else {
-    win.loadFile(indexHtml);
-  }
+    if (VITE_DEV_SERVER_URL) {
+        // #298
+        win.loadURL(VITE_DEV_SERVER_URL);
+        // Open devTool if the app is not packaged
+        //win.webContents.openDevTools()
+    } else {
+        win.loadFile(indexHtml);
+    }
 
-  // Test actively push message to the Electron-Renderer
-  win.webContents.on("did-finish-load", () => {});
+    // Test actively push message to the Electron-Renderer
+    win.webContents.on("did-finish-load", () => {});
 
-  win.webContents.on("did-fail-load", () => {
-    win?.loadURL(
-      url.format({
-        pathname: path.join(__dirname, "dist/index.html"),
-        protocol: "file:",
-        slashes: true,
-      }),
-    );
-    // REDIRECT TO FIRST WEBPAGE AGAIN
-  });
+    win.webContents.on("did-fail-load", () => {
+        win?.loadURL(
+            url.format({
+                pathname: path.join(__dirname, "dist/index.html"),
+                protocol: "file:",
+                slashes: true,
+            }),
+        );
+        // REDIRECT TO FIRST WEBPAGE AGAIN
+    });
 
-  // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("https:")) shell.openExternal(url);
-    return { action: "deny" };
-  });
+    // Make all links open with the browser, not with the application
+    win.webContents.setWindowOpenHandler(({ url }) => {
+        if (url.startsWith("https:")) shell.openExternal(url);
+        return { action: "deny" };
+    });
 
-  // Auto update
-  update(win);
+    // Auto update
+    update(win);
 }
 
 async function listBackups(event: any): Promise<Backup[]> {
-  const backup_path = "/Library/Application Support/MobileSync/Backup/";
-  const home = app.getPath("home");
-  const dirPath = path.resolve(home + backup_path);
-  const backups = await fs.readdirSync(dirPath);
-  const filtered = backups.filter((path: string) => path[0] !== ".");
-  return filtered.map((name: string) => ({
-    name,
-    path: dirPath + "/" + name,
-    size: 0,
-    date: new Date(),
-  }));
+    const backup_path = "/Library/Application Support/MobileSync/Backup/";
+    const home = app.getPath("home");
+    const dirPath = path.resolve(home + backup_path);
+    const backups = await fs.readdirSync(dirPath);
+    const filtered = backups.filter((path: string) => path[0] !== ".");
+    return filtered.map((name: string) => ({
+        name,
+        path: dirPath + "/" + name,
+        size: 0,
+        date: new Date(),
+    }));
 }
 
 app.whenReady().then(() => {
-  // Renderer > Main
-  ipcMain.handle("listBackups", listBackups);
-  createWindow();
+    // Renderer > Main
+    ipcMain.handle("listBackups", listBackups);
+    createWindow();
 });
 
 app.on("window-all-closed", () => {
-  win = null;
-  if (process.platform !== "darwin") app.quit();
+    win = null;
+    if (process.platform !== "darwin") app.quit();
 });
 
 app.on("second-instance", () => {
-  if (win) {
-    // Focus on the main window if the user tried to open another
-    if (win.isMinimized()) win.restore();
-    win.focus();
-  }
+    if (win) {
+        // Focus on the main window if the user tried to open another
+        if (win.isMinimized()) win.restore();
+        win.focus();
+    }
 });
 
 app.on("activate", () => {
-  const allWindows = BrowserWindow.getAllWindows();
-  if (allWindows.length) {
-    allWindows[0].focus();
-  } else {
-    createWindow();
-  }
+    const allWindows = BrowserWindow.getAllWindows();
+    if (allWindows.length) {
+        allWindows[0].focus();
+    } else {
+        createWindow();
+    }
 });
 
 // New window example arg: new windows url
 ipcMain.handle("open-win", (_, arg) => {
-  const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
+    const childWindow = new BrowserWindow({
+        webPreferences: {
+            preload,
+            nodeIntegration: true,
+            contextIsolation: false,
+        },
+    });
 
-  if (VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${VITE_DEV_SERVER_URL}#${arg}`);
-  } else {
-    childWindow.loadFile(indexHtml, { hash: arg });
-  }
+    if (VITE_DEV_SERVER_URL) {
+        childWindow.loadURL(`${VITE_DEV_SERVER_URL}#${arg}`);
+    } else {
+        childWindow.loadFile(indexHtml, { hash: arg });
+    }
 });

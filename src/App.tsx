@@ -10,20 +10,20 @@ import { HashRouter } from "react-router-dom";
 import { Notifications } from "@mantine/notifications";
 
 const theme = createTheme({
-  /** Put your mantine theme override here */
+    /** Put your mantine theme override here */
 });
 
 function App() {
-  return (
-    <Provider store={store}>
-      <MantineProvider theme={theme}>
-        <HashRouter>
-          <Notifications />
-          <Shell />
-        </HashRouter>
-      </MantineProvider>
-    </Provider>
-  );
+    return (
+        <Provider store={store}>
+            <MantineProvider theme={theme}>
+                <HashRouter>
+                    <Notifications />
+                    <Shell />
+                </HashRouter>
+            </MantineProvider>
+        </Provider>
+    );
 }
 
 export default App;
