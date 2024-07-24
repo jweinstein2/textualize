@@ -30,9 +30,12 @@ def group_info(id):
     info_dict['name'] = chats.loc[id].display_name or ''
 
     chat_handles = handles.set_index(['ROWID']).reindex(ch_join[ch_join.chat_id == id].handle_id)
-    # TODO: Return contacts as parseable data.
+
+    # TODO remove chunky iterator
+    members = []
     for i in chat_handles.id:
-        print(dm.contact(i)['First'])
+        members.append(dm.contact(i)['First'])
+    info_dict['members'] = members
 
     return info_dict
 
