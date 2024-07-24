@@ -14,25 +14,33 @@ def _all_emojis():
     all_text = data_manager.messages().text.str.cat(sep = " ")
     return _extract_emoji(all_text)
 
-def contact_summary(messages, n):
-    info_dict = {}
+def _top_emojis(messages, n):
     text = messages.text.str.cat(sep = " ")
     emoji_list = _extract_emoji(text)
-
     value_count = pd.Series(emoji_list).value_counts()
-
     pop = value_count.iloc[:n].keys()
-    string_pop = ''.join(pop.tolist())
-    info_dict['popular_sent'] = string_pop;
+    top = ''.join(pop.tolist())
 
-    # TODO: Fill these in
-    info_dict['popular_received'] = 'TODO';
-    info_dict['unique_sent'] = 'TODO';
-    info_dict['unique_received'] = 'TODO';
-
+    # TODO
+    unique = 'TODO'
     # unique_emojis = unique(emoji_list, _all_emojis())[:5]
     # df = pd.DataFrame({'name': unique_emojis.index, 'value': unique_emojis.values})
     # info_dict['unique'] = df.to_dict(orient='records')
+
+    return top, unique
+
+def contact_summary(messages, n):
+    info_dict = {}
+    sent = messages[messages.is_from_me == 1]
+    received = messages[messages.is_from_me == 0]
+
+    top_sent, unique_sent = _top_emojis(sent, n)
+    top_received, unique_received = _top_emojis(received, n)
+
+    info_dict['popular_sent'] = top_sent;
+    info_dict['popular_received'] = top_received;
+    info_dict['unique_sent'] = unique_sent;
+    info_dict['unique_received'] = unique_received;
 
     return info_dict
 
