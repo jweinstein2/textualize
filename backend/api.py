@@ -4,6 +4,7 @@ import src.data_manager as data_manager
 import src.file_util as file_util
 import src.configuration as config
 import src.stats.general as general_stats
+import src.stats.tapback as tapback
 import src.stats.language as language_stats
 import src.stats.emoji as emoji_stats
 import src.stats.sentiment as sentiment_stats
@@ -118,6 +119,12 @@ def emoji(number, start=None, end=None):
     n = 3
     msg = data_manager.messages(number=number, start=start, end=end)
     result = emoji_stats.contact_summary(msg, n)
+    return result
+
+@app.route('/group/<id>/tapback', methods=['GET'])
+def group_tapback(id, start=None, end=None):
+    msg = data_manager.group_messages(int(id))
+    result = tapback.group_info(msg)
     return result
 
 @app.route('/group_connection_graph', methods=['GET'])

@@ -32,6 +32,7 @@ def group_info(id):
     chat_handles = handles.set_index(['ROWID']).reindex(ch_join[ch_join.chat_id == id].handle_id)
 
     # TODO remove chunky iterator
+    # Switch to calling group_contacts
     members = []
     for i in chat_handles.id:
         members.append(dm.contact(i)['First'])
