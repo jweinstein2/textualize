@@ -1,3 +1,4 @@
+import UpdateElectron from "@/components/update";
 import { Button } from "@mantine/core";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +14,12 @@ function Settings() {
     }
 
     return (
-        <Button variant="filled" color="red" onClick={clearSource}>
-            Clear Data Source
-        </Button>
+        <div>
+            <Button variant="filled" color="red" onClick={clearSource}>
+                Clear Data Source
+            </Button>
+            <UpdateElectron />
+        </div>
     );
 }
 

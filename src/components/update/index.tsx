@@ -1,5 +1,6 @@
 import Modal from "@/components/update/Modal";
 import Progress from "@/components/update/Progress";
+import { Button } from "@mantine/core";
 import type { ProgressInfo } from "electron-updater";
 import { useCallback, useEffect, useState } from "react";
 
@@ -54,7 +55,7 @@ const Update = () => {
                 setUpdateAvailable(false);
             }
         },
-        [],
+        []
     );
 
     const onUpdateError = useCallback(
@@ -62,14 +63,14 @@ const Update = () => {
             setUpdateAvailable(false);
             setUpdateError(arg1);
         },
-        [],
+        []
     );
 
     const onDownloadProgress = useCallback(
         (_event: Electron.IpcRendererEvent, arg1: ProgressInfo) => {
             setProgressInfo(arg1);
         },
-        [],
+        []
     );
 
     const onUpdateDownloaded = useCallback(
@@ -83,7 +84,7 @@ const Update = () => {
                 onOk: () => window.ipcRenderer.invoke("quit-and-install"),
             }));
         },
-        [],
+        []
     );
 
     useEffect(() => {
@@ -96,7 +97,7 @@ const Update = () => {
         return () => {
             window.ipcRenderer.off(
                 "update-can-available",
-                onUpdateCanAvailable,
+                onUpdateCanAvailable
             );
             window.ipcRenderer.off("update-error", onUpdateError);
             window.ipcRenderer.off("download-progress", onDownloadProgress);
@@ -147,9 +148,9 @@ const Update = () => {
                     )}
                 </div>
             </Modal>
-            <button disabled={checking} onClick={checkUpdate}>
+            <Button disabled={checking} onClick={checkUpdate}>
                 {checking ? "Checking..." : "Check update"}
-            </button>
+            </Button>
         </>
     );
 };
