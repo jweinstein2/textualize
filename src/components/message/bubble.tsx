@@ -2,26 +2,14 @@ import { Paper } from "@mantine/core";
 
 import classes from "./bubble.module.css";
 
-interface BubbleProps {
-    message: string;
-    isSent: boolean;
-}
-
-const defaultProps: BubbleProps = {
-    message: "",
-    isSent: false,
-};
-
-export default function Bubble(props: BubbleProps = defaultProps) {
+export default function Bubble({ message = "", isSent = false }) {
     return (
         <Paper
-            className={
-                props.isSent ? classes.bubble_sent : classes.bubble_received
-            }
+            className={isSent ? classes.bubble_sent : classes.bubble_received}
             shadow="xs"
             p="xs"
         >
-            {props.message}
+            {message}
         </Paper>
     );
 }

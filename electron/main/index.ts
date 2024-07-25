@@ -1,4 +1,4 @@
-import { BrowserWindow, app, dialog, ipcMain, shell } from "electron";
+import { BrowserWindow, app, ipcMain, shell } from "electron";
 import isDev from "electron-is-dev";
 import { createRequire } from "node:module";
 import os from "node:os";
@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const fs = require("fs");
 const url = require("url");
-const { spawn, execFile, ChildProcess } = require("child_process");
+const { spawn, ChildProcess } = require("child_process");
 
 /*************************************************************
  * py process
@@ -34,19 +34,19 @@ const getScriptPath = () => {
             __dirname,
             PY_DIST_FOLDER,
             PY_MODULE,
-            PY_MODULE + ".exe",
+            PY_MODULE + ".exe"
         );
     }
     return path.join(
         process.resourcesPath,
         PY_DIST_FOLDER,
         PY_MODULE,
-        PY_MODULE,
+        PY_MODULE
     );
 };
 
 const createPyProc = () => {
-    let script = getScriptPath();
+    const script = getScriptPath();
 
     if (!isDev) {
         pyProc = spawn(script, [PY_PORT]);
@@ -57,13 +57,13 @@ const createPyProc = () => {
 
     if (pyProc != null) {
         console.log("child process success on port " + PY_PORT);
-        pyProc.stdout.on("data", (data: any) => {
+        pyProc.stdout.on("data", (data: string) => {
             console.error(`[PY LOG]: ${data}`);
         });
-        pyProc.stderr.on("data", (data: any) => {
+        pyProc.stderr.on("data", (data: string) => {
             console.error(`[PY BACKEND]: ${data}`);
         });
-        pyProc.on("close", (code: any) => {
+        pyProc.on("close", (code: string) => {
             console.log(`child process exited with code ${code}`);
         });
     }
@@ -147,7 +147,7 @@ async function createWindow() {
                 pathname: path.join(__dirname, "dist/index.html"),
                 protocol: "file:",
                 slashes: true,
-            }),
+            })
         );
         // REDIRECT TO FIRST WEBPAGE AGAIN
     });
@@ -162,7 +162,7 @@ async function createWindow() {
     update(win);
 }
 
-async function listBackups(event: any): Promise<Backup[]> {
+async function listBackups(): Promise<Backup[]> {
     const backup_path = "/Library/Application Support/MobileSync/Backup/";
     const home = app.getPath("home");
     const dirPath = path.resolve(home + backup_path);

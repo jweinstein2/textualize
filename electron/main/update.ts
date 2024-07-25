@@ -37,7 +37,7 @@ export function update(win: Electron.BrowserWindow) {
     ipcMain.handle("check-update", async () => {
         if (!app.isPackaged) {
             const error = new Error(
-                "Update feature only available for built binary.",
+                "Update feature only available for built binary."
             );
             return { message: error.message, error };
         }
@@ -67,7 +67,7 @@ export function update(win: Electron.BrowserWindow) {
             () => {
                 // feedback update downloaded message
                 event.sender.send("update-downloaded");
-            },
+            }
         );
     });
 
@@ -79,10 +79,10 @@ export function update(win: Electron.BrowserWindow) {
 
 function startDownload(
     callback: (error: Error | null, info: ProgressInfo | null) => void,
-    complete: (event: UpdateDownloadedEvent) => void,
+    complete: (event: UpdateDownloadedEvent) => void
 ) {
     autoUpdater.on("download-progress", (info: ProgressInfo) =>
-        callback(null, info),
+        callback(null, info)
     );
     autoUpdater.on("error", (error: Error) => callback(error, null));
     autoUpdater.on("update-downloaded", complete);
