@@ -18,6 +18,9 @@ function Settings() {
             <Button variant="filled" color="red" onClick={clearSource}>
                 Clear Data Source
             </Button>
+            <Button>
+                Removing this button
+            </Button>
             <UpdateElectron />
         </div>
     );
