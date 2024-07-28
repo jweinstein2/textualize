@@ -38,6 +38,9 @@ jobs:
               run: npm run build
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  APPLEID: ${{ secrets.APPLEID }}
+                  APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+                  TEAMID: ${{ secrets.TEAMID }}
 
             - name: Upload Artifact
               uses: actions/upload-artifact@v3
