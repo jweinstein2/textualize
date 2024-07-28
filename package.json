@@ -1,6 +1,6 @@
 {
     "name": "Textualize",
-    "version": "0.0.9",
+    "version": "0.0.2",
     "main": "dist-electron/main/index.js",
     "description": "Pulling insights from personalized imessage data",
     "author": "Jared Weinstein <jaredweinstein1@gmail.com>",
@@ -17,8 +17,9 @@
         "lint": "npx eslint src/",
         "format": "npx prettier . --write",
         "pybuild": "pyinstaller backend/api.py -D --noconfirm --clean --workpath ./build-python --distpath ./dist-python",
-        "build": "tsc && vite build && export SKIP_NOTARIZATION=true && electron-builder -c.mac.identity=null",
-        "deploy": "npm run pybuild && tsc && vite build && electron-builder build --mac --publish always",
+        "pybuild_x64": "pyinstaller backend/api.py -D --noconfirm --clean --workpath ./build-python --distpath ./dist-python --target-arch x86_64",
+        "build": "tsc && vite build && electron-builder -c.mac.identity=null",
+        "deploy": "npm run pybuild_x64 && tsc && vite build && electron-builder build --mac --publish always",
         "preview": "vite preview",
         "pree2e": "vite build --mode=test",
         "e2e": "playwright test"
@@ -33,6 +34,7 @@
         "axios": "^1.7.2",
         "electron-is-dev": "^3.0.1",
         "electron-updater": "^6.2.1",
+        "esbuild": "^0.23.0",
         "react-redux": "^9.1.2"
     },
     "devDependencies": {
