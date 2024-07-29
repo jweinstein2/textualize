@@ -30,8 +30,8 @@ jobs:
               uses: sayyid5416/pyinstaller@v1
               with:
                   python_ver: "3.6"
-                  spec: "src/build.spec"
-                  requirements: "src/requirements.txt"
+                  spec: "backend/api.py"
+                  requirements: "backend/requirements.txt"
                   python_arch: "x64"
                   exe_path: "./dist-python"
                   options: --onedir, --name "My App", --windowed,
