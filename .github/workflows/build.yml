@@ -26,6 +26,16 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v3
 
+            - name: Install Python executable
+              uses: sayyid5416/pyinstaller@v1
+              with:
+                  python_ver: "3.6"
+                  spec: "src/build.spec"
+                  requirements: "src/requirements.txt"
+                  python_arch: "x64"
+                  exe_path: "./dist-python"
+                  options: --onedir, --name "My App", --windowed,
+
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
