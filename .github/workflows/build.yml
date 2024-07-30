@@ -29,10 +29,10 @@ jobs:
             - name: Install Python executable
               uses: sayyid5416/pyinstaller@v1
               with:
-                  python_ver: "3.11"
+                  python_ver: "3.10"
                   spec: "backend/api.py"
                   requirements: "backend/requirements.txt"
-                  python_arch: "arch"
+                  python_arch: "arm"
                   exe_path: "./dist-python"
                   options: --onedir, --name "My App", --windowed,
 
