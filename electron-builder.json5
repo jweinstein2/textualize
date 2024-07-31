@@ -15,7 +15,7 @@
             filter: ["**/*"],
         },
     ],
-    afterSign: "scripts/notarize.cjs",
+    //afterSign: "scripts/notarize.cjs",
     mac: {
         gatekeeperAssess: false,
         hardenedRuntime: true,
@@ -26,15 +26,6 @@
             { target: "dmg", arch: ["x64", "arm64"] },
             {target: "zip", "arch": ["x64", "arm64"]},
         ],
-    },
-    win: {
-        target: [
-            {
-                target: "nsis",
-                arch: ["x64"],
-            },
-        ],
-        artifactName: "${productName}_${version}.${ext}",
     },
     dmg: {
         sign: false,
