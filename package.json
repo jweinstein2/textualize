@@ -19,6 +19,7 @@
         "pybuild": "pyinstaller backend/api.py -D --noconfirm --clean --workpath ./build-python --distpath ./dist-python",
         "pybuild_x64": "pyinstaller backend/api.py -D --noconfirm --clean --workpath ./build-python --distpath ./dist-python --target-arch x86_64",
         "build": "tsc && vite build && electron-builder -c.mac.identity=null",
+        "gh_deploy": "tsc && vite build && electron-builder build --mac --publish always",
         "deploy": "npm run pybuild_x64 && tsc && vite build && electron-builder build --mac --publish always",
         "preview": "vite preview",
         "pree2e": "vite build --mode=test",
