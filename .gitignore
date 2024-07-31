@@ -35,3 +35,6 @@ yarn.lock
 /playwright/.cache/
 api.spec
 .env
+
+# Certificates
+*.p12
