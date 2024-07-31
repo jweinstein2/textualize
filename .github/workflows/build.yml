@@ -34,7 +34,7 @@ jobs:
                   requirements: "backend/requirements.txt"
                   python_arch: "arm64"
                   exe_path: "./dist-python"
-                  options: --onedir, --name "My App", --windowed,
+                  options: --onedir, --name "api",
 
             - name: Setup Node.js
               uses: actions/setup-node@v3
