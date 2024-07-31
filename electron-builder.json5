@@ -15,7 +15,7 @@
             filter: ["**/*"],
         },
     ],
-    //afterSign: "scripts/notarize.cjs",
+    afterSign: "scripts/notarize.cjs",
     mac: {
         gatekeeperAssess: false,
         hardenedRuntime: true,
