@@ -2,9 +2,9 @@ name: Build
 
 on:
     push:
-        tags:
-            - "v[0-9]+.[0-9]+.[0-9]+"
         branches: [main]
+        tags:
+            - v.**
         paths-ignore:
             - "**.md"
             - "**.spec.js"
@@ -22,7 +22,7 @@ jobs:
 
         strategy:
             matrix:
-                os: [macos-latest]
+                os: [macos-12-large]
 
         steps:
             - name: Checkout Code
@@ -46,8 +46,8 @@ jobs:
             - name: Install Dependencies
               run: npm install
 
-            - name: Build Release Files
-              run: npm run gh_deploy
+            - name: Electron-Builder
+              run: npm run gh_deploy_x64
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -56,9 +56,41 @@ jobs:
                   APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
                   TEAMID: ${{ secrets.TEAMID }}
 
-            - name: Upload Artifact
-              uses: actions/upload-artifact@v3
+    deploy_arm:
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [macos-latest]
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+
+            - name: Install Python executable
+              uses: sayyid5416/pyinstaller@v1
               with:
-                  name: release_on_${{ matrix. os }}
-                  path: release/
-                  retention-days: 5
+                  python_ver: "3.12"
+                  spec: "backend/api.py"
+                  requirements: "backend/requirements.txt"
+                  python_arch: "arm64"
+                  exe_path: "./dist-python"
+                  options: --onedir, --name "api",
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Install Dependencies
+              run: npm install
+
+            - name: Electron-Builder
+              run: npm run gh_deploy_arm
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+                  CSC_LINK: ${{ secrets.CSC_LINK }}
+                  APPLEID: ${{ secrets.APPLEID }}
+                  APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+                  TEAMID: ${{ secrets.TEAMID }}
