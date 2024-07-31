@@ -184,7 +184,7 @@ app.whenReady().then(() => {
 
 app.on("window-all-closed", () => {
     win = null;
-    if (process.platform !== "darwin") app.quit();
+    app.quit();
 });
 
 app.on("second-instance", () => {
