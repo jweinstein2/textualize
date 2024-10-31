@@ -75,5 +75,5 @@ def _stats_for_number(number):
 
 def _stats_for_group(group):
     info_dict = {}
-    info_dict.update(general.group_stats(group))
+    info_dict.update(general.group_summary(group))
     return info_dict

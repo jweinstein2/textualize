@@ -12,7 +12,10 @@ def contact_info(number):
     info_dict = {}
     contact = dm.contact(number)
     if contact != None:
-        info_dict['name'] = str(contact.get('Name', contact.get('Value')))
+        name = contact.get('Name', contact.get('Value'))
+        if not name:
+            name = str(number)
+        info_dict['name'] = name
         info_dict['first'] = contact.get('First', '')
         info_dict['last'] = contact.get('Last', '')
     else:
@@ -29,15 +32,10 @@ def group_info(id):
 
     info_dict['name'] = chats.loc[id].display_name or ''
 
-    chat_handles = handles.set_index(['ROWID']).reindex(ch_join[ch_join.chat_id == id].handle_id)
-
     # TODO remove chunky iterator
     # Switch to calling group_contacts
-    members = []
-    for i in chat_handles.id:
-        members.append(dm.contact(i)['First'])
-    info_dict['members'] = members
-
+    group_handles = ch_join[ch_join.chat_id == id].handle_id
+    info_dict['members'] = _first_names(group_handles)
     return info_dict
 
 def simple_stats(number):
@@ -114,8 +112,8 @@ def group_contacts(group):
     # info_dict['count'] = messages.shape[0]
     return info_dict
 
-# takes a group chat_id as input
-def group_stats(group):
+# Summary information for a group. Used to populate the group list.
+def group_summary(group):
     info_dict = {}
     ch_join = dm.ch_join()
     messages = dm.group_messages(group)
@@ -126,6 +124,7 @@ def group_stats(group):
     info_dict['people'] = group_handles.count()
     info_dict['count'] = messages.shape[0] # TODO: rename to avoid conflict with panda definition
     info_dict['name'] = chats.loc[group].display_name
+    info_dict['members'] = _first_names(group_handles)
     return info_dict
 
 def group_connection_graph():
@@ -178,6 +177,21 @@ def frequency(message_df, period='M', filter=None):
         message_df = message_df.dropna(subset = ['text'])
         message_df = message_df[message_df.text.str.contains(filter)]
     return frequency_plot(message_df, period)
+
+# Return a list of names for a list of handles
+# TODO: Move this to a general utility that returns the contact name for a handle.
+def _first_names(group_handles):
+    handles = dm.handles()
+
+    members = []
+    chat_handles = handles.set_index(['ROWID']).reindex(group_handles)
+    for i in chat_handles.id:
+        contact = dm.contact(i)
+        if contact == None:
+            members.append(str(i))
+        else:
+            members.append(contact['First'])
+    return members
 
 if __name__ == '__main__':
     import pdb; pdb.set_trace()
