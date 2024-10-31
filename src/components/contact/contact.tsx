@@ -51,8 +51,8 @@ function Contact() {
             .catch(() =>
                 showError(
                     "Failed to load contact data",
-                    "Frequency graph could not be generated",
-                ),
+                    "Frequency graph could not be generated"
+                )
             );
     }, []);
 
@@ -61,7 +61,7 @@ function Contact() {
             .get(`http://127.0.0.1:4242/contact/${params.number}`)
             .then((response) => setName(response.data.name))
             .catch(() =>
-                showError("Failed to load data", "Contact info not found"),
+                showError("Failed to load data", "Contact info not found")
             );
     }, []);
 
@@ -70,7 +70,7 @@ function Contact() {
             .get(`http://127.0.0.1:4242/emoji/${params.number}`)
             .then((response) => setEmoji(response.data))
             .catch(() =>
-                showError("Failed to load data", "Emoji info not found"),
+                showError("Failed to load data", "Emoji info not found")
             );
     }, []);
 
@@ -79,7 +79,7 @@ function Contact() {
             .get(`http://127.0.0.1:4242/sentiment/${params.number}`)
             .then((response) => setSentiment(response.data))
             .catch(() =>
-                showError("Failed to load data", "Sentiment info not found"),
+                showError("Failed to load data", "Sentiment info not found")
             );
     }, []);
 
