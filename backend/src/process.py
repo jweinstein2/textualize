@@ -33,7 +33,7 @@ def generate_number_table():
         pool.join()
     else:
         print("running on single cpu")
-        info_lst = [_stats_for_number(n) for n in tqdm(numbers)]
+        info_lst = [_stats_for_number(n) for n in numbers]
 
     number_table = pd.DataFrame(info_lst)
     number_table = number_table.sort_values(by='sent', ascending=False)
@@ -53,7 +53,7 @@ def generate_group_table():
         pool.join()
     else:
         print("running on single cpu")
-        info_lst = [_stats_for_group(g) for g in tqdm(groups)]
+        info_lst = [_stats_for_group(g) for g in groups]
 
     group_table = pd.DataFrame(info_lst)
     group_table = group_table.sort_values(by='count', ascending=False)
