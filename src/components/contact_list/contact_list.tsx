@@ -41,17 +41,20 @@ function ContactList() {
     }
 
     return (
-        <Table.ScrollContainer minWidth={800}>
-            <Table highlightOnHover verticalSpacing="xs">
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th>Name</Table.Th>
-                        <Table.Th>Total Messages</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{renderRows()}</Table.Tbody>
-            </Table>
-        </Table.ScrollContainer>
+        <div>
+            <h2>Contacts</h2>
+            <Table.ScrollContainer minWidth={800}>
+                <Table highlightOnHover verticalSpacing="xs">
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th>Name</Table.Th>
+                            <Table.Th>Total Messages</Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>{renderRows()}</Table.Tbody>
+                </Table>
+            </Table.ScrollContainer>
+        </div>
     );
 }
 
