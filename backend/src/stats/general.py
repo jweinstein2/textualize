@@ -190,7 +190,7 @@ def _first_names(group_handles):
         if contact == None:
             members.append(str(i))
         else:
-            members.append(contact['First'])
+            members.append(contact['First'] or str(i))
     return members
 
 if __name__ == '__main__':

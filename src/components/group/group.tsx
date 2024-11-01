@@ -6,6 +6,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
+import classes from "./group.module.css";
+
 type GroupInfo = {
     name: string;
     members: string[];
@@ -62,7 +64,7 @@ function Group() {
     return (
         <Container fluid>
             <h2>{groupInfo?.name}</h2>
-            {renderGroupMembers()}
+            <div className={classes.contacts}>{renderGroupMembers()}</div>
             <LineChart
                 h={300}
                 data={frequency}
