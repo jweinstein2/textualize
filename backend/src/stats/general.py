@@ -28,14 +28,13 @@ def group_info(id):
     info_dict = {}
     ch_join = dm.ch_join()
     handles = dm.handles()
+    messages = dm.group_messages(id)
     chats = dm.chats()
 
     info_dict['name'] = chats.loc[id].display_name or ''
-
-    # TODO remove chunky iterator
-    # Switch to calling group_contacts
     group_handles = ch_join[ch_join.chat_id == id].handle_id
     info_dict['members'] = _first_names(group_handles)
+
     return info_dict
 
 def simple_stats(number):
@@ -44,8 +43,7 @@ def simple_stats(number):
     sent, received = split_sender(messages)
     info_dict['sent'] = sent.shape[0]
     info_dict['received'] = received.shape[0]
-    # info_dict['first'] = messages[0].date
-    # info_dict['last'] = messages[-1].date
+
     return info_dict
 
 def conversation_stats(number, convo_gap=timedelta(hours=14)):
@@ -125,6 +123,9 @@ def group_summary(group):
     info_dict['count'] = messages.shape[0] # TODO: rename to avoid conflict with panda definition
     info_dict['name'] = chats.loc[group].display_name
     info_dict['members'] = _first_names(group_handles)
+    sorted_messages = messages.sort_values(by=['date'])
+    info_dict['oldest_date'] = 0 if messages.empty else ts(messages.iloc[0].date)
+    info_dict['newest_date'] = 0 if messages.empty else ts(messages.iloc[-1].date)
     return info_dict
 
 def group_connection_graph():

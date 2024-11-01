@@ -20,7 +20,6 @@ function ContactList() {
             const fetched = response.data.map((entry: any) => {
                 const name = entry.name;
                 const number = entry.number;
-                // TODO(jaredweinstein): Update API to do this calculation and add inequality
                 const message_count = entry.sent + entry.received;
                 return { name, number, message_count };
             });
