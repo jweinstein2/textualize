@@ -1,4 +1,18 @@
-import { Table } from "@mantine/core";
+import {
+    Center,
+    Group,
+    Table,
+    Text,
+    TextInput,
+    UnstyledButton,
+    keys,
+} from "@mantine/core";
+import {
+    IconChevronDown,
+    IconChevronUp,
+    IconSearch,
+    IconSelector,
+} from "@tabler/icons-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +23,19 @@ export type Contact = {
     message_count: number;
 };
 
+interface ThProps {
+    children: React.ReactNode;
+    reversed: boolean;
+    sorted: boolean;
+    onSort(): void;
+}
+
 function ContactList() {
     const [contacts, setContacts] = useState<Contact[]>([]);
+    const [search, setSearch] = useState("");
+    const [sortedContacts, setSortedContacts] = useState<Contact[]>([]);
+    const [reverseSortDirection, setReverseSortDirection] = useState(false);
+    const [sortBy, setSortBy] = useState<keyof Contact | null>(null);
 
     const navigate = useNavigate();
 
@@ -24,11 +49,74 @@ function ContactList() {
                 return { name, number, message_count };
             });
             setContacts(fetched);
+            setSortedContacts(fetched);
         });
     }, []);
 
+    function setSorting(field: keyof Contact) {
+        const reversed = field === sortBy ? !reverseSortDirection : true;
+        setReverseSortDirection(reversed);
+        setSortBy(field);
+        setSortedContacts(sortData(contacts, field, reversed, search));
+    }
+
+    function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { value } = event.currentTarget;
+        setSearch(value);
+        setSortedContacts(
+            sortData(contacts, sortBy, reverseSortDirection, value)
+        );
+    }
+
+    function sortData(
+        data: Contact[],
+        sortBy: keyof Contact | null,
+        reversed: boolean,
+        search: string
+    ) {
+        const sorted = !sortBy
+            ? [...data]
+            : [...data].sort((a, b) => {
+                  if (a[sortBy] == b[sortBy]) return 0;
+                  return a[sortBy] > b[sortBy] ? 1 : -1;
+              });
+        if (reversed) sorted.reverse();
+        return filter(sorted, search);
+    }
+
+    function filter(data: Contact[], search: string) {
+        const query = search.toLowerCase().trim();
+        return data.filter((item) =>
+            keys(data[0]).some((key) =>
+                String(item[key]).toLowerCase().includes(query)
+            )
+        );
+    }
+
+    function Th({ children, reversed, sorted, onSort }: ThProps) {
+        const Icon = sorted
+            ? reversed
+                ? IconChevronUp
+                : IconChevronDown
+            : IconSelector;
+        return (
+            <Table.Th>
+                <UnstyledButton onClick={onSort}>
+                    <Group justify="space-between">
+                        <Text fw={500} fz="sm">
+                            {children}
+                        </Text>
+                        <Center>
+                            <Icon />
+                        </Center>
+                    </Group>
+                </UnstyledButton>
+            </Table.Th>
+        );
+    }
+
     function renderRows() {
-        return contacts.map((contact) => (
+        return sortedContacts.map((contact) => (
             <Table.Tr
                 key={contact.number}
                 onClick={() => navigate(contact.number)}
@@ -43,11 +131,30 @@ function ContactList() {
         <div>
             <h2>Contacts</h2>
             <Table.ScrollContainer minWidth={800}>
+                <TextInput
+                    placeholder="Search by any field"
+                    mb="md"
+                    leftSection={<IconSearch />}
+                    value={search}
+                    onChange={handleSearchChange}
+                />
                 <Table highlightOnHover verticalSpacing="xs">
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>Name</Table.Th>
-                            <Table.Th>Total Messages</Table.Th>
+                            <Th
+                                sorted={sortBy === "name"}
+                                reversed={reverseSortDirection}
+                                onSort={() => setSorting("name")}
+                            >
+                                Name
+                            </Th>
+                            <Th
+                                sorted={sortBy === "message_count"}
+                                reversed={reverseSortDirection}
+                                onSort={() => setSorting("message_count")}
+                            >
+                                Total Messages
+                            </Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>{renderRows()}</Table.Tbody>
