@@ -138,13 +138,17 @@ function GroupList() {
         );
     }
 
+    function truncateWithEllipses(text: String, max: number) {
+        return text.substr(0, max - 1) + (text.length > max ? "..." : "");
+    }
+
     function renderRows() {
         return sortedGroups.map((group) => (
             <Table.Tr
                 key={group.id}
                 onClick={() => navigate(`/groups/${group.id}`)}
             >
-                <Table.Td>{group.name}</Table.Td>
+                <Table.Td>{truncateWithEllipses(group.name, 40)}</Table.Td>
                 <Table.Td>{group.message_count}</Table.Td>
                 <Table.Td>{prettyDate(group.oldest)}</Table.Td>
                 <Table.Td>{prettyDate(group.newest)}</Table.Td>
