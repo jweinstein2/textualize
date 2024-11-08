@@ -1,7 +1,6 @@
 import {
     Center,
     Group,
-    ScrollArea,
     Table,
     Text,
     TextInput,
@@ -138,7 +137,7 @@ function GroupList() {
         );
     }
 
-    function truncateWithEllipses(text: String, max: number) {
+    function truncateWithEllipses(text: string, max: number) {
         return text.substr(0, max - 1) + (text.length > max ? "..." : "");
     }
 

@@ -180,7 +180,6 @@ function backupInfo(fullPath: string): Backup {
         name,
         path: fullPath,
         size: 0, // TODO: Add details
-        date: new Date(), // TODO: 
     };
 }
 
