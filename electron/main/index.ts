@@ -9,6 +9,7 @@ import { Backup } from "src/components/onboarding";
 import { update } from "./update";
 
 const require = createRequire(import.meta.url);
+const plist = require("simple-plist");
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const fs = require("fs");
@@ -168,12 +169,19 @@ async function listBackups(): Promise<Backup[]> {
     const dirPath = path.resolve(home + backup_path);
     const backups = await fs.readdirSync(dirPath);
     const filtered = backups.filter((path: string) => path[0] !== ".");
-    return filtered.map((name: string) => ({
+    return filtered.map((name: string) => backupInfo(dirPath + "/" + name));
+}
+
+function backupInfo(fullPath: string): Backup {
+    const plistPath = fullPath + "/" + "Info.plist";
+    const data = plist.readFileSync(plistPath);
+    const name = data["Display Name"];
+    return {
         name,
-        path: dirPath + "/" + name,
-        size: 0,
-        date: new Date(),
-    }));
+        path: fullPath,
+        size: 0, // TODO: Add details
+        date: new Date(), // TODO: 
+    };
 }
 
 app.whenReady().then(() => {

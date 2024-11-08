@@ -15,8 +15,7 @@ import "./onboarding.css";
 export type Backup = {
     path: string;
     name: string;
-    size: number;
-    date: Date;
+    size: number; // TODO: This is not populated
 };
 
 function Onboarding() {
@@ -61,8 +60,8 @@ function Onboarding() {
             .catch(() =>
                 showError(
                     "Invalid data source",
-                    "Select another backup and try again",
-                ),
+                    "Select another backup and try again"
+                )
             );
     }
 
