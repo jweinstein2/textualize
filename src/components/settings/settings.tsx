@@ -1,10 +1,16 @@
-import UpdateElectron from "@/components/update";
 import { Button } from "@mantine/core";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Settings() {
     const navigate = useNavigate();
+
+    const [version, setVersion] = useState<string>("");
+
+    useEffect(() => {
+        window.ipcRenderer.invoke("get-version").then(setVersion);
+    });
 
     function clearSource() {
         axios
@@ -15,13 +21,10 @@ function Settings() {
 
     return (
         <div>
+            <h5>Textualize {version}</h5>
             <Button variant="filled" color="red" onClick={clearSource}>
                 Clear Data Source
             </Button>
-            <Button>
-                Removing this button
-            </Button>
-            <UpdateElectron />
         </div>
     );
 }

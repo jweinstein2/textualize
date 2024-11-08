@@ -9,7 +9,6 @@ import { createRequire } from "node:module";
 const { autoUpdater } = createRequire(import.meta.url)("electron-updater");
 
 export function update(win: Electron.BrowserWindow) {
-
     // When set to false, the update download will be triggered through the API
     autoUpdater.autoDownload = false;
     autoUpdater.disableWebInstaller = false;
@@ -25,6 +24,7 @@ export function update(win: Electron.BrowserWindow) {
             newVersion: arg?.version,
         });
     });
+
     // update not available
     autoUpdater.on("update-not-available", (arg: UpdateInfo) => {
         win.webContents.send("update-can-available", {
@@ -76,6 +76,8 @@ export function update(win: Electron.BrowserWindow) {
     ipcMain.handle("quit-and-install", () => {
         autoUpdater.quitAndInstall(false, true);
     });
+
+    ipcMain.handle("get-version", app.getVersion);
 }
 
 function startDownload(
