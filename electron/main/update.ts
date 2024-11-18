@@ -16,9 +16,10 @@ export function update(win: Electron.BrowserWindow) {
 
     // start check
     autoUpdater.on("checking-for-update", function () {});
+
     // update available
     autoUpdater.on("update-available", (arg: UpdateInfo) => {
-        win.webContents.send("update-can-available", {
+        win.webContents.send("update-available", {
             update: true,
             version: app.getVersion(),
             newVersion: arg?.version,
@@ -26,28 +27,9 @@ export function update(win: Electron.BrowserWindow) {
     });
 
     // update not available
+    // eslint-disable-next-line
     autoUpdater.on("update-not-available", (arg: UpdateInfo) => {
-        win.webContents.send("update-can-available", {
-            update: false,
-            version: app.getVersion(),
-            newVersion: arg?.version,
-        });
-    });
-
-    // Checking for updates
-    ipcMain.handle("check-update", async () => {
-        if (!app.isPackaged) {
-            const error = new Error(
-                "Update feature only available for built binary."
-            );
-            return { message: error.message, error };
-        }
-
-        try {
-            return await autoUpdater.checkForUpdatesAndNotify();
-        } catch (error) {
-            return { message: "Network error", error };
-        }
+        // TODO
     });
 
     // Start downloading and feedback on progress
@@ -78,6 +60,18 @@ export function update(win: Electron.BrowserWindow) {
     });
 
     ipcMain.handle("get-version", app.getVersion);
+}
+
+export function checkForUpdate() {
+        if (!app.isPackaged) {
+            console.warn("Skipping update check for dev build");
+        }
+
+        try {
+            autoUpdater.checkForUpdatesAndNotify();
+        } catch (error) {
+            console.error(error);
+        }
 }
 
 function startDownload(

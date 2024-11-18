@@ -6,7 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Backup } from "src/components/onboarding";
 
-import { update } from "./update";
+import { checkForUpdate, update } from "./update";
 
 const require = createRequire(import.meta.url);
 const plist = require("simple-plist");
@@ -161,6 +161,7 @@ async function createWindow() {
 
     // Auto update
     update(win);
+    checkForUpdate();
 }
 
 async function listBackups(): Promise<Backup[]> {

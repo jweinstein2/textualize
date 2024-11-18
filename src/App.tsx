@@ -9,6 +9,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 
 import Shell from "./components/shell/shell";
+import UpdateModal from "./components/update/modal";
 import store from "./store/store";
 
 const theme = createTheme({
@@ -20,6 +21,7 @@ function App() {
         <Provider store={store}>
             <MantineProvider theme={theme}>
                 <HashRouter>
+                    <UpdateModal />
                     <Notifications />
                     <Shell />
                 </HashRouter>

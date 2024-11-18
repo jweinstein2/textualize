@@ -1,0 +1,15 @@
+.modal h3 {
+    margin-top: 4px;
+}
+
+.error {
+    word-break:break-all
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 8px;
+}
