@@ -66,7 +66,7 @@ function Shell() {
 
     if (loading) {
         return (
-            <Center>
+            <Center style={{height: "100vh"}}>
                 <Loader color="blue" />
             </Center>
         );
