@@ -53,7 +53,7 @@ function Shell() {
             if (response.data.error) {
                 showError(
                     "Fatal error while processing messages",
-                    response.data.error,
+                    response.data.error
                 );
             }
             setLoading(false);
@@ -66,7 +66,7 @@ function Shell() {
 
     if (loading) {
         return (
-            <Center style={{height: "100vh"}}>
+            <Center style={{ height: "100vh" }}>
                 <Loader color="blue" />
             </Center>
         );
@@ -74,7 +74,7 @@ function Shell() {
 
     return (
         <Routes>
-            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/onboarding/*" element={<Onboarding />} />
             <Route path="/loading" element={<Loading />} />
             <Route
                 path="/*"
