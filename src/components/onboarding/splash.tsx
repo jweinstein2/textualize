@@ -8,9 +8,9 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
-import "./home.css";
+import "./splash.css";
 
-function Home() {
+function Splash() {
     const navigate = useNavigate();
 
     return (
@@ -77,4 +77,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Splash;

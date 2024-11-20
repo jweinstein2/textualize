@@ -8,7 +8,7 @@ import "@mantine/charts/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 
-import Shell from "./components/shell/shell";
+import Routes from "./components/routes";
 import UpdateModal from "./components/update/modal";
 import store from "./store/store";
 
@@ -23,7 +23,7 @@ function App() {
                 <HashRouter>
                     <UpdateModal />
                     <Notifications />
-                    <Shell />
+                    <Routes />
                 </HashRouter>
             </MantineProvider>
         </Provider>

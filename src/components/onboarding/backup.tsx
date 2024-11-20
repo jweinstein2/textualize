@@ -1,18 +1,10 @@
 import { showError } from "@/util";
-import { Stepper } from "@mantine/core";
 import { Button, Group, Radio, Stack, Text } from "@mantine/core";
-import {
-    IconMailOpened,
-    IconShieldCheck,
-    IconUserCheck,
-} from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import "./onboarding.css";
-
-import Home from "./home";
+import "./backup.css";
 
 export type Backup = {
     path: string;
@@ -21,8 +13,6 @@ export type Backup = {
 };
 
 function Onboarding() {
-    const [activeStep, setActiveStep] = useState(0);
-    const [source, setSource] = useState<string | undefined>(undefined);
     const [backupPath, setBackupPath] = useState<string | undefined>(undefined);
     const [needsDiskAccess, setNeedsDiskAccess] = useState(false);
     const [backupOptions, setBackupOptions] = useState<Backup[]>([]);
@@ -30,9 +20,6 @@ function Onboarding() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (source == null) {
-            return;
-        }
         window.ipcRenderer
             .invoke("listBackups")
             .then(setBackupOptions)
@@ -46,11 +33,7 @@ function Onboarding() {
                     showError("Unexpected error loading backups", "Try again");
                 }
             });
-    }, [source, needsDiskAccess]);
-
-    function nextStep() {
-        setActiveStep((current) => (current < 3 ? current + 1 : current));
-    }
+    }, [needsDiskAccess]);
 
     function analyze() {
         if (!backupPath) {
@@ -65,40 +48,6 @@ function Onboarding() {
                     "Select another backup and try again"
                 )
             );
-    }
-
-    const data = [
-        {
-            name: "iPhone Backup ⭐️",
-            description: "Messages stored on your iPhone",
-            disabled: false,
-        },
-        {
-            name: "Mac Messages",
-            description: "Messages stored on your computer",
-            disabled: false,
-        },
-        { name: "WhatsApp", description: "coming soon...", disabled: true },
-        { name: "Messenger", description: "coming soon...", disabled: true },
-    ];
-
-    function renderSourceCards() {
-        return data.map((item) => (
-            <Radio.Card
-                className="card"
-                radius="md"
-                value={item.name}
-                key={item.name}
-            >
-                <Group wrap="nowrap" align="flex-start">
-                    <Radio.Indicator />
-                    <div>
-                        <Text className="label">{item.name}</Text>
-                        <Text className="description">{item.description}</Text>
-                    </div>
-                </Group>
-            </Radio.Card>
-        ));
     }
 
     function renderBackupCards() {
@@ -119,77 +68,36 @@ function Onboarding() {
         ));
     }
 
+    if (needsDiskAccess) {
+        return (
+            <div>
+                Make sure full disk access in enabled!
+                <Button onClick={() => setNeedsDiskAccess(false)}>
+                    Try again
+                </Button>
+            </div>
+        );
+    }
+
     return (
         <div className="wrapper">
             <div className="body">
-                <Stepper
-                    active={activeStep}
-                    onStepClick={setActiveStep}
-                    allowNextStepsSelect={false}
+                <Radio.Group
+                    value={backupPath}
+                    onChange={setBackupPath}
+                    label="What backup would you like to use?"
                 >
-                    <Stepper.Step icon={<IconUserCheck />}>
-                        <Radio.Group
-                            value={source}
-                            onChange={setSource}
-                            label="Pick a message data source"
-                            description="What messages do you want to analyze?"
-                        >
-                            <Stack pt="md" gap="xs">
-                                {renderSourceCards()}
-                            </Stack>
-                        </Radio.Group>
-                        <Button
-                            disabled={source == null}
-                            className="next"
-                            onClick={nextStep}
-                        >
-                            Next
-                        </Button>
-                    </Stepper.Step>
-                    <Stepper.Step icon={<IconMailOpened />}>
-                        Create an unencrypted iPhone backup This is required to
-                        parse message data on your Mac.
-                        <Button className="next" onClick={nextStep}>
-                            Next
-                        </Button>
-                    </Stepper.Step>
-                    <Stepper.Step icon={<IconMailOpened />}>
-                        {needsDiskAccess ? (
-                            <div>
-                                Make sure full disk access in enabled!
-                                <Button
-                                    onClick={() => setNeedsDiskAccess(false)}
-                                >
-                                    Try again
-                                </Button>
-                            </div>
-                        ) : (
-                            <Radio.Group
-                                value={backupPath}
-                                onChange={setBackupPath}
-                                label="What backup would you like to use?"
-                            >
-                                <Stack pt="md" gap="xs">
-                                    {renderBackupCards()}
-                                </Stack>
-                            </Radio.Group>
-                        )}
-                        <Button
-                            disabled={backupPath == null}
-                            className="next"
-                            onClick={nextStep}
-                        >
-                            Next
-                        </Button>
-                    </Stepper.Step>
-                    <Stepper.Step icon={<IconShieldCheck />}>
-                        We understand your data is important and private.
-                        That&apos;s why your messages never leave your device.{" "}
-                        <Button className="analyze" onClick={analyze}>
-                            Analyze
-                        </Button>{" "}
-                    </Stepper.Step>
-                </Stepper>
+                    <Stack pt="md" gap="xs">
+                        {renderBackupCards()}
+                    </Stack>
+                </Radio.Group>
+                <Button
+                    disabled={backupPath == null}
+                    className="next"
+                    onClick={analyze}
+                >
+                    Next
+                </Button>
             </div>
         </div>
     );
