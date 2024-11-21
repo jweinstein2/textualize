@@ -1,4 +1,3 @@
-import { showError } from "@/util";
 import { Progress } from "@mantine/core";
 import { Button, Center } from "@mantine/core";
 import axios from "axios";
@@ -22,26 +21,18 @@ function Loading() {
 
     const navigate = useNavigate();
 
-    function startProcessing() {
-        axios
-            .post("http://127.0.0.1:4242/process")
-            .then(() => setTimeout(() => checkProcess(), 500))
-            .catch(() =>
-                showError("Fatal Error", "Unable to begin processing data"),
-            );
-    }
-
     function checkProcess() {
         axios.get("http://127.0.0.1:4242/process").then((response) => {
+            console.log("checking process");
             if (response.data.error) {
+                console.log("response error");
                 setError(response.data.error);
                 return;
             }
             const status = response.data.status;
             const percent = response.data.percent;
-            if (status === "unstarted") {
-                startProcessing();
-            } else if (status === "in_progress") {
+            console.log("status, percent", status, percent);
+            if (status === "in_progress") {
                 setProgress(percent);
                 setTimeout(() => checkProcess(), 500);
             } else {
@@ -56,7 +47,7 @@ function Loading() {
         return (
             <Center>
                 <p>Processing Failed</p>
-                <Button>Try Again</Button>
+                <p>{error}</p>
             </Center>
         );
     }

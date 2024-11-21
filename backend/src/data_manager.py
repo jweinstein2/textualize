@@ -140,20 +140,37 @@ def clear():
     config.del_process_progress()
     config.del_last_error()
 
-def start_process():
-    backup_path = config.get_backup_path()
-    if backup_path == None:
-        return 'backup path has not been set'
+def start_process(type, source):
     if not process_lock.acquire(False):
         return 'process already in progress'
 
+    if type == 'backup':
+        message_db = file_util.backup_message_db(source)
+        contact_db = file_util.backup_contact_db(source)
+    elif type == 'mac':
+        message_db = file_util.mac_message_db();
+        # TODO: use ~/Library/Application Support/Address Book/ database
+        # contact_db = file_util.mac_contact_db();
+    else:
+        return "Invalid process type"
+
+    if (message_db == None):
+        return "Unable to find message database"
+    if (type != "mac" and contact_db == None):
+        return "Unable to find contact database"
+
     start_time = time.time()
-    err, dfs = file_util.fetch_message_tables(backup_path)
+    err, dfs = file_util.fetch_message_tables(message_db)
     if err: return err
     message_df, handle_df, ch_join, cm_join, chat_df = dfs
 
-    err, contact_df = file_util.fetch_contact_table(backup_path)
-    if err: return err
+    if type == 'backup':
+        err, contact_df = file_util.fetch_contact_table(contact_db)
+        if err: return err
+    else:
+        # TODO: Replace mock dataframe with real contact data
+        col_names =  ['First', 'Last', 'value']
+        contact_df  = pd.DataFrame(columns = col_names)
 
     contact_df = _format_contacts(contact_df)
     cm_join = _format_cm_join(cm_join)

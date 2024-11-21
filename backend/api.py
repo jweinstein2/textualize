@@ -26,15 +26,12 @@ def heartbeat():
     print('heartbeat')
     return "", HTTPStatus.OK
 
-@app.route('/source', methods=['GET', 'POST', 'DELETE'])
+# TODO: Deprecate /source DELETE. Always use /process DELETE instead
+@app.route('/source', methods=['GET', 'DELETE'])
 def source():
     if request.method == 'GET':
         path =  config.get_backup_path();
         return {"source": path}
-    elif request.method == 'POST':
-        path = request.json['source']
-        config.set_backup_path(path)
-        return "", HTTPStatus.CREATED
     elif request.method == 'DELETE':
         config.reset();
         data_manager.clear();
@@ -49,9 +46,14 @@ def process():
         status, percent, error = data_manager.process_progress()
         return {"status": status, "percent": percent, "error": error}
     if request.method == 'POST':
-        error = data_manager.start_process();
+        type = request.json.get('type')
+        source = request.json.get('source')
+        error = data_manager.start_process(type, source)
+
         if (error != None):
-            return "Backup Already in Progress", HTTPStatus.INTERNAL_SERVER_ERROR
+            console.log(error)
+            return str(error), HTTPStatus.INTERNAL_SERVER_ERROR
+
         return "", HTTPStatus.OK
 
 ##############################

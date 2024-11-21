@@ -39,15 +39,14 @@ function Onboarding() {
         if (!backupPath) {
             showError("Invalid backup", "Select a backup source and try again");
         }
+
+        const type = "backup";
         axios
-            .post("http://127.0.0.1:4242/source", { source: backupPath })
-            .then(() => navigate("/loading"))
+            .post("http://127.0.0.1:4242/process", { type, source: backupPath })
             .catch(() =>
-                showError(
-                    "Invalid data source",
-                    "Select another backup and try again"
-                )
+                showError("Fatal Error", "Unable to begin processing data")
             );
+        navigate("/loading");
     }
 
     function renderBackupCards() {

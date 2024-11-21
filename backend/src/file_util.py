@@ -16,6 +16,27 @@ def app_data_path(filename):
     res = Path.mkdir(path.parent, parents=True, exist_ok=True)
     return path
 
+def backup_message_db(backup_path):
+    message_db = Path.home() / backup_path / '3d' / MESSAGES
+    if (not Path.exists(message_db)):
+        return None
+    return message_db
+
+def backup_contact_db(backup_path):
+    try:
+        contact_db = subprocess.check_output("find '" + backup_path + "' -iname '" + CONTACTS + "'", shell=True).splitlines()[0].decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        return None
+    return contact_db
+
+def mac_message_db():
+    path = Path('~/Library/Messages/chat.db')
+    return path.expanduser()
+
+def mac_contact_db():
+    path = Path('~/Library/Messages/chat.db')
+    return path.expanduser()
+
 # Fetch any necessary message databases.
 # Returns False if an error occured.
 # Otherwise a tuple |4| containing:
@@ -23,11 +44,7 @@ def app_data_path(filename):
 #    2. handle_df
 #    3. ch_join
 #    4. cm_join
-def fetch_message_tables(backup_path):
-    message_db = Path.home() / backup_path / '3d' / MESSAGES
-    if (not Path.exists(message_db)):
-        raise Exception("Unable to find message table")
-
+def fetch_message_tables(message_db):
     connection = sqlite3.connect(message_db)
     cur = connection.cursor()
     message_df = pd.read_sql_query("SELECT * FROM message", connection)
@@ -38,18 +55,12 @@ def fetch_message_tables(backup_path):
     cur.close()
     connection.close()
 
-
     # Filter message table to be only what we need (lots of columns)
     message_df = message_df[['ROWID', 'text', 'account', 'type', 'handle_id', 'service', 'date', 'date_read', 'date_delivered', 'is_from_me', 'associated_message_type']]
 
     return None, (message_df, handle_df, ch_join, cm_join, chat)
 
-def fetch_contact_table(backup_path):
-    try:
-        contact_db = subprocess.check_output("find '" + backup_path + "' -iname '" + CONTACTS + "'", shell=True).splitlines()[0].decode("utf-8")
-    except subprocess.CalledProcessError as e:
-        return e, None
-
+def fetch_contact_table(contact_db):
     connection = sqlite3.connect(contact_db)
     cur = connection.cursor()
     query = """

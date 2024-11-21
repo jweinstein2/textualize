@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Backup } from "src/components/onboarding";
+import { Backup } from "src/components/onboarding/backup";
 
 import { checkForUpdate, update } from "./update";
 
