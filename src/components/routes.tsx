@@ -1,5 +1,6 @@
 import Backup from "@/components/onboarding/backup";
 import Loading from "@/components/onboarding/loading";
+import Mac from "@/components/onboarding/mac";
 import Splash from "@/components/onboarding/splash";
 import Shell from "@/components/shell/shell";
 import { showError } from "@/util";
@@ -21,13 +22,20 @@ function Routes() {
     // TODO(jaredweinstein): Use axios-retry to clean this up
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:4242/source")
+            .get("http://127.0.0.1:4242/process")
             .then((response) => {
-                if (response.data.source == null) {
-                    setLoading(false);
+                if (response.data.error) {
+                    showError(
+                        "Fatal error while processing messages",
+                        response.data.error
+                    );
+                }
+                setLoading(false);
+                const status = response.data.status;
+                if (status === "unstarted") {
                     navigate("/onboarding");
-                } else {
-                    checkProcessed();
+                } else if (status === "in_progress") {
+                    navigate("/loading");
                 }
             })
             .catch(() => {
@@ -37,22 +45,6 @@ function Routes() {
                 setTimeout(() => setRetries(retries - 1), 1000);
             });
     }, [retries]);
-
-    function checkProcessed() {
-        axios.get("http://127.0.0.1:4242/process").then((response) => {
-            if (response.data.error) {
-                showError(
-                    "Fatal error while processing messages",
-                    response.data.error
-                );
-            }
-            setLoading(false);
-            const status = response.data.status;
-            if (status === "unstarted" || status === "in_progress") {
-                navigate("/loading");
-            }
-        });
-    }
 
     if (loading) {
         return (
@@ -66,7 +58,7 @@ function Routes() {
         <ReactRoutes>
             <Route path="/onboarding/*" element={<Splash />} />
             <Route path="/onboarding/backup" element={<Backup />} />
-            <Route path="/onboarding/mac" element={<>TODO</>} />
+            <Route path="/onboarding/mac" element={<Mac />} />
             <Route path="/loading" element={<Loading />} />
             <Route path="/*" element={<Shell />} />
         </ReactRoutes>
