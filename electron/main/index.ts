@@ -171,8 +171,10 @@ async function hasDiskAccess(): Promise<boolean> {
         const home = app.getPath("home");
         const dirPath = path.resolve(home + backup_path);
         const backups = await fs.readdirSync(dirPath);
-    } catch (error) {
-        if (error.toString().includes("EPERM: operation not permitted")) {
+    } catch (e) {
+        if (
+            (e as Error).toString().includes("EPERM: operation not permitted")
+        ) {
             return false;
         }
         throw new Error("Unexpected Error when checking disk access");
