@@ -1,4 +1,5 @@
 import Backup from "@/components/onboarding/backup";
+import DiskAccess from "@/components/onboarding/diskAccess";
 import Loading from "@/components/onboarding/loading";
 import Mac from "@/components/onboarding/mac";
 import Splash from "@/components/onboarding/splash";
@@ -59,6 +60,7 @@ function Routes() {
             <Route path="/onboarding/*" element={<Splash />} />
             <Route path="/onboarding/backup" element={<Backup />} />
             <Route path="/onboarding/mac" element={<Mac />} />
+            <Route path="/disk_access" element={<DiskAccess />} />
             <Route path="/loading" element={<Loading />} />
             <Route path="/*" element={<Shell />} />
         </ReactRoutes>
