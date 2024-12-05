@@ -94,11 +94,19 @@ function Contact() {
         return (
             <div>
                 <h4>Most Popular</h4>
-                <Bubble message={emoji?.popular_sent} isSent></Bubble>
-                <Bubble message={emoji?.popular_received}></Bubble>
+                <Bubble
+                    message={emoji?.popular_sent}
+                    size="40px"
+                    isSent
+                ></Bubble>
+                <Bubble message={emoji?.popular_received} size="40px"></Bubble>
                 <h4>Unique</h4>
-                <Bubble message={emoji?.unique_sent} isSent></Bubble>
-                <Bubble message={emoji?.unique_received}></Bubble>
+                <Bubble
+                    message={emoji?.unique_sent}
+                    size="40px"
+                    isSent
+                ></Bubble>
+                <Bubble message={emoji?.unique_received} size="40px"></Bubble>
             </div>
         );
     }
