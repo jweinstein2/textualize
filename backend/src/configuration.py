@@ -7,6 +7,8 @@ config_path = app_data_path('application.conf')
 BACKUP_KEY = 'backup'
 PROCESS_PROGRESS_KEY = 'analysis_progress'
 LAST_ERROR_KEY = 'last_error'
+ALL_EMOJI_KEY = 'all_emoji'
+
 default_configuration = {}
 
 def reset():
@@ -38,6 +40,18 @@ def set_process_progress(value):
 
 def del_process_progress():
     _del(PROCESS_PROGRESS_KEY)
+
+def get_all_emoji(isFromMe):
+    key = ALL_EMOJI_KEY + str(isFromMe)
+    return _get(key)
+
+def set_all_emoji(value, isFromMe):
+    key = ALL_EMOJI_KEY + str(isFromMe)
+    _set(key, value)
+
+def del_all_emoji(isFromMe):
+    key = ALL_EMOJI_KEY + str(isFromMe)
+    _del(key)
 
 # MARK: helper methods
 # TODO: This should have a read write lock
