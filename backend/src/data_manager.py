@@ -109,6 +109,12 @@ def contact(number):
     except Exception as e:
         return None
 
+def safe_contact(number):
+    c = contact(number)
+    if c != None:
+        return c
+    return {'First': number, 'Last': '', 'value': number, 'Name': number}
+
 #############################################################
 # PROCESS WORK
 #############################################################

@@ -132,6 +132,8 @@ def group_summary(group):
     return info_dict
 
 def group_connection_graph():
+    MIN_MESSAGE_THRESHOLD = 300
+
     connection_matrix = {}
     handles = dm.handles().set_index(['ROWID'])
     ch_join = dm.ch_join()
@@ -147,9 +149,23 @@ def group_connection_graph():
                 connection_matrix[pair] = 0
             connection_matrix[pair] += count
 
-    sorted_matrix = {k: v for k, v in sorted(connection_matrix.items(), key=lambda item:item[1])}
-    print(sorted_matrix)
+    sorted_matrix = sorted(connection_matrix.items(), key=lambda item:item[1])
+    sorted_matrix = filter(lambda x: x[1] > MIN_MESSAGE_THRESHOLD, sorted_matrix)
 
+    edges = []
+    nodes_set = set()
+    for k, v in sorted_matrix:
+        edges.append({'from': k[0], 'to': k[1], 'value': v.item()})
+        nodes_set.add(k[0])
+        nodes_set.add(k[1])
+
+    nodes = []
+    for i in list(nodes_set):
+        contact = data_manager.safe_contact(i)
+        node = {'id': i, 'label': contact['First'], 'title': contact['Name']}
+        nodes.append(node)
+
+    return {'nodes': nodes, 'edges': edges}
 
 def summary(messages):
     json = {}
@@ -183,7 +199,6 @@ def frequency(message_df, period='M', filter=None):
     return frequency_plot(message_df, period)
 
 # Return a list of names for a list of handles
-# TODO: Move this to a general utility that returns the contact name for a handle.
 def _first_names(group_handles):
     handles = dm.handles()
 
