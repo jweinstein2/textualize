@@ -8,19 +8,19 @@
     align-items: center;
     align-content: stretch;
     justify-content: space-around;
-    gap: 40px;
+    gap: 20px;
 }
 
-.page-left {
+.pageLeft {
     flex-grow: 1;
     max-width: 600px;
 }
 
-.page-left p {
+.pageLeft p {
     margin-bottom: 16px;
 }
 
-.page-right {
+.pageRight {
     flex-grow: 2;
     max-width: 800px;
     background-color: white;
@@ -28,7 +28,7 @@
     padding: 20px;
 }
 
-.button-container {
+.buttonContainer {
     display: flex;
     flex-direction: column;
     gap: 8px;

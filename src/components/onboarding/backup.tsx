@@ -14,7 +14,6 @@ export type Backup = {
 
 function Onboarding() {
     const [backupPath, setBackupPath] = useState<string | undefined>(undefined);
-    const [needsDiskAccess, setNeedsDiskAccess] = useState(false);
     const [backupOptions, setBackupOptions] = useState<Backup[]>([]);
 
     const navigate = useNavigate();
@@ -24,16 +23,18 @@ function Onboarding() {
             .invoke("listBackups")
             .then(setBackupOptions)
             .catch((error) => {
-                // TODO: Better way to check EPERM errors
                 if (
                     error.toString().includes("EPERM: operation not permitted")
                 ) {
-                    setNeedsDiskAccess(true);
+                    showError(
+                        "Unexpected error loading backups",
+                        "Fix by enabling full disk access in settings"
+                    );
                 } else {
-                    showError("Unexpected error loading backups", "Try again");
+                    showError("Unexpected error loading backups", "");
                 }
             });
-    }, [needsDiskAccess]);
+    }, []);
 
     function analyze() {
         if (!backupPath) {
@@ -65,17 +66,6 @@ function Onboarding() {
                 </Group>
             </Radio.Card>
         ));
-    }
-
-    if (needsDiskAccess) {
-        return (
-            <div>
-                Make sure full disk access in enabled!
-                <Button onClick={() => setNeedsDiskAccess(false)}>
-                    Try again
-                </Button>
-            </div>
-        );
     }
 
     return (

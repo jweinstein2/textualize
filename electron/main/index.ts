@@ -164,6 +164,31 @@ async function createWindow() {
     checkForUpdate();
 }
 
+// TODO see if theres a better way to write this.
+async function hasDiskAccess(): Promise<boolean> {
+    try {
+        const backup_path = "/Library/Application Support/MobileSync/Backup/";
+        const home = app.getPath("home");
+        const dirPath = path.resolve(home + backup_path);
+        const backups = await fs.readdirSync(dirPath);
+    } catch (error) {
+        if (error.toString().includes("EPERM: operation not permitted")) {
+            return false;
+        }
+        throw new Error("Unexpected Error when checking disk access");
+    }
+
+    return true;
+}
+
+async function openSystemPreferences() {
+    if (process.platform === "darwin") {
+        await shell.openExternal(
+            `x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles`
+        );
+    }
+}
+
 async function listBackups(): Promise<Backup[]> {
     const backup_path = "/Library/Application Support/MobileSync/Backup/";
     const home = app.getPath("home");
@@ -187,6 +212,8 @@ function backupInfo(fullPath: string): Backup {
 app.whenReady().then(() => {
     // Renderer > Main
     ipcMain.handle("listBackups", listBackups);
+    ipcMain.handle("hasDiskAccess", hasDiskAccess);
+    ipcMain.handle("openSystemPreferences", openSystemPreferences);
     createWindow();
 });
 

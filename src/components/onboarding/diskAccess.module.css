@@ -1,0 +1,33 @@
+.container {
+    padding: 5%;
+    background-color: var(--mantine-color-blue-1);
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: stretch;
+    justify-content: space-around;
+    flex-wrap: wrap-reverse;
+    gap: 40px;
+}
+
+.left {
+    flex: 1 1 300px;
+    max-width: 400px;
+}
+
+.right {
+    flex: 1 1 600px;
+    min-width: 500px;
+    max-width: 50%;
+}
+
+.description {
+    padding-bottom: 16px;
+}
+
+.openPreferencesButton {
+    margin: 16px 16px 16px 0;
+}

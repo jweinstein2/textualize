@@ -8,32 +8,45 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
-import "./splash.css";
+import styles from "./splash.module.css";
 
 function Splash() {
     const navigate = useNavigate();
 
+    function checkDiskAccessAndNavigate(navigationPath: string) {
+        window.ipcRenderer.invoke("hasDiskAccess").then((isEnabled) => {
+            if (isEnabled) {
+                navigate(navigationPath);
+            } else {
+                navigate("/disk_access");
+            }
+        });
+    }
+
     return (
         <Center>
-            <div className="container">
-                <div className="page-left">
+            <div className={styles.container}>
+                <div className={styles.pageLeft}>
                     <h1>Textualize</h1>
                     <Text size="sm">Select a data source to get started</Text>
-                    <div className="button-container">
-                        <Button variant="white" onClick={() => navigate("mac")}>
+                    <div className={styles.buttonContainer}>
+                        <Button
+                            variant="white"
+                            onClick={() => checkDiskAccessAndNavigate("mac")}
+                        >
                             <IconDeviceImac />
                             Mac Messages
                         </Button>
                         <Button
                             variant="white"
-                            onClick={() => navigate("backup")}
+                            onClick={() => checkDiskAccessAndNavigate("backup")}
                         >
                             <IconDeviceMobile />
                             iPhone Backup
                         </Button>
                     </div>
                 </div>
-                <div className="page-right">
+                <div className={styles.pageRight}>
                     <Timeline bulletSize={24} lineWidth={2}>
                         <Timeline.Item
                             bullet={<IconShieldLock size={12} />}
