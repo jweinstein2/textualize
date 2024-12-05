@@ -21,6 +21,8 @@ export type Contact = {
     name: string;
     number: string;
     message_count: number;
+    oldest: Date;
+    newest: Date;
 };
 
 interface ThProps {
@@ -28,6 +30,14 @@ interface ThProps {
     reversed: boolean;
     sorted: boolean;
     onSort(): void;
+}
+
+function prettyDate(date: Date): string {
+    return date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
 }
 
 function ContactList() {
@@ -46,7 +56,9 @@ function ContactList() {
                 const name = entry.name;
                 const number = entry.number;
                 const message_count = entry.sent + entry.received;
-                return { name, number, message_count };
+                const oldest = new Date(entry.oldest_date);
+                const newest = new Date(entry.newest_date);
+                return { name, number, message_count, oldest, newest };
             });
             setContacts(fetched);
             setSortedContacts(fetched);
@@ -123,6 +135,8 @@ function ContactList() {
             >
                 <Table.Td>{contact.name}</Table.Td>
                 <Table.Td>{contact.message_count}</Table.Td>
+                <Table.Td>{prettyDate(contact.oldest)}</Table.Td>
+                <Table.Td>{prettyDate(contact.newest)}</Table.Td>
             </Table.Tr>
         ));
     }
@@ -154,6 +168,20 @@ function ContactList() {
                                 onSort={() => setSorting("message_count")}
                             >
                                 Total Messages
+                            </Th>
+                            <Th
+                                sorted={sortBy === "oldest"}
+                                reversed={reverseSortDirection}
+                                onSort={() => setSorting("oldest")}
+                            >
+                                First Sent
+                            </Th>
+                            <Th
+                                sorted={sortBy === "newest"}
+                                reversed={reverseSortDirection}
+                                onSort={() => setSorting("newest")}
+                            >
+                                Last Sent
                             </Th>
                         </Table.Tr>
                     </Table.Thead>

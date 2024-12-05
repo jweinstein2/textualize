@@ -51,7 +51,10 @@ def conversation_stats(number, convo_gap=timedelta(hours=14)):
     messages = dm.messages(number)
     all_msgs = dm.messages()
 
-    # assumes messages are sorted by time
+    messages = messages.sort_values(by=['date'])
+    info_dict['oldest_date'] = 0 if messages.empty else ts(messages.iloc[0].date)
+    info_dict['newest_date'] = 0 if messages.empty else ts(messages.iloc[-1].date)
+
     prior = messages[:-1].reset_index()
     messages = messages[1:].reset_index()
     delta = messages.date - prior.date
