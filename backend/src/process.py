@@ -71,9 +71,11 @@ def _stats_for_number(number):
     info_dict.update(general.contact_info(number))
     info_dict.update(general.simple_stats(number))
     info_dict.update(general.conversation_stats(number))
+    info_dict.update(general.streak(number))
     return info_dict
 
 def _stats_for_group(group):
     info_dict = {}
     info_dict.update(general.group_summary(group))
+    info_dict.update(general.group_streak(group))
     return info_dict

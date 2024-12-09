@@ -20,11 +20,12 @@ import { useNavigate } from "react-router-dom";
 export type Group = {
     name: string;
     id: string;
-    message_count: number;
+    messageCount: number;
     people: number;
     members: string[];
     oldest: Date;
     newest: Date;
+    longestStreak: number;
 };
 
 interface ThProps {
@@ -49,19 +50,21 @@ function GroupList() {
             const fetched = response.data.map((entry: any) => {
                 const name = entry.name || entry.members.join(", ");
                 const id = entry.id;
-                const message_count = entry.count;
+                const messageCount = entry.count;
                 const people = entry.people;
                 const members = entry.members;
                 const oldest = new Date(entry.oldest_date);
                 const newest = new Date(entry.newest_date);
+                const longestStreak = entry.longest_streak;
                 return {
                     name,
                     id,
-                    message_count,
+                    messageCount,
                     people,
                     members,
                     oldest,
                     newest,
+                    longestStreak,
                 };
             });
             setGroups(fetched);
@@ -148,9 +151,10 @@ function GroupList() {
                 onClick={() => navigate(`/groups/${group.id}`)}
             >
                 <Table.Td>{truncateWithEllipses(group.name, 40)}</Table.Td>
-                <Table.Td>{group.message_count}</Table.Td>
+                <Table.Td>{group.messageCount}</Table.Td>
                 <Table.Td>{prettyDate(group.oldest)}</Table.Td>
                 <Table.Td>{prettyDate(group.newest)}</Table.Td>
+                <Table.Td>{group.longestStreak}</Table.Td>
             </Table.Tr>
         ));
     }
@@ -177,9 +181,9 @@ function GroupList() {
                                 Name
                             </Th>
                             <Th
-                                sorted={sortBy === "message_count"}
+                                sorted={sortBy === "messageCount"}
                                 reversed={reverseSortDirection}
-                                onSort={() => setSorting("message_count")}
+                                onSort={() => setSorting("messageCount")}
                             >
                                 Message Count
                             </Th>
@@ -196,6 +200,13 @@ function GroupList() {
                                 onSort={() => setSorting("newest")}
                             >
                                 Last Sent
+                            </Th>
+                            <Th
+                                sorted={sortBy === "longestStreak"}
+                                reversed={reverseSortDirection}
+                                onSort={() => setSorting("longestStreak")}
+                            >
+                                Longest Streak
                             </Th>
                         </Table.Tr>
                     </Table.Tbody>

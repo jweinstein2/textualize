@@ -23,6 +23,7 @@ export type Contact = {
     message_count: number;
     oldest: Date;
     newest: Date;
+    longestStreak: number;
 };
 
 interface ThProps {
@@ -58,7 +59,15 @@ function ContactList() {
                 const message_count = entry.sent + entry.received;
                 const oldest = new Date(entry.oldest_date);
                 const newest = new Date(entry.newest_date);
-                return { name, number, message_count, oldest, newest };
+                const longestStreak = entry.longest_streak;
+                return {
+                    name,
+                    number,
+                    message_count,
+                    oldest,
+                    newest,
+                    longestStreak,
+                };
             });
             setContacts(fetched);
             setSortedContacts(fetched);
@@ -137,6 +146,7 @@ function ContactList() {
                 <Table.Td>{contact.message_count}</Table.Td>
                 <Table.Td>{prettyDate(contact.oldest)}</Table.Td>
                 <Table.Td>{prettyDate(contact.newest)}</Table.Td>
+                <Table.Td>{contact.longestStreak}</Table.Td>
             </Table.Tr>
         ));
     }
@@ -182,6 +192,13 @@ function ContactList() {
                                 onSort={() => setSorting("newest")}
                             >
                                 Last Sent
+                            </Th>
+                            <Th
+                                sorted={sortBy === "longestStreak"}
+                                reversed={reverseSortDirection}
+                                onSort={() => setSorting("longestStreak")}
+                            >
+                                Longest Streak
                             </Th>
                         </Table.Tr>
                     </Table.Thead>

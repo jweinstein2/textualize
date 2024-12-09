@@ -198,6 +198,35 @@ def frequency(message_df, period='M', filter=None):
         message_df = message_df[message_df.text.str.contains(filter)]
     return frequency_plot(message_df, period)
 
+def streak(number):
+    messages = dm.messages(number)
+    current, longest = _streak_stats(messages)
+    return {'current_streak': current, 'longest_streak': longest}
+
+def group_streak(group):
+    messages = dm.group_messages(group)
+    current, longest = _streak_stats(messages)
+    return {'current_streak': current, 'longest_streak': longest}
+
+def _streak_stats(messages):
+    first = ts(data_manager.messages().date.min())
+    last = ts(data_manager.messages().date.max())
+    dates = pd.date_range(first, last, freq='d')
+    bins = dates.map(lambda d: val(d))
+    day_counts = messages.date.value_counts(sort=False, bins=bins).tolist()
+
+    max_streak = 0
+    current = 0
+    for i in day_counts:
+        if i == 0:
+            max_streak = max(current, max_streak)
+            current = 0
+        else:
+            current += 1
+    max_streak = max(max_streak, current)
+
+    return current, max_streak
+
 # Return a list of names for a list of handles
 def _first_names(group_handles):
     handles = dm.handles()
