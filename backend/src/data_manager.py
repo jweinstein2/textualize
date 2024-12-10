@@ -154,15 +154,14 @@ def start_process(type, source):
         message_db = file_util.backup_message_db(source)
         contact_db = file_util.backup_contact_db(source)
     elif type == 'mac':
-        message_db = file_util.mac_message_db();
-        # TODO: use ~/Library/Application Support/Address Book/ database
-        # contact_db = file_util.mac_contact_db();
+        message_db = file_util.mac_message_db()
+        contact_db = file_util.mac_contact_db()
     else:
         return "Invalid process type"
 
     if (message_db == None):
         return "Unable to find message database"
-    if (type != "mac" and contact_db == None):
+    if (contact_db == None):
         return "Unable to find contact database"
 
     start_time = time.time()
@@ -174,9 +173,11 @@ def start_process(type, source):
         err, contact_df = file_util.fetch_contact_table(contact_db)
         if err: return err
     else:
-        # TODO: Replace mock dataframe with real contact data
-        col_names =  ['First', 'Last', 'value']
-        contact_df  = pd.DataFrame(columns = col_names)
+        err, contact_df = file_util.fetch_mac_contact_table(contact_db)
+        if err: return err
+        contact_df['value'] = contact_df['Number'].fillna(contact_df['Email'])
+        contact_df = contact_df[contact_df['value'].notna()]
+
 
     contact_df = _format_contacts(contact_df)
     cm_join = _format_cm_join(cm_join)

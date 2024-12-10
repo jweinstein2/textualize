@@ -4,6 +4,8 @@ import subprocess
 import sqlite3
 from pathlib import Path, PurePath
 import pandas as pd
+import glob
+import os
 
 MESSAGES = '3d0d7e5fb2ce288813306e4d4636395e047a3d28'
 CONTACTS = '31bb7ba8914766d4ba40d6dfb6113c8b614be442'
@@ -33,9 +35,16 @@ def mac_message_db():
     path = Path('~/Library/Messages/chat.db')
     return path.expanduser()
 
+# TODO: This might fail if there are multiple contact sources
 def mac_contact_db():
-    path = Path('~/Library/Messages/chat.db')
-    return path.expanduser()
+    ADDRESS_BOOK = Path('~/Library/Application Support/AddressBook/Sources/').expanduser().as_posix()
+    CONTACT_DB = 'AddressBook-v22.abcddb'
+    try:
+        contact_db = subprocess.check_output("find '" + ADDRESS_BOOK + "' -iname '" + CONTACT_DB + "'", shell=True).splitlines()[0].decode("utf-8")
+    except subprocess.CalledProcessError as e:
+        return None
+    return contact_db
+
 
 # Fetch any necessary message databases.
 # Returns False if an error occured.
@@ -78,8 +87,29 @@ def fetch_contact_table(contact_db):
         order by
             ABPerson.First,
             ABPerson.Last"""
+    contact_df =  pd.read_sql_query(query, connection)
+    cur.close()
+    connection.close()
+    return None, contact_df
+
+def fetch_mac_contact_table(contact_db):
     connection = sqlite3.connect(contact_db)
     cur = connection.cursor()
+    query = """
+                SELECT
+                            ZABCDRECORD.ZFIRSTNAME as First,
+                            ZABCDRECORD.ZLASTNAME as Last,
+                            ZABCDRECORD.Z_PK,
+                            ZABCDPHONENUMBER.ZFULLNUMBER as Number,
+                            ZABCDEMAILADDRESS.ZADDRESS as Email
+                FROM
+                            ((ZABCDRECORD
+                    LEFT JOIN ZABCDPHONENUMBER ON ZABCDRECORD.Z_PK=ZABCDPHONENUMBER.ZOWNER)
+                    LEFT JOIN ZABCDEMAILADDRESS ON ZABCDRECORD.Z_PK=ZABCDEMAILADDRESS.ZOWNER)
+                ORDER BY
+                            ZABCDRECORD.ZFIRSTNAME,
+                            ZABCDRECORD.ZLASTNAME
+            """
     contact_df =  pd.read_sql_query(query, connection)
     cur.close()
     connection.close()
