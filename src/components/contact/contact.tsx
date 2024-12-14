@@ -161,15 +161,13 @@ function Contact() {
 
     function renderLanguage() {
         const options = {
-            rotations: 3,
-            rotationAngles: [-45, 45],
+            rotations: 8,
+            rotationAngles: [-20, 20],
         };
 
         const callbacks = {
-            getWordColor: (word) => "#218aff",
-            onWordClick: console.log,
-            onWordMouseOver: console.log,
-            getWordTooltip: (word) => ``,
+            getWordColor: () => "#218aff",
+            getWordTooltip: () => ``,
         };
 
         return (

@@ -27,6 +27,12 @@ def contact_summary(messages):
     info_dict['unique'] = unique_words(messages)
     return info_dict
 
+def group_summary(messages):
+    info_dict = {}
+    info_dict['unique'] = unique_words(messages)
+    return info_dict
+
+
 def unique_words(messages):
     (words, text) = extract_words(messages)
     (all_words, all_text) = extract_words(data_manager.messages())

@@ -129,6 +129,12 @@ def group_tapback(id, start=None, end=None):
     result = tapback.group_info(msg)
     return result
 
+@app.route('/group/<id>/language', methods=['GET'])
+def group_language(id, start=None, end=None):
+    msg = data_manager.group_messages(int(id))
+    result = language_stats.group_summary(msg)
+    return result
+
 @app.route('/group_connection_graph', methods=['GET'])
 def group_connection_graph(start=None, end=None):
     return general_stats.group_connection_graph()
