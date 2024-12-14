@@ -42,7 +42,7 @@ function Splash() {
                             onClick={() => checkDiskAccessAndNavigate("backup")}
                         >
                             <IconDeviceMobile />
-                            iPhone Backup
+                            iPhone
                         </Button>
                     </div>
                 </div>
@@ -73,14 +73,13 @@ function Splash() {
                         </Timeline.Item>
 
                         <Timeline.Item
-                            title="Powered by AI"
+                            title="AI Integration"
                             bullet={<IconTopologyStar3 size={12} />}
                         >
                             <Text c="dimmed" size="sm">
-                                We have integrated the latest LLM technology so
-                                that you can query your data with the power of
-                                AI. All processing is done locally to guarantee
-                                your data is secure
+                                Query your data with using Lambda. All
+                                processing is done locally to guarantee your
+                                data is secure.
                             </Text>
                         </Timeline.Item>
                     </Timeline>

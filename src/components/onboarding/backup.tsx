@@ -1,5 +1,21 @@
 import { showError } from "@/util";
-import { Button, Group, Radio, Stack, Text } from "@mantine/core";
+import {
+    Button,
+    Center,
+    Group,
+    Loader,
+    Radio,
+    Stack,
+    Text,
+    Timeline,
+} from "@mantine/core";
+import {
+    IconDeviceImac,
+    IconDeviceMobile,
+    IconShieldLock,
+    IconTerminal2,
+    IconTopologyStar3,
+} from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,19 +25,25 @@ import "./backup.css";
 export type Backup = {
     path: string;
     name: string;
-    size: number; // TODO: This is not populated
+    size: number; // TODO: not populated
+    lastMessage: Date; // TODO: Not populated
 };
 
 function Onboarding() {
     const [backupPath, setBackupPath] = useState<string | undefined>(undefined);
     const [backupOptions, setBackupOptions] = useState<Backup[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
 
-    useEffect(() => {
+    function listBackups() {
+        setLoading(true);
         window.ipcRenderer
             .invoke("listBackups")
-            .then(setBackupOptions)
+            .then((backups) => {
+                setBackupOptions(backups);
+                setLoading(false);
+            })
             .catch((error) => {
                 if (
                     error.toString().includes("EPERM: operation not permitted")
@@ -34,7 +56,9 @@ function Onboarding() {
                     showError("Unexpected error loading backups", "");
                 }
             });
-    }, []);
+    }
+
+    useEffect(listBackups, []);
 
     function analyze() {
         if (!backupPath) {
@@ -68,9 +92,58 @@ function Onboarding() {
         ));
     }
 
-    return (
-        <div className="wrapper">
-            <div className="body">
+    function renderBackupOptions() {
+        if (backupOptions.length === 0) {
+            return (
+                <>
+                    <Text color="red">
+                        No existing backups found.
+                        <br />
+                        <br />
+                    </Text>
+
+                    <Timeline bulletSize={24} lineWidth={2}>
+                        <Timeline.Item
+                            bullet={<IconShieldLock size={12} />}
+                            title="Connect iOS Device"
+                        >
+                            <Text c="dimmed" size="sm">
+                                Connect an iOS device to your computer using a
+                                lighting cable.
+                            </Text>
+                        </Timeline.Item>
+
+                        <Timeline.Item
+                            bullet={<IconTerminal2 size={12} />}
+                            title="Create an unencrypted backup"
+                        >
+                            <Text c="dimmed" size="sm">
+                                Select your device in the left most menu in the
+                                finder. Select &ldquo;Create an unencrypted
+                                backup&rdquo;.
+                            </Text>
+                        </Timeline.Item>
+
+                        <Timeline.Item
+                            title="Refresh"
+                            bullet={<IconTopologyStar3 size={12} />}
+                        >
+                            <Text c="dimmed" size="sm">
+                                Once the backup has completed, refresh this page
+                                and select the desired backup version.
+                            </Text>
+                        </Timeline.Item>
+                    </Timeline>
+
+                    <Button className="next" onClick={listBackups}>
+                        Refresh
+                    </Button>
+                </>
+            );
+        }
+
+        return (
+            <>
                 <Radio.Group
                     value={backupPath}
                     onChange={setBackupPath}
@@ -87,6 +160,21 @@ function Onboarding() {
                 >
                     Next
                 </Button>
+            </>
+        );
+    }
+
+    return (
+        <div className="wrapper">
+            <div className="body">
+                <h2>Load data from an iPhone Backup</h2>
+                {loading ? (
+                    <Center>
+                        <Loader color="blue" />
+                    </Center>
+                ) : (
+                    renderBackupOptions()
+                )}
             </div>
         </div>
     );
