@@ -31,7 +31,8 @@ def unique_words(messages):
     (words, text) = extract_words(messages)
     (all_words, all_text) = extract_words(data_manager.messages())
     uni = unique(words, all_words)
-    df = pd.DataFrame({'name': uni.index, 'value': uni.values})[:100]
+    UI_SCALE = 100 # Scaling everything up looks better for wordcloud
+    df = pd.DataFrame({'text': uni.index, 'value': uni.values * UI_SCALE})[:100]
     return df.to_dict(orient='records')
 
 if __name__ == '__main__':

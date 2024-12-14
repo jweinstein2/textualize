@@ -6,6 +6,7 @@ import { Center, Loader } from "@mantine/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import ReactWordcloud from "react-wordcloud";
 
 export type FrequencyDay = {
     date: string;
@@ -27,9 +28,16 @@ export type EmojiData = {
     unique_received: string;
 };
 
+type LanguageData = {
+    unique: { text: string; value: number }[];
+    received_avg_wordlen: number;
+    sent_avg_wordlen: number;
+};
+
 function Contact() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
     const [sentiment, setSentiment] = useState<SentimentData>();
+    const [language, setLanguage] = useState<LanguageData>();
     const [emoji, setEmoji] = useState<EmojiData>();
     const [name, setName] = useState("");
 
@@ -80,6 +88,18 @@ function Contact() {
             .then((response) => setSentiment(response.data))
             .catch(() =>
                 showError("Failed to load data", "Sentiment info not found")
+            );
+    }, []);
+
+    useEffect(() => {
+        axios
+            .get(`http://127.0.0.1:4242/language/${params.number}`)
+            .then((response) => {
+                console.log(response.data);
+                setLanguage(response.data);
+            })
+            .catch(() =>
+                showError("Failed to load data", "Language info failed to load")
             );
     }, []);
 
@@ -139,6 +159,28 @@ function Contact() {
         );
     }
 
+    function renderLanguage() {
+        const options = {
+            rotations: 3,
+            rotationAngles: [-45, 45],
+        };
+
+        const callbacks = {
+            getWordColor: (word) => "#218aff",
+            onWordClick: console.log,
+            onWordMouseOver: console.log,
+            getWordTooltip: (word) => ``,
+        };
+
+        return (
+            <ReactWordcloud
+                options={options}
+                callbacks={callbacks}
+                words={language?.unique ?? []}
+            />
+        );
+    }
+
     return (
         <Container fluid>
             <h2>{name}</h2>
@@ -159,8 +201,10 @@ function Contact() {
             {renderEmoji()}
             <h3>Sentiment</h3>
             {renderSentiment()}
+            <h3>Language</h3>
+            {renderLanguage()}
         </Container>
     );
 }
 
-export default Contact
+export default Contact;
