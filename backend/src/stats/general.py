@@ -132,7 +132,8 @@ def group_summary(group):
     return info_dict
 
 def group_connection_graph():
-    MIN_MESSAGE_THRESHOLD = 300
+    MIN_MESSAGE_THRESHOLD = 20
+    MAX_NODE_COUNT = 150
 
     connection_matrix = {}
     handles = dm.handles().set_index(['ROWID'])
@@ -155,6 +156,10 @@ def group_connection_graph():
     edges = []
     nodes_set = set()
     for k, v in sorted_matrix:
+        if (len(nodes_set) >= MAX_NODE_COUNT):
+            if k[0] in nodes_set or k[1] in nodes_set:
+                continue
+
         edges.append({'from': k[0], 'to': k[1], 'value': v.item()})
         nodes_set.add(k[0])
         nodes_set.add(k[1])

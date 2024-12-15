@@ -12,7 +12,7 @@ const options = {
         stabilization: {
             enabled: true,
         },
-        timestep: 0.4, // Required to avoid the shakes
+        timestep: 0.3, // Required to avoid the shakes
     },
 };
 
