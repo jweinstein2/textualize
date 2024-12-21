@@ -21,7 +21,7 @@ function Settings() {
 
     return (
         <div>
-            <h5>Textualize {version}</h5>
+            <h5>Textual Activity {version}</h5>
             <Button variant="filled" color="red" onClick={clearSource}>
                 Clear Data Source
             </Button>

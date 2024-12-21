@@ -27,7 +27,7 @@ function Splash() {
         <Center>
             <div className={styles.container}>
                 <div className={styles.pageLeft}>
-                    <h1>Textualize</h1>
+                    <h1>Textual Activity</h1>
                     <Text size="sm">Select a data source to get started</Text>
                     <div className={styles.buttonContainer}>
                         <Button

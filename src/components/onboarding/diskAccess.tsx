@@ -13,15 +13,15 @@ function DiskAccess() {
             <Container className={styles.left}>
                 <h2>Enable Disk Access</h2>
                 <Text className="description">
-                    Textualize reads your message data from a backup stored on
-                    your computer. We need permission to access this data.{" "}
-                    <br />
+                    Textual Activity reads your message data from a backup
+                    stored on your computer. We need permission to access this
+                    data. <br />
                     <br />
                 </Text>
                 <List>
                     <List.Item>Open System Preferences</List.Item>
                     <List.Item>
-                        Under Full Disk Access, grant Textualize access.{" "}
+                        Under Full Disk Access, grant Textual Activity access.{" "}
                     </List.Item>
                     <List.Item>Quit and restart the app.</List.Item>
                 </List>
