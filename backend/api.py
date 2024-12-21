@@ -56,6 +56,10 @@ def process():
 
         return "", HTTPStatus.OK
 
+@app.route('/quick_stats', methods=['GET'])
+def quick_stats():
+    return general_stats.quick_stats()
+
 ##############################
 # STATS
 ##############################

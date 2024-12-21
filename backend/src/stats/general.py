@@ -8,6 +8,31 @@ from datetime import date, datetime, timedelta
 from src.util import *
 import src.data_manager as dm
 
+# A list of text displayed while loading.
+# All processing time should be minimal.
+#
+# https://www.intradyn.com/text-message-statistics-trends/
+def quick_stats():
+    messages = dm.messages()
+    contacts = dm.contacts()
+    chats = data_manager.chats()
+    groups = chats[chats.is_group].index.values
+
+    msg_count = truncate_num(len(messages))
+    contact_count = truncate_num(len(contacts))
+    group_count = len(groups)
+    # first_msg = messages.iloc[0].text # Could be NONE
+
+    return [
+            f"Analyzing over {msg_count} messages...",
+            f"Neil Papworth sent the first SMS reading \"Merry Christmas\" on December 3rd, 1992.",
+            # f"Your first message began {first_msg}",
+            f"Parsing conversations with over {contact_count} contacts...",
+            f"16 million messages are sent every minute. How many were yours?",
+            f"Reading all your most embarrassing messages...",
+            f"Digging through {group_count} group chats...",
+            ]
+
 def contact_info(number):
     info_dict = {}
     contact = dm.contact(number)

@@ -63,6 +63,10 @@ def unique(subset, corpus, threshold=5):
 
     return unique
 
+def truncate_num(number):
+    zeros = '0' * (len(str(number)) - 1)
+    return int(str(number)[0] + zeros)
+
 def frequency_plot(message_df, period):
     first = ts(data_manager.messages().date.min())
     last = ts(data_manager.messages().date.max())

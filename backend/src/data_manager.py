@@ -150,6 +150,7 @@ def start_process(type, source):
     if not process_lock.acquire(False):
         return 'process already in progress'
 
+    config.set_process_progress(1)
     if type == 'backup':
         message_db = file_util.backup_message_db(source)
         contact_db = file_util.backup_contact_db(source)
