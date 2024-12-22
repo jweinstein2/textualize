@@ -71,17 +71,6 @@ function Splash() {
                                 comment, or a pull request!
                             </Text>
                         </Timeline.Item>
-
-                        <Timeline.Item
-                            title="AI Integration"
-                            bullet={<IconTopologyStar3 size={12} />}
-                        >
-                            <Text c="dimmed" size="sm">
-                                Query your data with using Lambda. All
-                                processing is done locally to guarantee your
-                                data is secure.
-                            </Text>
-                        </Timeline.Item>
                     </Timeline>
                 </div>
             </div>

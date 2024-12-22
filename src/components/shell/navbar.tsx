@@ -1,7 +1,6 @@
 import {
     Icon,
     IconChartAreaLine,
-    IconFingerprint,
     IconMessage,
     IconSettings,
     IconUsersGroup,
@@ -22,7 +21,6 @@ const data: NavBarItem[] = [
     { link: "/summary", label: "Summary", icon: IconChartAreaLine },
     { link: "/contacts", label: "Contacts", icon: IconMessage },
     { link: "/groups", label: "Groups", icon: IconUsersGroup },
-    { link: "/ai", label: "AI", icon: IconFingerprint },
     { link: "/settings", label: "Settings", icon: IconSettings },
 ];
 
@@ -33,7 +31,7 @@ function Navbar() {
 
     useEffect(() => {
         const activeIndex = data.find(
-            (item) => item.link === location.pathname,
+            (item) => item.link === location.pathname
         );
         if (activeIndex?.label != undefined) {
             setActive(activeIndex.label);
@@ -59,9 +57,8 @@ function Navbar() {
 
     return (
         <nav className="navbar">
-            <div className="navbarMain">{renderLinks(data.slice(0, 4))}</div>
-
-            <div className="footer">{renderLinks(data.slice(4, 5))}</div>
+            <div className="navbarMain">{renderLinks(data.slice(0, 3))}</div>
+            <div className="footer">{renderLinks(data.slice(3, 4))}</div>
         </nav>
     );
 }

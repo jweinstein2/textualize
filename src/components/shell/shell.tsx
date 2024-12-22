@@ -5,7 +5,6 @@ import GroupList from "@/components/group_list/group_list";
 import NotFound from "@/components/notfound/notfound";
 import Settings from "@/components/settings/settings";
 import Summary from "@/components/summary/summary";
-import Wizard from "@/components/wizard/wizard";
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Route, Routes } from "react-router-dom";
@@ -36,7 +35,6 @@ function Shell() {
                     <Route path="/contacts/:number" element={<Contact />} />
                     <Route path="/groups" element={<GroupList />} />
                     <Route path="/groups/:id" element={<Group />} />
-                    <Route path="/ai" element={<Wizard />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
