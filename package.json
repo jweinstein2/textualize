@@ -1,5 +1,6 @@
 {
-    "name": "textual-activity",
+    "name": "textualize",
+    "productName": "Textual Activity",
     "version": "0.1.0",
     "main": "dist-electron/main/index.js",
     "description": "Pulling insights from personalized imessage data",
