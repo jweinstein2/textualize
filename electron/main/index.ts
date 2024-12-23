@@ -206,7 +206,8 @@ function backupInfo(fullPath: string): Backup {
     return {
         name,
         path: fullPath,
-        size: 0, // TODO: Add details
+        lastMessage: new Date(), // TODO
+        size: 0, // TODO
     };
 }
 

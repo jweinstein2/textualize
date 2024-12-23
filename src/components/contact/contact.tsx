@@ -162,7 +162,7 @@ function Contact() {
     function renderLanguage() {
         const options = {
             rotations: 8,
-            rotationAngles: [-20, 20],
+            rotationAngles: [-20, 20] as [number, number],
         };
 
         const callbacks = {

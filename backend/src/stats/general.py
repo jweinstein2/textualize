@@ -158,7 +158,7 @@ def group_summary(group):
 
 def group_connection_graph():
     MIN_MESSAGE_THRESHOLD = 20
-    MAX_NODE_COUNT = 150
+    MAX_NODE_COUNT = 100
 
     connection_matrix = {}
     handles = dm.handles().set_index(['ROWID'])

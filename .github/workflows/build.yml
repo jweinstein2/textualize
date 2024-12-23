@@ -43,7 +43,7 @@ jobs:
                   node-version: 18
 
             - name: Install Dependencies
-              run: npm install
+              run: npm install --legacy-peer-deps
 
             - name: Electron-Builder
               run: npm run gh_deploy_x64
@@ -82,7 +82,7 @@ jobs:
                   node-version: 18
 
             - name: Install Dependencies
-              run: npm install
+              run: npm install --legacy-peer-deps
 
             - name: Electron-Builder
               run: npm run gh_deploy_arm
