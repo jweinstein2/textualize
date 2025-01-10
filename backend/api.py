@@ -95,6 +95,7 @@ def language(number, start=None, end=None):
     result = language_stats.contact_summary(msg)
     return result
 
+@app.route('/frequency/', defaults={'number': None})
 @app.route('/frequency/<number>', methods=['GET'])
 def frequency(number=None, start=None, end=None):
     msg = data_manager.messages(number=number, start=start, end=end)

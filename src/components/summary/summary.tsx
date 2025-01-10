@@ -1,8 +1,9 @@
 import useVisNetwork from "@/components/network/useVisNetwork";
 import { showError } from "@/util";
+import { LineChart } from "@mantine/charts";
 import { Button, Center, Container, Paper, Stack, Text } from "@mantine/core";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const options = {
     edges: {
@@ -16,15 +17,44 @@ const options = {
     },
 };
 
+// TODO: Move to type file
+export type FrequencyDay = {
+    date: string;
+    sent: number;
+    recieved: number;
+};
+
 function Summary() {
     const [edges, setEdges] = useState([]);
     const [nodes, setNodes] = useState([]);
+    const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
 
     const { ref } = useVisNetwork({
         options,
         edges,
         nodes,
     });
+
+    useEffect(() => {
+        axios
+            .get(`http://127.0.0.1:4242/frequency/`)
+            .then((response) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const fetched = response.data.map((entry: any) => {
+                    const date = entry.Label;
+                    const sent = entry.Sent;
+                    const received = entry.Received;
+                    return { date, sent, received };
+                });
+                setFrequency(fetched);
+            })
+            .catch(() =>
+                showError(
+                    "Failed to load contact data",
+                    "Frequency graph could not be generated"
+                )
+            );
+    }, []);
 
     function fetchGroupData() {
         axios
@@ -64,7 +94,20 @@ function Summary() {
 
     return (
         <Container fluid>
-            <h3></h3>
+            <LineChart
+                h={200}
+                data={frequency}
+                dataKey="date"
+                series={[
+                    { name: "sent", color: "green.6" },
+                    { name: "received", color: "blue.6" },
+                ]}
+                curveType="linear"
+                tickLine="x"
+                withYAxis={false}
+                withDots={false}
+            />
+            <h3>General</h3>
             <h3>Emoji</h3>
             <h3>Groups</h3>
             <Paper shadow="md" style={{ height: 500, width: "100%" }}>
