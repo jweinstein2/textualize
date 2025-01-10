@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     Data,
     Edge,
@@ -19,7 +19,7 @@ export default (props: UseVisNetworkOptions) => {
     const [network, addNetwork] = useState<Network | null>(null);
     const ref = useRef<HTMLDivElement>(null);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const data: Data = { nodes, edges };
         if (ref.current) {
             const instance = new Network(ref.current, data, options);

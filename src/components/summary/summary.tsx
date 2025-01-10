@@ -1,8 +1,8 @@
 import useVisNetwork from "@/components/network/useVisNetwork";
 import { showError } from "@/util";
-import { Container, Paper } from "@mantine/core";
+import { Button, Center, Container, Paper, Stack, Text } from "@mantine/core";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const options = {
     edges: {
@@ -26,7 +26,7 @@ function Summary() {
         nodes,
     });
 
-    useEffect(() => {
+    function fetchGroupData() {
         axios
             .get(`http://127.0.0.1:4242/group_connection_graph`)
             .then((response) => {
@@ -42,15 +42,33 @@ function Summary() {
                 );
                 console.log(err);
             });
-    }, []);
+    }
+
+    // TODO: Let user select min group chat size and node count
+    function connectionGraph() {
+        if (nodes.length === 0) {
+            return (
+                <Center style={{ height: "100%" }}>
+                    <Stack align="flex-start" justify="center">
+                        <Text c="gray">
+                            The connection graph may take some time to build.
+                        </Text>
+                        <Button onClick={fetchGroupData}>Generate</Button>
+                    </Stack>
+                </Center>
+            );
+        }
+
+        return <div style={{ height: "100%", width: "100%" }} ref={ref} />;
+    }
 
     return (
         <Container fluid>
             <h3></h3>
             <h3>Emoji</h3>
             <h3>Groups</h3>
-            <Paper shadow="md">
-                <div style={{ height: 700, width: "100%" }} ref={ref} />
+            <Paper shadow="md" style={{ height: 500, width: "100%" }}>
+                {connectionGraph()}
             </Paper>
         </Container>
     );
