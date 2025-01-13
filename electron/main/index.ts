@@ -117,6 +117,7 @@ const indexHtml = path.join(RENDERER_DIST, "index.html");
 
 async function createWindow() {
     win = new BrowserWindow({
+        titleBarStyle: "hidden",
         title: "Textual Activity",
         webPreferences: {
             preload,
@@ -244,6 +245,7 @@ app.on("activate", () => {
 // New window example arg: new windows url
 ipcMain.handle("open-win", (_, arg) => {
     const childWindow = new BrowserWindow({
+        titleBarStyle: "hidden",
         webPreferences: {
             preload,
             nodeIntegration: true,
