@@ -6,7 +6,6 @@
     height: rem(700px);
     width: rem(300px);
     padding: var(--mantine-spacing-md);
-    margin-top: 16px;
     display: flex;
     flex-direction: column;
     border-right: rem(1px) solid
