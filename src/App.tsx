@@ -19,7 +19,7 @@ const theme = createTheme({
 function App() {
     return (
         <Provider store={store}>
-            <MantineProvider theme={theme}>
+            <MantineProvider theme={theme} defaultColorScheme="dark">
                 <HashRouter>
                     <UpdateModal />
                     <Notifications />

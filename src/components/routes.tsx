@@ -1,9 +1,15 @@
 import Backup from "@/components/onboarding/backup";
+import ContactList from "@/components/contact_list/contact_list";
+import Contact from "@/components/contact/contact";
+import Group from "@/components/group/group";
+import Settings from "@/components/settings/settings";
+import GroupList from "@/components/group_list/group_list";
 import DiskAccess from "@/components/onboarding/diskAccess";
 import Loading from "@/components/onboarding/loading";
 import Mac from "@/components/onboarding/mac";
 import Splash from "@/components/onboarding/splash";
-import Shell from "@/components/shell/shell";
+import Universe from "@/components/universe/universe";
+import Summary from "@/components/summary/summary";
 import { showError } from "@/util";
 import { Center, Loader } from "@mantine/core";
 import axios from "axios";
@@ -62,7 +68,13 @@ function Routes() {
             <Route path="/onboarding/mac" element={<Mac />} />
             <Route path="/disk_access" element={<DiskAccess />} />
             <Route path="/loading" element={<Loading />} />
-            <Route path="/*" element={<Shell />} />
+            <Route path="/*" element={<Universe />} />
+            <Route path="/overview" element={<Summary />} />
+            <Route path="/contacts" element={<ContactList />} />
+            <Route path="/contacts/:number" element={<Contact />} />
+            <Route path="/groups" element={<GroupList />} />
+            <Route path="/groups/:id" element={<Group />} />
+            <Route path="/settings" element={<Settings />} />
         </ReactRoutes>
     );
 }

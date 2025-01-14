@@ -1,0 +1,12 @@
+.background {
+    background-color: #121120;
+    width: 100vw;
+    height: 100vh;
+    padding: 40px 16px;
+}
+
+.select {
+    position: fixed;
+    z-index: 300;
+    max-width: 500px;
+}

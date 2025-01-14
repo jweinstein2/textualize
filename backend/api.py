@@ -64,6 +64,13 @@ def quick_stats():
 # STATS
 ##############################
 
+## TODO: Add group data and make sure it overlaps appropriately
+@app.route('/list', methods=['GET'])
+def list(start=None, end=None, n=100):
+    numbers = data_manager.numbers()
+    numbers = numbers[:n]
+    return numbers.to_dict(orient='records')
+
 # return the first n numbers ordered by frequency
 @app.route('/list_numbers', methods=['GET'])
 def list_numbers(start=None, end=None, n=100):
