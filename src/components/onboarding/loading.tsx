@@ -84,8 +84,8 @@ function Loading() {
                     <Center>
                         <Button onClick={() => navigate("/")}>EXPLORE</Button>
                     </Center>
+                </div>
             </div>
-        </div>
         );
     }
 

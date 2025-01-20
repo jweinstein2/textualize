@@ -95,7 +95,7 @@ function ChatList() {
         data: Chat[],
         sortBy: keyof Chat | null,
         reversed: boolean,
-        search: string
+        search: string,
     ) {
         const sorted = !sortBy
             ? [...data]
@@ -111,8 +111,8 @@ function ChatList() {
         const query = search.toLowerCase().trim();
         return data.filter((item) =>
             keys(data[0]).some((key) =>
-                String(item[key]).toLowerCase().includes(query)
-            )
+                String(item[key]).toLowerCase().includes(query),
+            ),
         );
     }
 

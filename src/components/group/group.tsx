@@ -41,8 +41,8 @@ function Group() {
             .catch(() =>
                 showError(
                     "Failed to load group data",
-                    "Frequency graph could not be generated"
-                )
+                    "Frequency graph could not be generated",
+                ),
             );
     }, []);
 
@@ -55,8 +55,8 @@ function Group() {
             .catch(() =>
                 showError(
                     "Failed to load group data",
-                    "Frequency graph could not be generated"
-                )
+                    "Frequency graph could not be generated",
+                ),
             );
     }, []);
 
@@ -69,8 +69,8 @@ function Group() {
             .catch(() =>
                 showError(
                     "Failed to load group data",
-                    "Frequency graph could not be generated"
-                )
+                    "Frequency graph could not be generated",
+                ),
             );
     }, []);
 

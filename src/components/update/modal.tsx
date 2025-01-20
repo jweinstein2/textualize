@@ -1,4 +1,4 @@
-import { Text, Button, Progress, Modal } from "@mantine/core";
+import { Button, Modal, Progress, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import type { ProgressInfo } from "electron-updater";
 import { useCallback, useEffect, useState } from "react";
@@ -17,21 +17,21 @@ function UpdateModal() {
             setError(undefined);
             open();
         },
-        []
+        [],
     );
 
     const onUpdateError = useCallback(
         (_event: Electron.IpcRendererEvent, arg1: ErrorType) => {
             setError(arg1);
         },
-        []
+        [],
     );
 
     const onDownloadProgress = useCallback(
         (_event: Electron.IpcRendererEvent, arg1: ProgressInfo) => {
             setProgressInfo(arg1);
         },
-        []
+        [],
     );
 
     const onUpdateDownloaded = useCallback(
@@ -39,13 +39,12 @@ function UpdateModal() {
         (_event: Electron.IpcRendererEvent, ...args: any[]) => {
             setProgressInfo({ percent: 100 });
         },
-        []
+        [],
     );
 
     function installUpdate() {
         window.ipcRenderer.invoke("start-download");
     }
-
 
     function quitAndInstall() {
         window.ipcRenderer.invoke("quit-and-install");
@@ -74,7 +73,9 @@ function UpdateModal() {
         if (error) {
             return (
                 <>
-                    <Text size="xs" c="dimmed" className={classes.error}>{error.message}</Text>
+                    <Text size="xs" c="dimmed" className={classes.error}>
+                        {error.message}
+                    </Text>
                     <div className={classes.buttonContainer}>
                         <Button onClick={close}>Dismiss</Button>
                     </div>
@@ -83,12 +84,14 @@ function UpdateModal() {
         }
 
         if (progressInfo?.percent === 100) {
-            return (<>
-                <Progress value={progressInfo?.percent} />
-                <div className={classes.buttonContainer}>
-                    <Button onClick={quitAndInstall}>Restart</Button>
-                </div>
-            </>);
+            return (
+                <>
+                    <Progress value={progressInfo?.percent} />
+                    <div className={classes.buttonContainer}>
+                        <Button onClick={quitAndInstall}>Restart</Button>
+                    </div>
+                </>
+            );
         }
 
         if (progressInfo?.percent != null) {
@@ -96,26 +99,35 @@ function UpdateModal() {
                 <>
                     <Progress value={progressInfo?.percent} />
                     <div className={classes.buttonContainer}>
-                        <Button disabled onClick={close} variant="light">Dismiss</Button>
-                        <Button disabled onClick={installUpdate}> Install now</Button>
+                        <Button disabled onClick={close} variant="light">
+                            Dismiss
+                        </Button>
+                        <Button disabled onClick={installUpdate}>
+                            {" "}
+                            Install now
+                        </Button>
                     </div>
                 </>
-            )
+            );
         }
 
         return (
             <>
-            <h3>Update Available</h3>
-                {versionInfo && <div>
-                    <Text>Current Version: v{versionInfo?.version}</Text>
-                    <Text>Latest Version: v{versionInfo?.newVersion}</Text>
-                </div>
-                }
+                <h3>Update Available</h3>
+                {versionInfo && (
+                    <div>
+                        <Text>Current Version: v{versionInfo?.version}</Text>
+                        <Text>Latest Version: v{versionInfo?.newVersion}</Text>
+                    </div>
+                )}
                 <div className={classes.buttonContainer}>
-                    <Button onClick={close} variant="light">Dismiss</Button>
+                    <Button onClick={close} variant="light">
+                        Dismiss
+                    </Button>
                     <Button onClick={installUpdate}> Install now</Button>
                 </div>
-            </>)
+            </>
+        );
     }
 
     return (
@@ -125,7 +137,8 @@ function UpdateModal() {
             withCloseButton={false}
             closeOnClickOutside={false}
             onClose={close}
-            size="sm">
+            size="sm"
+        >
             {modalContents()}
         </Modal>
     );

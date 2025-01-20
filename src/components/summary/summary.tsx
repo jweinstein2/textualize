@@ -56,8 +56,8 @@ function Summary() {
             .catch(() =>
                 showError(
                     "Failed to load contact data",
-                    "Frequency graph could not be generated"
-                )
+                    "Frequency graph could not be generated",
+                ),
             );
     }, []);
 
@@ -73,7 +73,7 @@ function Summary() {
             .catch((err) => {
                 showError(
                     "Failed to load data",
-                    "Connection graph could not be generated"
+                    "Connection graph could not be generated",
                 );
                 console.log(err);
             });

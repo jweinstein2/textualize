@@ -48,7 +48,7 @@ function Onboarding() {
                 ) {
                     showError(
                         "Unexpected error loading backups",
-                        "Fix by enabling full disk access in settings"
+                        "Fix by enabling full disk access in settings",
                     );
                 } else {
                     showError("Unexpected error loading backups", "");
@@ -67,7 +67,7 @@ function Onboarding() {
         axios
             .post("http://127.0.0.1:4242/process", { type, source: backupPath })
             .catch(() =>
-                showError("Fatal Error", "Unable to begin processing data")
+                showError("Fatal Error", "Unable to begin processing data"),
             );
         navigate("/loading");
     }

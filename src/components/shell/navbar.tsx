@@ -31,7 +31,7 @@ function Navbar() {
 
     useEffect(() => {
         const activeIndex = data.find(
-            (item) => item.link === location.pathname
+            (item) => item.link === location.pathname,
         );
         if (activeIndex?.label != undefined) {
             setActive(activeIndex.label);

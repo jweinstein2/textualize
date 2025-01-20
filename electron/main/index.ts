@@ -35,14 +35,14 @@ const getScriptPath = () => {
             __dirname,
             PY_DIST_FOLDER,
             PY_MODULE,
-            PY_MODULE + ".exe"
+            PY_MODULE + ".exe",
         );
     }
     return path.join(
         process.resourcesPath,
         PY_DIST_FOLDER,
         PY_MODULE,
-        PY_MODULE
+        PY_MODULE,
     );
 };
 
@@ -147,7 +147,7 @@ async function createWindow() {
                 pathname: path.join(__dirname, "dist/index.html"),
                 protocol: "file:",
                 slashes: true,
-            })
+            }),
         );
         // REDIRECT TO FIRST WEBPAGE AGAIN
     });
@@ -185,7 +185,7 @@ async function hasDiskAccess(): Promise<boolean> {
 async function openSystemPreferences() {
     if (process.platform === "darwin") {
         await shell.openExternal(
-            `x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles`
+            `x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles`,
         );
     }
 }

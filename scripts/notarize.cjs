@@ -8,7 +8,7 @@ exports.default = async function notarizing(context) {
     }
 
     if (process.env.SKIP_NOTARIZATION != null) {
-        console.log('Skipping notarization!')
+        console.log("Skipping notarization!");
         return;
     }
 

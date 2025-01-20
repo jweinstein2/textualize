@@ -85,7 +85,7 @@ function ContactList() {
         const { value } = event.currentTarget;
         setSearch(value);
         setSortedContacts(
-            sortData(contacts, sortBy, reverseSortDirection, value)
+            sortData(contacts, sortBy, reverseSortDirection, value),
         );
     }
 
@@ -93,7 +93,7 @@ function ContactList() {
         data: Contact[],
         sortBy: keyof Contact | null,
         reversed: boolean,
-        search: string
+        search: string,
     ) {
         const sorted = !sortBy
             ? [...data]
@@ -109,8 +109,8 @@ function ContactList() {
         const query = search.toLowerCase().trim();
         return data.filter((item) =>
             keys(data[0]).some((key) =>
-                String(item[key]).toLowerCase().includes(query)
-            )
+                String(item[key]).toLowerCase().includes(query),
+            ),
         );
     }
 

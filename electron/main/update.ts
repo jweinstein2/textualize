@@ -50,7 +50,7 @@ export function update(win: Electron.BrowserWindow) {
             () => {
                 // feedback update downloaded message
                 event.sender.send("update-downloaded");
-            }
+            },
         );
     });
 
@@ -63,23 +63,23 @@ export function update(win: Electron.BrowserWindow) {
 }
 
 export function checkForUpdate() {
-        if (!app.isPackaged) {
-            console.warn("Skipping update check for dev build");
-        }
+    if (!app.isPackaged) {
+        console.warn("Skipping update check for dev build");
+    }
 
-        try {
-            autoUpdater.checkForUpdatesAndNotify();
-        } catch (error) {
-            console.error(error);
-        }
+    try {
+        autoUpdater.checkForUpdatesAndNotify();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function startDownload(
     callback: (error: Error | null, info: ProgressInfo | null) => void,
-    complete: (event: UpdateDownloadedEvent) => void
+    complete: (event: UpdateDownloadedEvent) => void,
 ) {
     autoUpdater.on("download-progress", (info: ProgressInfo) =>
-        callback(null, info)
+        callback(null, info),
     );
     autoUpdater.on("error", (error: Error) => callback(error, null));
     autoUpdater.on("update-downloaded", complete);

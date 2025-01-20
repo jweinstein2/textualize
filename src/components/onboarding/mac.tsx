@@ -1,11 +1,10 @@
 import { showError } from "@/util";
-import { Text, Group, Stack, Radio, Button } from "@mantine/core";
+import { Button, Group, Radio, Stack, Text } from "@mantine/core";
 import axios from "axios";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./backup.css";
-
-import { useState } from "react";
 
 function Mac() {
     const navigate = useNavigate();
@@ -16,7 +15,7 @@ function Mac() {
         axios
             .post("http://127.0.0.1:4242/process", { type: "mac" })
             .catch(() =>
-                showError("Fatal Error", "Unable to begin processing data")
+                showError("Fatal Error", "Unable to begin processing data"),
             );
         navigate("/loading");
     }
@@ -41,7 +40,9 @@ function Mac() {
                             <Group wrap="nowrap" align="flex-start">
                                 <Radio.Indicator />
                                 <div>
-                                    <Text className="onboardingLabel">Messages Database</Text>
+                                    <Text className="onboardingLabel">
+                                        Messages Database
+                                    </Text>
                                 </div>
                             </Group>
                         </Radio.Card>

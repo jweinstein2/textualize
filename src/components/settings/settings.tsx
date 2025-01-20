@@ -1,10 +1,10 @@
 import { Button } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconArrowLeft } from "@tabler/icons-react";
 
-import classes from "./settings.module.css"
+import classes from "./settings.module.css";
 
 function Settings() {
     const navigate = useNavigate();
@@ -31,7 +31,8 @@ function Settings() {
                 >
                     <IconArrowLeft />
                 </Button>
-            Textual Activity {version}</h2>
+                Textual Activity {version}
+            </h2>
             <Button variant="filled" color="red" onClick={clearSource}>
                 Clear Data Source
             </Button>

@@ -33,7 +33,7 @@ function Routes() {
                 if (response.data.error) {
                     showError(
                         "Fatal error while processing messages",
-                        response.data.error
+                        response.data.error,
                     );
                 }
                 setLoading(false);

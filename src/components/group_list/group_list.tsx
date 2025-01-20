@@ -83,7 +83,7 @@ function GroupList() {
         data: Group[],
         sortBy: keyof Group | null,
         reversed: boolean,
-        search: string
+        search: string,
     ) {
         const sorted = !sortBy
             ? [...data]
@@ -105,8 +105,8 @@ function GroupList() {
         const query = search.toLowerCase().trim();
         return data.filter((item) =>
             keys(data[0]).some((key) =>
-                String(item[key]).toLowerCase().includes(query)
-            )
+                String(item[key]).toLowerCase().includes(query),
+            ),
         );
     }
 

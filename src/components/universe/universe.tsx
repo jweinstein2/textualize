@@ -20,7 +20,7 @@ enum DataTypeOption {
 const messageCountMap = (
     data: any, // eslint-disable-line
     index: number,
-    maxMessageCount: number
+    maxMessageCount: number,
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
     const distance = (120 - (data["sent"] / maxMessageCount) * 100) * 5.5;
@@ -44,7 +44,7 @@ const messageCountMap = (
 const streakMap = (
     data: any, // eslint-disable-line
     index: number,
-    maxStreakCount: number
+    maxStreakCount: number,
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
     const distance =
@@ -78,7 +78,7 @@ const earliestMap = (
     data: any, // eslint-disable-line
     index: number,
     firstDate: number,
-    lastDate: number
+    lastDate: number,
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
 
@@ -108,7 +108,7 @@ const recentMap = (
     data: any, // eslint-disable-line
     index: number,
     firstDate: number,
-    lastDate: number
+    lastDate: number,
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
 
@@ -138,7 +138,7 @@ const responseTimeMap = (
     data: any, // eslint-disable-line
     index: number,
     quickest: number,
-    slowest: number
+    slowest: number,
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
 
@@ -162,7 +162,7 @@ const responseTimeMap = (
 
 function Universe() {
     const [selectedDataType, setSelectedDataType] = useState<DataTypeOption>(
-        DataTypeOption.MessageCount
+        DataTypeOption.MessageCount,
     );
     const [planetData, setPlanetData] = useState<[]>([]);
     const [planets, setPlanets] = useState<ReactElement[]>([]);
@@ -182,55 +182,55 @@ function Universe() {
         switch (selectedDataType) {
             case DataTypeOption.MessageCount:
                 const maxMessageCount = Math.max(
-                    ...planetData.map((data) => data["sent"])
+                    ...planetData.map((data) => data["sent"]),
                 );
                 const countPlanets = planetData.map((d, i) =>
-                    messageCountMap(d, i, maxMessageCount)
+                    messageCountMap(d, i, maxMessageCount),
                 );
                 setPlanets(countPlanets);
                 break;
             case DataTypeOption.Streak:
                 const maxStreakCount = Math.max(
-                    ...planetData.map((data) => data["longest_streak"])
+                    ...planetData.map((data) => data["longest_streak"]),
                 );
                 const streakPlanets = planetData.map((d, i) =>
-                    streakMap(d, i, maxStreakCount)
+                    streakMap(d, i, maxStreakCount),
                 );
                 setPlanets(streakPlanets);
                 break;
             case DataTypeOption.Earliest:
                 const firstMessages = planetData.map((d) =>
-                    new Date(d["oldest_date"]).getTime()
+                    new Date(d["oldest_date"]).getTime(),
                 );
                 const first = Math.max(...firstMessages);
                 const last = Math.min(...firstMessages);
 
                 const oldestPlanets = planetData.map((d, i) =>
-                    earliestMap(d, i, first, last)
+                    earliestMap(d, i, first, last),
                 );
                 setPlanets(oldestPlanets);
                 break;
             case DataTypeOption.Recent:
                 const latestMessages = planetData.map((d) =>
-                    new Date(d["newest_date"]).getTime()
+                    new Date(d["newest_date"]).getTime(),
                 );
                 const firstLatest = Math.max(...latestMessages);
                 const lastLatest = Math.min(...latestMessages);
                 //
                 const recentPlanets = planetData.map((d, i) =>
-                    recentMap(d, i, firstLatest, lastLatest)
+                    recentMap(d, i, firstLatest, lastLatest),
                 );
                 setPlanets(recentPlanets);
                 break;
             case DataTypeOption.ResponseTime:
                 const responseTimes = planetData.map(
-                    (d) => d["received_response_time"]
+                    (d) => d["received_response_time"],
                 );
                 const quickest = Math.max(...responseTimes);
                 const slowest = Math.min(...responseTimes);
 
                 const responseTimePlanets = planetData.map((d, i) =>
-                    responseTimeMap(d, i, quickest, slowest)
+                    responseTimeMap(d, i, quickest, slowest),
                 );
                 setPlanets(responseTimePlanets);
                 break;
