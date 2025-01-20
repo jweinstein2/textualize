@@ -1,21 +1,4 @@
-.wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: calc(var(--mantine-spacing-xl) * 2);
-}
-
-.body {
-    width: 600px;
-}
-
-.card {
+.onboardingCard {
     position: relative;
     padding: var(--mantine-spacing-sm);
     transition: border-color 150ms ease;
@@ -35,17 +18,25 @@
     }
 }
 
-.next {
+.onboardingNext {
     float: right;
     margin-left: var(--mantine-spacing-sm);
     margin-top: var(--mantine-spacing-sm);
 }
 
-.analyze {
-    width: 100%;
-}
-
-p.label {
+p.onboardingLabel {
     font-weight: bold;
     font-size: var(--mantine-font-size-md);
+}
+
+.onboardingContainer {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.onboardingContents {
+    max-width: 600px;
+    flex-grow: 1;
 }

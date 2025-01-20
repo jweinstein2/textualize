@@ -2,6 +2,9 @@ import { Button } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IconArrowLeft } from "@tabler/icons-react";
+
+import classes from "./settings.module.css"
 
 function Settings() {
     const navigate = useNavigate();
@@ -20,8 +23,15 @@ function Settings() {
     }
 
     return (
-        <div>
-            <h5>Textual Activity {version}</h5>
+        <div className={classes.container}>
+            <h2>
+                <Button
+                    className={classes.backButton}
+                    onClick={() => navigate(-1)}
+                >
+                    <IconArrowLeft />
+                </Button>
+            Textual Activity {version}</h2>
             <Button variant="filled" color="red" onClick={clearSource}>
                 Clear Data Source
             </Button>

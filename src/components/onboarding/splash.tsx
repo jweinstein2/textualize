@@ -4,7 +4,6 @@ import {
     IconDeviceMobile,
     IconShieldLock,
     IconTerminal2,
-    IconTopologyStar3,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
@@ -31,14 +30,12 @@ function Splash() {
                     <Text size="sm">Select a data source to get started</Text>
                     <div className={styles.buttonContainer}>
                         <Button
-                            variant="white"
                             onClick={() => checkDiskAccessAndNavigate("mac")}
                         >
                             <IconDeviceImac />
                             Mac Messages
                         </Button>
                         <Button
-                            variant="white"
                             onClick={() => checkDiskAccessAndNavigate("backup")}
                         >
                             <IconDeviceMobile />

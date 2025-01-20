@@ -2,8 +2,12 @@ import useVisNetwork from "@/components/network/useVisNetwork";
 import { showError } from "@/util";
 import { LineChart } from "@mantine/charts";
 import { Button, Center, Container, Paper, Stack, Text } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import classes from "./summary.module.css";
 
 const options = {
     edges: {
@@ -29,6 +33,7 @@ function Summary() {
     const [nodes, setNodes] = useState([]);
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
 
+    const navigate = useNavigate();
     const { ref } = useVisNetwork({
         options,
         edges,
@@ -94,6 +99,16 @@ function Summary() {
 
     return (
         <Container fluid>
+            <h2>
+                <Button
+                    className={classes.backButton}
+                    onClick={() => navigate(-1)}
+                >
+                    <IconArrowLeft />
+                </Button>
+                Summary
+            </h2>
+
             <LineChart
                 h={200}
                 data={frequency}

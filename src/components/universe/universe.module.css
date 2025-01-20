@@ -2,11 +2,32 @@
     background-color: #121120;
     width: 100vw;
     height: 100vh;
-    padding: 40px 16px;
+    padding: 16px;
+}
+
+.floatLeft {
+    display: flex;
+    gap: 12px;
+    position: fixed;
+    z-index: 300;
+}
+
+.floatLeft Button {
+    height: 40px;
+}
+
+.floatRight {
+    right: 16px;
+    margin-right: 16px;
+    display: flex;
+    position: fixed;
+    z-index: 300;
+}
+
+.floatRight Button {
+    height: 40px;
 }
 
 .select {
-    position: fixed;
-    z-index: 300;
     max-width: 500px;
 }

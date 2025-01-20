@@ -10,8 +10,6 @@ import {
     Timeline,
 } from "@mantine/core";
 import {
-    IconDeviceImac,
-    IconDeviceMobile,
     IconShieldLock,
     IconTerminal2,
     IconTopologyStar3,
@@ -77,7 +75,7 @@ function Onboarding() {
     function renderBackupCards() {
         return backupOptions.map((backup) => (
             <Radio.Card
-                className="card"
+                className="onboardingCard"
                 radius="md"
                 value={backup.path}
                 key={backup.path}
@@ -135,7 +133,7 @@ function Onboarding() {
                         </Timeline.Item>
                     </Timeline>
 
-                    <Button className="next" onClick={listBackups}>
+                    <Button className="onboardingNext" onClick={listBackups}>
                         Refresh
                     </Button>
                 </>
@@ -155,18 +153,18 @@ function Onboarding() {
                 </Radio.Group>
                 <Button
                     disabled={backupPath == null}
-                    className="next"
+                    className="onboardingNext"
                     onClick={analyze}
                 >
-                    Next
+                    Analyze!
                 </Button>
             </>
         );
     }
 
     return (
-        <div className="wrapper">
-            <div className="body">
+        <div className="onboardingContainer">
+            <div className="onboardingContents">
                 <h2>Load data from an iPhone Backup</h2>
                 {loading ? (
                     <Center>

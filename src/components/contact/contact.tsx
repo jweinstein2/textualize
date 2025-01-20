@@ -1,12 +1,16 @@
 import Bubble from "@/components/message/bubble";
 import { showError } from "@/util";
 import { LineChart } from "@mantine/charts";
-import { Container } from "@mantine/core";
+import { Button, Container } from "@mantine/core";
 import { Center, Loader } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
 import ReactWordcloud from "react-wordcloud";
+
+import classes from "./contact.module.css";
 
 export type FrequencyDay = {
     date: string;
@@ -41,6 +45,7 @@ function Contact() {
     const [emoji, setEmoji] = useState<EmojiData>();
     const [name, setName] = useState("");
 
+    const navigate = useNavigate();
     const params = useParams();
 
     useEffect(() => {
@@ -95,7 +100,6 @@ function Contact() {
         axios
             .get(`http://127.0.0.1:4242/language/${params.number}`)
             .then((response) => {
-                console.log(response.data);
                 setLanguage(response.data);
             })
             .catch(() =>
@@ -181,7 +185,15 @@ function Contact() {
 
     return (
         <Container fluid>
-            <h2>{name}</h2>
+            <h2>
+                <Button
+                    className={classes.backButton}
+                    onClick={() => navigate(-1)}
+                >
+                    <IconArrowLeft />
+                </Button>
+                {name}
+            </h2>
             <LineChart
                 h={200}
                 data={frequency}

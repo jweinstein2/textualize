@@ -79,9 +79,13 @@ function Loading() {
 
     if (progress === 100) {
         return (
-            <Center>
-                <Button onClick={() => navigate("/")}>EXPLORE</Button>
-            </Center>
+            <div className="wrapper">
+                <div className="body">
+                    <Center>
+                        <Button onClick={() => navigate("/")}>EXPLORE</Button>
+                    </Center>
+            </div>
+        </div>
         );
     }
 
