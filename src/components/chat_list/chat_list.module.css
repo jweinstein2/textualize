@@ -12,7 +12,7 @@
 }
 
 .table {
-    minwidth: 800px;
+    min-width: 800px;
     flex-grow: 1;
 }
 
