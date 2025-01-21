@@ -65,26 +65,13 @@ def quick_stats():
 # STATS
 ##############################
 
-## TODO: Add group data and make sure it overlaps appropriately
-@app.route('/list', methods=['GET'])
+# TODO: Remove the abstraction of groups and individuals
+@app.route('/chats', methods=['GET'])
 def list(start=None, end=None, n=100):
-    numbers = data_manager.numbers()
-    numbers = numbers[:n]
-    return numbers.to_dict(orient='records')
-
-# return the first n numbers ordered by frequency
-@app.route('/list_numbers', methods=['GET'])
-def list_numbers(start=None, end=None, n=100):
-    numbers = data_manager.numbers()
-    numbers = numbers[:n]
-    return numbers.to_dict(orient='records')
-
-# return the first n groups ordered by frequency
-@app.route('/list_groups', methods=['GET'])
-def list_groups(start=None, end=None, n=100):
-    groups = data_manager.groups()
-    groups = groups[:n]
-    return groups.to_dict(orient='records')
+    chats = data_manager.processed_chats()
+    chats = chats.sort_values(by='count_total', ascending=False)
+    chats = chats[:n]
+    return chats.to_dict(orient='records')
 
 @app.route('/contact/<number>', methods=['GET'])
 def contact_info(number):

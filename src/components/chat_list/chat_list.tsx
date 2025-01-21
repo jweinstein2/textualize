@@ -1,3 +1,4 @@
+import { groupName } from "@/util";
 import {
     Button,
     Center,
@@ -8,7 +9,7 @@ import {
     UnstyledButton,
     keys,
 } from "@mantine/core";
-import { IconSettings, IconUniverse } from "@tabler/icons-react";
+import { IconSettings, IconUniverse, IconUsers } from "@tabler/icons-react";
 import {
     IconChevronDown,
     IconChevronUp,
@@ -23,11 +24,13 @@ import classes from "./chat_list.module.css";
 
 export type Chat = {
     name: string;
-    number: string;
-    message_count: number;
+    id: string;
+    countTotal: number;
     oldest: Date;
     newest: Date;
     longestStreak: number;
+    isGroup: boolean;
+    detailsLink: string;
 };
 
 interface ThProps {
@@ -55,22 +58,30 @@ function ChatList() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:4242/list_numbers").then((response) => {
+        axios.get("http://127.0.0.1:4242/chats").then((response) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const fetched = response.data.map((entry: any) => {
-                const name = entry.name;
-                const number = entry.number;
-                const message_count = entry.sent + entry.received;
+                const isGroup = entry.is_group;
+                const name = isGroup
+                    ? groupName(entry.members, entry.name)
+                    : entry.name;
+                const id = isGroup ? entry.id : entry.number;
+                const countTotal = entry.count_total;
                 const oldest = new Date(entry.oldest_date);
                 const newest = new Date(entry.newest_date);
                 const longestStreak = entry.longest_streak;
+                const detailsLink = isGroup
+                    ? `/groups/${id}`
+                    : `/contacts/${id}`;
                 return {
                     name,
-                    number,
-                    message_count,
+                    id,
+                    countTotal,
                     oldest,
                     newest,
                     longestStreak,
+                    detailsLink,
+                    isGroup,
                 };
             });
             setChats(fetched);
@@ -95,7 +106,7 @@ function ChatList() {
         data: Chat[],
         sortBy: keyof Chat | null,
         reversed: boolean,
-        search: string,
+        search: string
     ) {
         const sorted = !sortBy
             ? [...data]
@@ -111,8 +122,8 @@ function ChatList() {
         const query = search.toLowerCase().trim();
         return data.filter((item) =>
             keys(data[0]).some((key) =>
-                String(item[key]).toLowerCase().includes(query),
-            ),
+                String(item[key]).toLowerCase().includes(query)
+            )
         );
     }
 
@@ -141,11 +152,18 @@ function ChatList() {
     function renderRows() {
         return sortedContacts.map((contact) => (
             <Table.Tr
-                key={contact.number}
-                onClick={() => navigate(`/contacts/${contact.number}`)}
+                key={contact.id}
+                onClick={() => navigate(contact.detailsLink)}
             >
-                <Table.Td>{contact.name}</Table.Td>
-                <Table.Td>{contact.message_count}</Table.Td>
+                <Table.Td>
+                    {contact.isGroup ? (
+                        <IconUsers className={classes.groupIcon} />
+                    ) : (
+                        <></>
+                    )}
+                    {contact.name}
+                </Table.Td>
+                <Table.Td>{contact.countTotal}</Table.Td>
                 <Table.Td>{prettyDate(contact.oldest)}</Table.Td>
                 <Table.Td>{prettyDate(contact.newest)}</Table.Td>
                 <Table.Td>{contact.longestStreak}</Table.Td>
@@ -173,9 +191,9 @@ function ChatList() {
                             Name
                         </Th>
                         <Th
-                            sorted={sortBy === "message_count"}
+                            sorted={sortBy === "countTotal"}
                             reversed={reverseSortDirection}
-                            onSort={() => setSorting("message_count")}
+                            onSort={() => setSorting("countTotal")}
                         >
                             Total Messages
                         </Th>

@@ -2,6 +2,7 @@
 import threading
 import shutil
 import pandas as pd
+import numpy as np
 import time
 
 import src.util as util
@@ -76,6 +77,18 @@ def numbers():
 
 def groups():
     return _fetch(GROUP_TABLE_PATH)
+
+# Join groups and numbers for FE consumption
+# TODO: Remove the processing division between groups and numbers
+def processed_chats():
+    number_list = numbers()
+    number_list['members'] = np.empty((len(number_list), 0)).tolist() # Only used by groups
+    number_list['is_group'] = False
+    group_list = groups()
+    group_list['is_group'] = True
+    chat_list = pd.concat([group_list, number_list])
+    chat_list = chat_list.replace(np.nan, 0) # TODO: hacky but allows us to use arbitrary json conversion in TS
+    return chat_list
 
 # Get the messages df filtered by time, group, and sender
 def messages(number=None, is_group=None, start=None, end=None, type=0):

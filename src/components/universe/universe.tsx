@@ -59,21 +59,31 @@ enum DataTypeOption {
     ResponseTime = "Your Response Time",
 }
 
+// eslint-disable-next-line
+function buildLink(data: any): string {
+    if (data["is_group"]) {
+        return `/groups/${data["id"]}`;
+    } else {
+        return `/contacts/${data["number"]}`;
+    }
+}
+
 const messageCountMap = (
     data: any, // eslint-disable-line
     index: number,
     maxMessageCount: number
 ): ReactElement => {
-    const link = `/contacts/${data["number"]}`;
-    const distance = (120 - (data["sent"] / maxMessageCount) * 100) * 5.5;
-    const tooltip = `${data["name"]}:  ${data["sent"]} messages`;
+    const link = buildLink(data);
+    const distance =
+        (120 - (data["count_total"] / maxMessageCount) * 100) * 5.5;
+    const tooltip = `${data["name"]}:  ${data["count_total"]} messages`;
 
     const speedJitter =
         Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
     return (
         <Planet
-            firstName={data["first"]}
-            lastName={data["last"]}
+            firstName={data["first"] || data["name"]}
+            lastName={data["last"] || ""}
             tooltip={tooltip}
             size={40}
             movement={{ distance, speed: 1.5 + speedJitter, type: "orbit" }}
@@ -88,7 +98,7 @@ const streakMap = (
     index: number,
     maxStreakCount: number
 ): ReactElement => {
-    const link = `/contacts/${data["number"]}`;
+    const link = buildLink(data);
     const distance =
         (120 - (data["longest_streak"] / maxStreakCount) * 100) * 5.5;
     const tooltip = `${data["name"]}:  ${data["longest_streak"]} days`;
@@ -97,8 +107,8 @@ const streakMap = (
         Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
     return (
         <Planet
-            firstName={data["first"]}
-            lastName={data["last"]}
+            firstName={data["first"] || data["name"]}
+            lastName={data["last"] || ""}
             tooltip={tooltip}
             size={40}
             movement={{ distance, speed: 1.5 + speedJitter, type: "orbit" }}
@@ -122,7 +132,7 @@ const earliestMap = (
     firstDate: number,
     lastDate: number
 ): ReactElement => {
-    const link = `/contacts/${data["number"]}`;
+    const link = buildLink(data);
 
     const date = new Date(data["oldest_date"]);
     const dataDate = date.getTime();
@@ -135,8 +145,8 @@ const earliestMap = (
         Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
     return (
         <Planet
-            firstName={data["first"]}
-            lastName={data["last"]}
+            firstName={data["first"] || data["name"]}
+            lastName={data["last"] || ""}
             tooltip={tooltip}
             size={40}
             movement={{ distance, speed: 1.5 + speedJitter, type: "orbit" }}
@@ -152,7 +162,7 @@ const recentMap = (
     firstDate: number,
     lastDate: number
 ): ReactElement => {
-    const link = `/contacts/${data["number"]}`;
+    const link = buildLink(data);
 
     const date = new Date(data["newest_date"]);
     const dataDate = date.getTime();
@@ -165,8 +175,8 @@ const recentMap = (
         Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
     return (
         <Planet
-            firstName={data["first"]}
-            lastName={data["last"]}
+            firstName={data["first"] || data["name"]}
+            lastName={data["last"] || ""}
             tooltip={tooltip}
             size={40}
             movement={{ distance, speed: 1.5 + speedJitter, type: "orbit" }}
@@ -182,7 +192,7 @@ const responseTimeMap = (
     quickest: number,
     slowest: number
 ): ReactElement => {
-    const link = `/contacts/${data["number"]}`;
+    const link = buildLink(data);
 
     const time = data["received_response_time"];
     const distance = (20 + Math.random() * 100) * 5.5;
@@ -191,8 +201,8 @@ const responseTimeMap = (
 
     return (
         <Planet
-            firstName={data["first"]}
-            lastName={data["last"]}
+            firstName={data["first"] || data["name"]}
+            lastName={data["last"] || ""}
             tooltip={tooltip}
             size={40}
             movement={{ distance, speed, type: "orbit" }}
@@ -213,18 +223,22 @@ function Universe() {
 
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:4242/list")
+            .get("http://127.0.0.1:4242/chats")
             .then((response) => {
                 setPlanetData(response.data);
             })
-            .catch(() => {});
+            .catch((error) => {
+                console.log(error);
+            });
     }, []);
 
     useEffect(() => {
+        if (planetData == null || planetData.length == 0) return;
+
         switch (selectedDataType) {
             case DataTypeOption.MessageCount:
                 const maxMessageCount = Math.max(
-                    ...planetData.map((data) => data["sent"])
+                    ...planetData.map((data) => data["count_total"])
                 );
                 const countPlanets = planetData.map((d, i) =>
                     messageCountMap(d, i, maxMessageCount)
@@ -271,7 +285,12 @@ function Universe() {
                 const quickest = Math.max(...responseTimes);
                 const slowest = Math.min(...responseTimes);
 
-                const responseTimePlanets = planetData.map((d, i) =>
+                const individual_chats = planetData.filter(
+                    // TODO: Add back groups
+                    (d) => !d["is_group"]
+                );
+
+                const responseTimePlanets = individual_chats.map((d, i) =>
                     responseTimeMap(d, i, quickest, slowest)
                 );
                 setPlanets(responseTimePlanets);
@@ -309,7 +328,7 @@ function Universe() {
                         <IconSettings />
                     </Button>
                 </div>
-                {planets}
+                {planets.slice(0, 50)} {/* TODO: Customize w. Filter */}
                 <Planet
                     firstName="Jared"
                     lastName="Weinstein"
