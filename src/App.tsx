@@ -1,6 +1,8 @@
 import { MantineProvider, createTheme } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import React from "react";
+import { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
 
@@ -17,13 +19,25 @@ const theme = createTheme({
 });
 
 function App() {
+    const [init, setInit] = useState(false);
+
+    // This should be run only once per application lifetime
+    useEffect(() => {
+        if (init) return;
+        initParticlesEngine(async (engine) => {
+            await loadSlim(engine);
+        }).then(() => {
+            setInit(true);
+        });
+    }, []);
+
     return (
         <Provider store={store}>
             <MantineProvider theme={theme} defaultColorScheme="dark">
                 <HashRouter>
                     <UpdateModal />
                     <Notifications />
-                    <Routes />
+                    {init ? <Routes /> : <></>}
                 </HashRouter>
             </MantineProvider>
         </Provider>

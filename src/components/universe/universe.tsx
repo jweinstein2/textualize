@@ -1,13 +1,55 @@
 import Planet from "@/components/universe/planet";
 import { Button, Select } from "@mantine/core";
 import { IconList, IconSettings } from "@tabler/icons-react";
+import { MoveDirection } from "@tsparticles/engine";
+import Particles from "@tsparticles/react";
 import axios from "axios";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, memo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import classes from "./universe.module.css";
 
 const SPEED_JITTER_THRESHOLD = 0.5;
+
+const OPTIONS = {
+    autoPlay: true,
+    background: {
+        color: {
+            value: "#080612",
+        },
+    },
+    particles: {
+        number: {
+            value: 1000,
+            density: {
+                enable: true,
+                width: 1024,
+                height: 1024,
+            },
+        },
+        move: {
+            direction: MoveDirection.top,
+            enable: true,
+            speed: 0.5,
+            straight: true,
+        },
+        opacity: {
+            animation: {
+                enable: true,
+                speed: 0.1,
+                sync: false,
+            },
+            value: { min: 0, max: 0.3 },
+        },
+        size: {
+            value: { min: 0.2, max: 1.5 },
+        },
+    },
+};
+
+const Stars = memo(function Stars({}) {
+    return <Particles id="tsparticles" options={OPTIONS} />;
+});
 
 enum DataTypeOption {
     MessageCount = "Messages Sent",
@@ -20,7 +62,7 @@ enum DataTypeOption {
 const messageCountMap = (
     data: any, // eslint-disable-line
     index: number,
-    maxMessageCount: number,
+    maxMessageCount: number
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
     const distance = (120 - (data["sent"] / maxMessageCount) * 100) * 5.5;
@@ -44,7 +86,7 @@ const messageCountMap = (
 const streakMap = (
     data: any, // eslint-disable-line
     index: number,
-    maxStreakCount: number,
+    maxStreakCount: number
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
     const distance =
@@ -78,7 +120,7 @@ const earliestMap = (
     data: any, // eslint-disable-line
     index: number,
     firstDate: number,
-    lastDate: number,
+    lastDate: number
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
 
@@ -108,7 +150,7 @@ const recentMap = (
     data: any, // eslint-disable-line
     index: number,
     firstDate: number,
-    lastDate: number,
+    lastDate: number
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
 
@@ -138,7 +180,7 @@ const responseTimeMap = (
     data: any, // eslint-disable-line
     index: number,
     quickest: number,
-    slowest: number,
+    slowest: number
 ): ReactElement => {
     const link = `/contacts/${data["number"]}`;
 
@@ -162,7 +204,7 @@ const responseTimeMap = (
 
 function Universe() {
     const [selectedDataType, setSelectedDataType] = useState<DataTypeOption>(
-        DataTypeOption.MessageCount,
+        DataTypeOption.MessageCount
     );
     const [planetData, setPlanetData] = useState<[]>([]);
     const [planets, setPlanets] = useState<ReactElement[]>([]);
@@ -182,55 +224,55 @@ function Universe() {
         switch (selectedDataType) {
             case DataTypeOption.MessageCount:
                 const maxMessageCount = Math.max(
-                    ...planetData.map((data) => data["sent"]),
+                    ...planetData.map((data) => data["sent"])
                 );
                 const countPlanets = planetData.map((d, i) =>
-                    messageCountMap(d, i, maxMessageCount),
+                    messageCountMap(d, i, maxMessageCount)
                 );
                 setPlanets(countPlanets);
                 break;
             case DataTypeOption.Streak:
                 const maxStreakCount = Math.max(
-                    ...planetData.map((data) => data["longest_streak"]),
+                    ...planetData.map((data) => data["longest_streak"])
                 );
                 const streakPlanets = planetData.map((d, i) =>
-                    streakMap(d, i, maxStreakCount),
+                    streakMap(d, i, maxStreakCount)
                 );
                 setPlanets(streakPlanets);
                 break;
             case DataTypeOption.Earliest:
                 const firstMessages = planetData.map((d) =>
-                    new Date(d["oldest_date"]).getTime(),
+                    new Date(d["oldest_date"]).getTime()
                 );
                 const first = Math.max(...firstMessages);
                 const last = Math.min(...firstMessages);
 
                 const oldestPlanets = planetData.map((d, i) =>
-                    earliestMap(d, i, first, last),
+                    earliestMap(d, i, first, last)
                 );
                 setPlanets(oldestPlanets);
                 break;
             case DataTypeOption.Recent:
                 const latestMessages = planetData.map((d) =>
-                    new Date(d["newest_date"]).getTime(),
+                    new Date(d["newest_date"]).getTime()
                 );
                 const firstLatest = Math.max(...latestMessages);
                 const lastLatest = Math.min(...latestMessages);
                 //
                 const recentPlanets = planetData.map((d, i) =>
-                    recentMap(d, i, firstLatest, lastLatest),
+                    recentMap(d, i, firstLatest, lastLatest)
                 );
                 setPlanets(recentPlanets);
                 break;
             case DataTypeOption.ResponseTime:
                 const responseTimes = planetData.map(
-                    (d) => d["received_response_time"],
+                    (d) => d["received_response_time"]
                 );
                 const quickest = Math.max(...responseTimes);
                 const slowest = Math.min(...responseTimes);
 
                 const responseTimePlanets = planetData.map((d, i) =>
-                    responseTimeMap(d, i, quickest, slowest),
+                    responseTimeMap(d, i, quickest, slowest)
                 );
                 setPlanets(responseTimePlanets);
                 break;
@@ -241,36 +283,42 @@ function Universe() {
     }, [planetData, selectedDataType]);
 
     return (
-        <div className={classes.background}>
-            <div className={classes.floatLeft}>
-                <Select
-                    className={classes.select}
-                    data={Object.values(DataTypeOption)}
-                    value={selectedDataType}
-                    onChange={(value) =>
-                        setSelectedDataType(value as DataTypeOption)
-                    }
-                    allowDeselect={false}
-                    size="md"
-                />
-                <Button onClick={() => navigate("/chats")}>
-                    <IconList />
-                </Button>
+        <div>
+            <Stars />
+            <div className={classes.background}>
+                <div className={classes.floatLeft}>
+                    <Select
+                        className={classes.select}
+                        data={Object.values(DataTypeOption)}
+                        value={selectedDataType}
+                        onChange={(value) =>
+                            setSelectedDataType(value as DataTypeOption)
+                        }
+                        allowDeselect={false}
+                        size="md"
+                    />
+                    <Button onClick={() => navigate("/chats")}>
+                        <IconList />
+                    </Button>
+                </div>
+                <div className={classes.floatRight}>
+                    <Button
+                        onClick={() => navigate("/settings")}
+                        variant="light"
+                    >
+                        <IconSettings />
+                    </Button>
+                </div>
+                {planets}
+                <Planet
+                    firstName="Jared"
+                    lastName="Weinstein"
+                    link="/overview"
+                    key="me"
+                    size={100}
+                    movement={{ distance: 0, degree: 0, type: "position" }}
+                ></Planet>
             </div>
-            <div className={classes.floatRight}>
-                <Button onClick={() => navigate("/settings")} variant="light">
-                    <IconSettings />
-                </Button>
-            </div>
-            {planets}
-            <Planet
-                firstName="Jared"
-                lastName="Weinstein"
-                link="/overview"
-                key="me"
-                size={100}
-                movement={{ distance: 0, degree: 0, type: "position" }}
-            ></Planet>
         </div>
     );
 }
