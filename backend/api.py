@@ -40,6 +40,7 @@ def source():
 @app.route('/process', methods=['GET', 'POST', 'DELETE'])
 def process():
     if request.method == 'DELETE':
+        config.reset();
         data_manager.clear()
         return "", HTTPStatus.OK
     if request.method == 'GET':
