@@ -228,22 +228,26 @@ function ChatList() {
     return (
         <div className={classes.container}>
             <div className={classes.table}>
-                <h2 className={classes.header}>
-                    <Button
-                        className={classes.backButton}
-                        onClick={() => navigate("/")}
-                    >
-                        <IconUniverse />
-                    </Button>
-                    Chats
+                <div className={classes.header}>
+                    <div className={classes.headerLeft}>
+                        <h2>
+                            <Button
+                                className={classes.backButton}
+                                onClick={() => navigate("/")}
+                            >
+                                <IconUniverse />
+                            </Button>
+                            Chats
+                        </h2>
+                    </div>
+
                     <Button
                         variant="light"
-                        className={classes.settings}
                         onClick={() => navigate("/settings")}
                     >
                         <IconSettings />
                     </Button>
-                </h2>
+                </div>
                 {table}
             </div>
         </div>
