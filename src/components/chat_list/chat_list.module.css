@@ -4,6 +4,9 @@
 
 .header {
     margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
 }
 
 .backButton {
@@ -16,9 +19,12 @@
     flex-grow: 1;
 }
 
-.settings {
-    position: fixed;
-    right: 20px;
+.headerLeft {
+    display: block;
+}
+
+.headerLeft h2 {
+    margin-top: 0;
 }
 
 .groupIcon {
