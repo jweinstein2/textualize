@@ -1,7 +1,7 @@
 {
     "name": "textualize",
     "productName": "Textual Activity",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "main": "dist-electron/main/index.js",
     "description": "Pulling insights from personalized imessage data",
     "author": "Jared Weinstein <jaredweinstein1@gmail.com>",
