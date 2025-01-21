@@ -43,7 +43,7 @@ function Planet(props: PlanetProps) {
     // Position should only be set by useAnimationFrame. To move the planet use `setPositionOverride`.
     // This queues up the change and prevents a race condition between position updates.
     const [position, setPosition] = useState<PlanetPosition | undefined>(
-        undefined,
+        undefined
     );
     const [positionOverride, setPositionOverride] = useState<
         PlanetPosition | undefined
@@ -112,7 +112,7 @@ function Planet(props: PlanetProps) {
                     position.radius * Math.sin(position.angle) +
                     props.size / 2;
                 const mouseDistance = Math.sqrt(
-                    Math.pow(x - positionX, 2) + Math.pow(y - positionY, 2),
+                    Math.pow(x - positionX, 2) + Math.pow(y - positionY, 2)
                 );
                 const flex = 20;
                 const speed =

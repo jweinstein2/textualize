@@ -1,7 +1,5 @@
 import Contact from "@/components/contact/contact";
-import ContactList from "@/components/contact_list/contact_list";
 import Group from "@/components/group/group";
-import GroupList from "@/components/group_list/group_list";
 import NotFound from "@/components/notfound/notfound";
 import Settings from "@/components/settings/settings";
 import Summary from "@/components/summary/summary";
@@ -31,9 +29,7 @@ function Shell() {
                 <Routes>
                     <Route path="/" element={<Summary />} />
                     <Route path="/summary" element={<Summary />} />
-                    <Route path="/contacts" element={<ContactList />} />
                     <Route path="/contacts/:number" element={<Contact />} />
-                    <Route path="/groups" element={<GroupList />} />
                     <Route path="/groups/:id" element={<Group />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="*" element={<NotFound />} />

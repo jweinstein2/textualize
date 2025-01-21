@@ -20,3 +20,10 @@
     position: fixed;
     right: 20px;
 }
+
+.groupIcon {
+    margin-right: 8px;
+    vertical-align: top;
+    width: 20px;
+    height: 20px;
+}

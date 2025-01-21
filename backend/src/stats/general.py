@@ -66,8 +66,9 @@ def simple_stats(number):
     info_dict = {}
     messages = dm.messages(number)
     sent, received = split_sender(messages)
-    info_dict['sent'] = sent.shape[0]
-    info_dict['received'] = received.shape[0]
+    info_dict['count_sent'] = sent.shape[0]
+    info_dict['count_received'] = received.shape[0]
+    info_dict['count_total'] = messages.shape[0]
 
     return info_dict
 
@@ -143,12 +144,15 @@ def group_summary(group):
     info_dict = {}
     ch_join = dm.ch_join()
     messages = dm.group_messages(group)
+    sent, received = split_sender(messages)
     chats = dm.chats()
 
     group_handles = ch_join[ch_join.chat_id == group].handle_id
     info_dict['id'] = group
     info_dict['people'] = group_handles.count()
-    info_dict['count'] = messages.shape[0] # TODO: rename to avoid conflict with panda definition
+    info_dict['count_sent'] = sent.shape[0]
+    info_dict['count_received'] = received.shape[0]
+    info_dict['count_total'] = messages.shape[0]
     info_dict['name'] = chats.loc[group].display_name
     info_dict['members'] = _first_names(group_handles)
     sorted_messages = messages.sort_values(by=['date'])

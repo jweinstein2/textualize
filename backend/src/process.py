@@ -36,9 +36,8 @@ def generate_number_table():
         info_lst = [_stats_for_number(n) for n in numbers]
 
     number_table = pd.DataFrame(info_lst)
-    number_table = number_table.sort_values(by='sent', ascending=False)
-    number_table = number_table[(number_table.sent > MIN_MESSAGE_NUM)]
-    number_table = number_table[(number_table.received > MIN_MESSAGE_NUM)]
+    number_table = number_table.sort_values(by='count_total', ascending=False)
+    number_table = number_table[(number_table.count_total > MIN_MESSAGE_NUM)]
     number_table = number_table.reset_index(drop=True)
     return number_table
 
@@ -56,8 +55,8 @@ def generate_group_table():
         info_lst = [_stats_for_group(g) for g in groups]
 
     group_table = pd.DataFrame(info_lst)
-    group_table = group_table.sort_values(by='count', ascending=False)
-    # group_table = group_table[(group_table.count > MIN_MESSAGE_NUM)] # TODO: BUG
+    group_table = group_table.sort_values(by='count_total', ascending=False)
+    group_table = group_table[(group_table.count_total > MIN_MESSAGE_NUM)]
     group_table = group_table.reset_index(drop=True)
     return group_table
 
