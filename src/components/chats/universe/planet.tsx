@@ -1,38 +1,32 @@
 import { Tooltip } from "@mantine/core";
 import { useMouse, useViewportSize } from "@mantine/hooks";
 import { motion, useAnimationFrame } from "motion/react";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import classes from "./planet.module.css";
 
-interface Orbit {
+export interface Orbit {
     type: "orbit";
     distance: number; // px from center
     speed: number; // magic number (sorry)
 }
 
-interface Position {
+export interface Position {
     type: "position";
     distance: number; // px from center
     degree: number; // 0 - 360
 }
 
 interface PlanetProps {
-    firstName: string;
-    lastName: string;
     size: number;
     link?: string;
     tooltip?: string;
     movement: Movement;
+    children?: ReactNode;
 }
 
-type Movement = Orbit | Position;
-
-function firstChar(str: string) {
-    if (str == null || str.length === 0) return "";
-    return str.charAt(0);
-}
+export type Movement = Orbit | Position;
 
 interface PlanetPosition {
     radius: number;
@@ -126,9 +120,6 @@ function Planet(props: PlanetProps) {
         }
     });
 
-    const initials =
-        `${firstChar(props.firstName)}${firstChar(props.lastName)}`.toUpperCase();
-
     if (position == null) {
         return <></>;
     }
@@ -164,7 +155,7 @@ function Planet(props: PlanetProps) {
                 onClick={navigateOnClick}
                 style={planetStyle}
             >
-                <span>{initials}</span>
+                {props.children}
             </div>
         </motion.div>
     );

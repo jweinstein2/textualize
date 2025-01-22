@@ -1,4 +1,4 @@
-import ChatList from "@/components/chat_list/chat_list";
+import Chats from "@/components/chats/chats";
 import Contact from "@/components/contact/contact";
 import Group from "@/components/group/group";
 import Backup from "@/components/onboarding/backup";
@@ -8,7 +8,6 @@ import Mac from "@/components/onboarding/mac";
 import Splash from "@/components/onboarding/splash";
 import Settings from "@/components/settings/settings";
 import Summary from "@/components/summary/summary";
-import Universe from "@/components/universe/universe";
 import { showError } from "@/util";
 import { Center, Loader } from "@mantine/core";
 import axios from "axios";
@@ -33,7 +32,7 @@ function Routes() {
                 if (response.data.error) {
                     showError(
                         "Fatal error while processing messages",
-                        response.data.error,
+                        response.data.error
                     );
                 }
                 setLoading(false);
@@ -67,9 +66,8 @@ function Routes() {
             <Route path="/onboarding/mac" element={<Mac />} />
             <Route path="/disk_access" element={<DiskAccess />} />
             <Route path="/loading" element={<Loading />} />
-            <Route path="/" element={<Universe />} />
-            <Route path="/*" element={<Universe />} />
-            <Route path="/chats" element={<ChatList />} />
+            <Route path="/" element={<Chats />} />
+            <Route path="/*" element={<Chats />} />
             <Route path="/overview" element={<Summary />} />
             <Route path="/contacts/:number" element={<Contact />} />
             <Route path="/groups/:id" element={<Group />} />

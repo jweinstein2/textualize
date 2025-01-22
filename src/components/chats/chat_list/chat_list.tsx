@@ -1,4 +1,4 @@
-import { groupName } from "@/util";
+import { prettyDate } from "@/util";
 import {
     Button,
     Center,
@@ -16,22 +16,12 @@ import {
     IconSearch,
     IconSelector,
 } from "@tabler/icons-react";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import classes from "./chat_list.module.css";
 
-export type Chat = {
-    name: string;
-    id: string;
-    countTotal: number;
-    oldest: Date;
-    newest: Date;
-    longestStreak: number;
-    isGroup: boolean;
-    detailsLink: string;
-};
+import { Chat } from "../chats";
 
 interface ThProps {
     children: React.ReactNode;
@@ -40,66 +30,22 @@ interface ThProps {
     onSort(): void;
 }
 
-function prettyDate(date: Date): string {
-    return date.toLocaleString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
-}
-
-function ChatList() {
-    const [chats, setChats] = useState<Chat[]>([]);
+function ChatList({ chats }: { chats: Chat[] }) {
     const [search, setSearch] = useState("");
-    const [sortedContacts, setSortedContacts] = useState<Chat[]>([]);
     const [reverseSortDirection, setReverseSortDirection] = useState(false);
     const [sortBy, setSortBy] = useState<keyof Chat | null>(null);
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        axios.get("http://127.0.0.1:4242/chats").then((response) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const fetched = response.data.map((entry: any) => {
-                const isGroup = entry.is_group;
-                const name = isGroup
-                    ? groupName(entry.members, entry.name)
-                    : entry.name;
-                const id = isGroup ? entry.id : entry.number;
-                const countTotal = entry.count_total;
-                const oldest = new Date(entry.oldest_date);
-                const newest = new Date(entry.newest_date);
-                const longestStreak = entry.longest_streak;
-                const detailsLink = isGroup
-                    ? `/groups/${id}`
-                    : `/contacts/${id}`;
-                return {
-                    name,
-                    id,
-                    countTotal,
-                    oldest,
-                    newest,
-                    longestStreak,
-                    detailsLink,
-                    isGroup,
-                };
-            });
-            setChats(fetched);
-            setSortedContacts(fetched);
-        });
-    }, []);
-
     function setSorting(field: keyof Chat) {
         const reversed = field === sortBy ? !reverseSortDirection : true;
         setReverseSortDirection(reversed);
         setSortBy(field);
-        setSortedContacts(sortData(chats, field, reversed, search));
     }
 
     function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.currentTarget;
         setSearch(value);
-        setSortedContacts(sortData(chats, sortBy, reverseSortDirection, value));
     }
 
     function sortData(
@@ -148,6 +94,13 @@ function ChatList() {
             </Table.Th>
         );
     }
+
+    const sortedContacts = sortData(
+        chats,
+        sortBy,
+        reverseSortDirection,
+        search
+    );
 
     function renderRows() {
         return sortedContacts.map((contact) => (
@@ -233,7 +186,7 @@ function ChatList() {
                         <h2>
                             <Button
                                 className={classes.backButton}
-                                onClick={() => navigate("/")}
+                                onClick={() => navigate("universe")}
                             >
                                 <IconUniverse />
                             </Button>
