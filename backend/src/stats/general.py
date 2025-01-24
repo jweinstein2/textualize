@@ -171,7 +171,7 @@ def group_connection_graph():
 
     for i in groups.index:
         group = groups.loc[i]
-        count = group['count']
+        count = group['count_total']
         id = group.id
         chat_handles = handles.reindex(ch_join[ch_join.chat_id == id].handle_id)
         for pair in itertools.combinations(chat_handles.id.values, 2):
