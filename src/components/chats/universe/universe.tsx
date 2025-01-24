@@ -250,7 +250,7 @@ function Universe({ chats }: { chats: Chat[] }) {
                         allowDeselect={false}
                         size="md"
                     />
-                    <Button onClick={() => navigate("/chats")}>
+                    <Button onClick={() => navigate("list")}>
                         <IconList />
                     </Button>
                 </div>

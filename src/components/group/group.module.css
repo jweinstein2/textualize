@@ -3,3 +3,8 @@
     gap: 4px;
     padding: 16px 0;
 }
+
+.backButton {
+    vertical-align: top;
+    margin-right: 20px;
+}

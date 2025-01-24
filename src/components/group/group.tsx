@@ -1,10 +1,12 @@
 import { FrequencyDay } from "@/components/contact/contact";
-import { showError } from "@/util";
+import { groupName, showError } from "@/util";
 import { LineChart } from "@mantine/charts";
-import { Chip, Container } from "@mantine/core";
+import { Button, Chip, Container } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
 import ReactWordcloud from "react-wordcloud";
 
 import classes from "./group.module.css";
@@ -24,6 +26,7 @@ function Group() {
     const [language, setLanguage] = useState<LanguageData>();
 
     const params = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios
@@ -41,8 +44,8 @@ function Group() {
             .catch(() =>
                 showError(
                     "Failed to load group data",
-                    "Frequency graph could not be generated",
-                ),
+                    "Frequency graph could not be generated"
+                )
             );
     }, []);
 
@@ -55,8 +58,8 @@ function Group() {
             .catch(() =>
                 showError(
                     "Failed to load group data",
-                    "Frequency graph could not be generated",
-                ),
+                    "Frequency graph could not be generated"
+                )
             );
     }, []);
 
@@ -69,8 +72,8 @@ function Group() {
             .catch(() =>
                 showError(
                     "Failed to load group data",
-                    "Frequency graph could not be generated",
-                ),
+                    "Frequency graph could not be generated"
+                )
             );
     }, []);
 
@@ -93,7 +96,15 @@ function Group() {
 
     return (
         <Container fluid>
-            <h2>{groupInfo?.name}</h2>
+            <h2>
+                <Button
+                    className={classes.backButton}
+                    onClick={() => navigate(-1)}
+                >
+                    <IconArrowLeft />
+                </Button>
+                {groupName(groupInfo?.members, groupInfo?.name)}
+            </h2>
             <div className={classes.contacts}>{renderGroupMembers()}</div>
             <LineChart
                 h={300}

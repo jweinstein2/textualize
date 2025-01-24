@@ -59,7 +59,7 @@ function Chats() {
 
     return (
         <ReactRoutes>
-            <Route path="/*" element={<ChatList chats={chats} />} />
+            <Route path="/*" element={<Universe chats={chats} />} />
             <Route path="/list" element={<ChatList chats={chats} />} />
             <Route path="/universe" element={<Universe chats={chats} />} />
         </ReactRoutes>

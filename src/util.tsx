@@ -8,9 +8,9 @@ export function showError(title: string, message: string) {
     });
 }
 
-export function groupName(members: string[], name: string) {
+export function groupName(members?: string[], name?: string) {
     if (name != null && name.length != 0) return name;
-    return members.join(", ");
+    return (members ?? []).join(", ");
 }
 
 export function prettyDate(date: Date): string {
