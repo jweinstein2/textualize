@@ -88,6 +88,7 @@ def processed_chats():
     group_list['is_group'] = True
     chat_list = pd.concat([group_list, number_list])
     chat_list = chat_list.replace(np.nan, 0) # TODO: hacky but allows us to use arbitrary json conversion in TS
+    chat_list = chat_list[chat_list.count_total > 20]
     return chat_list
 
 # Get the messages df filtered by time, group, and sender

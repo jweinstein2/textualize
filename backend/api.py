@@ -169,6 +169,37 @@ def activity_summary(start=None, end=None):
 
     return response
 
+@app.route('/summary/responsetime', methods=['GET'])
+def response_time_summary(start=None, end=None):
+    response = {}
+    response["type"] = "leaderboard"
+    response["options"] = {"sender": ["Sent (you)", "Received"],
+                           "sort": ["Fastest", "Slowest"]}
+
+    chats = data_manager.processed_chats()
+    contacts = chats[chats.is_group == False]
+
+
+    sent = contacts.sort_values(by='sent_response_time', ascending=True)
+    sent = sent[sent.sent_response_time > 0]
+    sent = sent.rename(columns={"sent_response_time": "value", "number": "id"})
+    received = contacts.sort_values(by='received_response_time', ascending=True)
+    received = received[received.received_response_time > 0]
+    received = received.rename(columns={"sent_response_time": "value", "number": "id"})
+
+    sent_top = sent[:3]
+    sent_bottom = sent[-3:]
+    received_top = received[:3]
+    received_bottom = received[-3:]
+
+    data = {}
+    data["Sent (you)"] = {"Fastest": sent_top.to_dict(orient='records'),
+                          "Slowest": sent_bottom.to_dict(orient='records')}
+    data["Received"] = {"Fastest": received_top.to_dict(orient='records'),
+                          "Slowest": received_bottom.to_dict(orient='records')}
+    response["data"] = data
+    return response
+
 
 ##############################
 # IPC

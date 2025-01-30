@@ -9,7 +9,6 @@ interface PodiumProps {
 }
 
 function Podium({ leaderboard }: PodiumProps) {
-    console.log(leaderboard);
     return (
         <Center>
             <div className={c.container}>

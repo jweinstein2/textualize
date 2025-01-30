@@ -135,8 +135,8 @@ function Summary() {
                 <Card title="Group Connection Graph" span={12}>
                     {connectionGraph()}
                 </Card>
-                <Card title="Response Time" span={4}>
-                    <></>
+                <Card title="Response Time" span={6}>
+                    <DataWidget fetchPath="/summary/responsetime" />
                 </Card>
                 <Card title="Time of Day" span={8}>
                     <></>

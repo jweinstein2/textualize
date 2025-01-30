@@ -48,14 +48,14 @@ function DataWidget(props: WidgetProps) {
     function displayData() {
         if (data == null) return <></>;
 
-        const key = Object.keys(options).reduce((acc, curr) => {
-            const val = selectedOptions[curr] ?? options[curr][0];
-            return acc + val;
-        }, "");
-        const selectedData = data[key];
+        let selectedData = data;
+        for (const i in Object.keys(options)) {
+            const key = Object.keys(options)[i];
+            const val = selectedOptions[key] ?? options[key][0];
+            selectedData = selectedData[val];
+        }
 
         if ("leaderboard" === type) {
-            console.log(key);
             return <Podium leaderboard={selectedData} />;
         }
 
@@ -75,6 +75,7 @@ function DataWidget(props: WidgetProps) {
         return keys.map((optionKey, index) => {
             return (
                 <Select
+                    className={classes.select}
                     key={index}
                     placeholder={optionKey}
                     data={options[optionKey]}
