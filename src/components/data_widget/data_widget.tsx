@@ -1,3 +1,4 @@
+import MessageCarousel from "@/components/data_widget/message_carousel/message_carousel";
 import Podium from "@/components/data_widget/podium/podium";
 import { showError } from "@/util";
 import { Center, Loader, Select } from "@mantine/core";
@@ -55,8 +56,12 @@ function DataWidget(props: WidgetProps) {
             selectedData = selectedData[val];
         }
 
-        if ("leaderboard" === type) {
+        if (type === "leaderboard") {
             return <Podium leaderboard={selectedData} />;
+        }
+
+        if (type === "message") {
+            return <MessageCarousel messages={selectedData} />;
         }
 
         return <>Error!</>;

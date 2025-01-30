@@ -110,13 +110,6 @@ def sentiment(number, start=None, end=None):
     result = sentiment_stats.contact_summary(msg)
     return result
 
-@app.route('/emoji/<number>', methods=['GET'])
-def emoji(number, start=None, end=None):
-    n = 3
-    msg = data_manager.messages(number=number, start=start, end=end)
-    result = emoji_stats.contact_summary(msg, n)
-    return result
-
 @app.route('/group/<id>/tapback', methods=['GET'])
 def group_tapback(id, start=None, end=None):
     msg = data_manager.group_messages(int(id))
@@ -127,6 +120,32 @@ def group_tapback(id, start=None, end=None):
 def group_language(id, start=None, end=None):
     msg = data_manager.group_messages(int(id))
     result = language_stats.group_summary(msg)
+    return result
+
+
+##############################
+# CHAT STATS
+##############################
+
+@app.route('/chat/<number>/emoji', methods=['GET'])
+def emoji_widget(number, start=None, end=None):
+    n = 3
+    msg = data_manager.messages(number=number, start=start, end=end)
+    result = emoji_stats.contact_summary(msg, n)
+
+    response = {}
+    response["type"] = "message"
+    response["options"] = [["Sent (you)", "Received"],
+                           ["Popular", "Unique"]]
+
+    data = {}
+    data["Sent (you)"] = {"Unique": [result['unique_sent']],
+                          "Popular": [result['popular_sent']]}
+    data["Received"] = {"Unique": [result['unique_received']],
+                          "Popular": [result['popular_received']]}
+    response["data"] = data
+    return response
+
     return result
 
 ##############################
@@ -147,7 +166,7 @@ def summary(start=None, end=None):
 def activity_summary(start=None, end=None):
     response = {}
     response["type"] = "leaderboard"
-    response["options"] = {"type": ["Chats", "Groups"]}
+    response["options"] = [["Chats", "Groups"]]
 
     chats = data_manager.processed_chats()
     groups = chats[chats.is_group == True]
@@ -173,8 +192,8 @@ def activity_summary(start=None, end=None):
 def response_time_summary(start=None, end=None):
     response = {}
     response["type"] = "leaderboard"
-    response["options"] = {"sender": ["Sent (you)", "Received"],
-                           "sort": ["Fastest", "Slowest"]}
+    response["options"] =  [["Sent (you)", "Received"],
+                           ["Fastest", "Slowest"]]
 
     chats = data_manager.processed_chats()
     contacts = chats[chats.is_group == False]
