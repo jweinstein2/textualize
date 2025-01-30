@@ -104,12 +104,6 @@ def group_frequency(group_id, start=None, end=None):
     result = general_stats.frequency(msg, period='MS')
     return result
 
-@app.route('/summary', methods=['GET'])
-def summary(start=None, end=None):
-    msg = data_manager.messages(start=start, end=end)
-    result = general_stats.summary(msg)
-    return result
-
 @app.route('/sentiment/<number>', methods=['GET'])
 def sentiment(number, start=None, end=None):
     msg = data_manager.messages(number=number, start=start, end=end)
@@ -135,9 +129,50 @@ def group_language(id, start=None, end=None):
     result = language_stats.group_summary(msg)
     return result
 
+##############################
+# SUMMARY STATS
+##############################
+
 @app.route('/group_connection_graph', methods=['GET'])
 def group_connection_graph(start=None, end=None):
     return general_stats.group_connection_graph()
+
+@app.route('/summary', methods=['GET'])
+def summary(start=None, end=None):
+    msg = data_manager.messages(start=start, end=end)
+    result = general_stats.summary(msg)
+    return result
+
+@app.route('/summary/activity', methods=['GET'])
+def activity_summary(start=None, end=None):
+    response = {}
+    response["type"] = "leaderboard"
+    response["options"] = {"type": ["Chats", "Groups"]}
+
+    chats = data_manager.processed_chats()
+    groups = chats[chats.is_group == True]
+    contacts = chats[chats.is_group == False]
+    groups = groups.sort_values(by='count_total', ascending=False)
+    groups = groups[:3]
+    contacts = contacts.sort_values(by='count_total', ascending=False)
+    contacts = contacts[:3]
+
+    groups = groups[["count_total", "id", "name"]]
+    groups = groups.rename(columns={"count_total": "value"})
+    contacts = contacts[["count_total", "number", "name"]]
+    contacts = contacts.rename(columns={"count_total": "value", "number": "id"})
+
+    data = {}
+    data["Chats"] = contacts.to_dict(orient='records')
+    data["Groups"] = groups.to_dict(orient='records')
+    response["data"] = data
+
+    return response
+
+
+##############################
+# IPC
+##############################
 
 def parse_port():
     port = 4242

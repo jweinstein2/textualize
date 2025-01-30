@@ -1,7 +1,9 @@
+import Card from "@/components/card/card";
+import DataWidget from "@/components/data_widget/data_widget";
 import useVisNetwork from "@/components/network/useVisNetwork";
 import { showError } from "@/util";
 import { LineChart } from "@mantine/charts";
-import { Button, Center, Container, Paper, Stack, Text } from "@mantine/core";
+import { Button, Center, Container, Grid, Stack, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -56,8 +58,8 @@ function Summary() {
             .catch(() =>
                 showError(
                     "Failed to load contact data",
-                    "Frequency graph could not be generated",
-                ),
+                    "Frequency graph could not be generated"
+                )
             );
     }, []);
 
@@ -73,7 +75,7 @@ function Summary() {
             .catch((err) => {
                 showError(
                     "Failed to load data",
-                    "Connection graph could not be generated",
+                    "Connection graph could not be generated"
                 );
                 console.log(err);
             });
@@ -86,7 +88,7 @@ function Summary() {
                 <Center style={{ height: "100%" }}>
                     <Stack align="flex-start" justify="center">
                         <Text c="gray">
-                            The connection graph may take some time to build.
+                            The graph may take some time to build.
                         </Text>
                         <Button onClick={fetchGroupData}>Generate</Button>
                     </Stack>
@@ -123,11 +125,47 @@ function Summary() {
                 withDots={false}
             />
             <h3>General</h3>
-            <h3>Emoji</h3>
+            <Grid>
+                <Card title="Most Active" span={6}>
+                    <DataWidget fetchPath="/summary/activity" />
+                </Card>
+                <Card title="👻 Caught Lurkin'" span={4}>
+                    <></>
+                </Card>
+                <Card title="Group Connection Graph" span={12}>
+                    {connectionGraph()}
+                </Card>
+                <Card title="Response Time" span={4}>
+                    <></>
+                </Card>
+                <Card title="Time of Day" span={8}>
+                    <></>
+                </Card>
+                <Card title="Text Inequality" span={4}>
+                    <></>
+                </Card>
+                <Card title="Longest Streak" span={4}>
+                    <></>
+                </Card>
+                <Card title="Current Streaks" span={4}>
+                    <></>
+                </Card>
+                <Card title="Forgotten Messages" span={4}>
+                    <></>
+                </Card>
+                <Card title="Double Texts" span={4}>
+                    <></>
+                </Card>
+                <Card title="🪦 The Graveyard" span={4}>
+                    <></>
+                </Card>
+                <Card title="Area Codes" span={12}>
+                    <></>
+                </Card>
+            </Grid>
+            <h3>Language</h3>
+            <h3>Emoji & Tapback</h3>
             <h3>Groups</h3>
-            <Paper shadow="md" style={{ height: 500, width: "100%" }}>
-                {connectionGraph()}
-            </Paper>
         </Container>
     );
 }

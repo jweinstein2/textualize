@@ -1,0 +1,5 @@
+.container {
+    min-height: 320px;
+    background-color: var(--mantine-color-gray-9);
+    overflow: hidden;
+}

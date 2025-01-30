@@ -1,0 +1,86 @@
+/*
+ * TODO: Fix this CSS. It's riddled with magic numbers.
+ */
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    max-width: 500px;
+    min-width: 420px;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+
+.first {
+    flex: 10;
+}
+
+.second {
+    flex: 9;
+}
+
+.third {
+    flex: 9;
+}
+
+.stand {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    aspect-ratio: 3/4;
+    background-color: var(--mantine-color-gray-8);
+    border-radius: 10px; /* Rounded corners */
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% calc(100% - 30px),
+        50% 100%,
+        0 calc(100% - 30px)
+    ); /* Custom shape */
+
+    position: relative;
+    padding: 12px;
+}
+
+.bubble {
+    margin-bottom: 28px;
+}
+
+.medal {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--mantine-color-gray-8);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 160%;
+    margin-bottom: 20px;
+}
+
+.name {
+    height: 24px;
+    transform: translate(0, 68px);
+    text-wrap: nowrap;
+    position: absolute;
+    overflow: hidden;
+}
+
+.first .name {
+    transform: translate(0, 76px);
+}
+
+.gold {
+    background-color: var(--mantine-color-yellow-6);
+}
+
+.silver {
+    background-color: var(--mantine-color-gray-5);
+}
+
+.bronze {
+    background-color: var(--mantine-color-orange-9);
+}
