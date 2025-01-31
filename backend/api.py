@@ -86,8 +86,6 @@ def group_info(id):
 
 @app.route('/language/<number>', methods=['GET'])
 def language(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end)
-    result = language_stats.contact_summary(msg)
     return result
 
 @app.route('/frequency/', defaults={'number': None})
@@ -155,6 +153,18 @@ def sentiment(number, start=None, end=None):
     data["Received"] = {"Positive": result['pos_received'],
                           "Negative": result['neg_received']}
     response["data"] = data
+    return response
+
+@app.route('/chat/<number>/wordcloud', methods=['GET'])
+def wordcloud(number, start=None, end=None):
+    msg = data_manager.messages(number=number, start=start, end=end)
+    unique = language_stats.unique_words(msg)
+    popular = language_stats.popular_words(msg) # TODO
+
+    response = {}
+    response["type"] = "wordcloud"
+    response["options"] = [["Unique", "Popular"]]
+    response["data"] = {"Unique": unique, "Popular": popular}
     return response
 
 

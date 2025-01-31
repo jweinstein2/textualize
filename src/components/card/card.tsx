@@ -7,6 +7,7 @@ interface CardProps {
     title: string;
     span: number;
     children?: ReactNode;
+    height?: number;
 }
 
 function Card(props: CardProps) {
@@ -14,13 +15,13 @@ function Card(props: CardProps) {
         <Grid.Col span={props.span}>
             <Paper
                 shadow="md"
-                style={{ padding: 8 }}
+                style={{ padding: 8, height: props.height ?? 320 }}
                 className={classes.container}
             >
                 <div>
                     <Text>{props.title}</Text>
                 </div>
-                {props.children}
+                <div className={classes.child}>{props.children}</div>
             </Paper>
         </Grid.Col>
     );

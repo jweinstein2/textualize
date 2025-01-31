@@ -3,6 +3,8 @@ import re
 from datetime import date, datetime, timedelta
 import src.data_manager as data_manager
 import math # temp
+import re
+from nltk.corpus import stopwords
 
 unix = datetime(1970, 1, 1)  # UTC
 cocoa = datetime(2001, 1, 1)  # UTC
@@ -48,9 +50,17 @@ def split_group(msg):
     individual = msg.loc[msg.is_group == 0]
     return individual, group
 
-def extract_words(msg):
+# If enabled, links are removed from the text. Stop words are only removed from the list of words
+def extract_words(msg, removeLinks = False, removeStopWords = False):
     text = "\n".join(filter(None, msg['text'].tolist()))
+    if removeLinks:
+        text = re.sub(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)', '', text, flags=re.MULTILINE)
+
     words = list(map(lambda s: s.lower(), re.compile('\w+').findall(text)))
+    if removeStopWords:
+        stop_words = set(stopwords.words('english'))
+        words = [w for w in words if not w.lower() in stop_words]
+
     return words, text
 
 def unique(subset, corpus, threshold=5):

@@ -35,7 +35,6 @@ type LanguageData = {
 
 function Contact() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
-    const [language, setLanguage] = useState<LanguageData>();
     const [name, setName] = useState("");
 
     const navigate = useNavigate();
@@ -71,37 +70,6 @@ function Contact() {
             );
     }, []);
 
-    useEffect(() => {
-        axios
-            .get(`http://127.0.0.1:4242/language/${params.number}`)
-            .then((response) => {
-                setLanguage(response.data);
-            })
-            .catch(() =>
-                showError("Failed to load data", "Language info failed to load")
-            );
-    }, []);
-
-    function renderLanguage() {
-        const options = {
-            rotations: 8,
-            rotationAngles: [-20, 20] as [number, number],
-        };
-
-        const callbacks = {
-            getWordColor: () => "#218aff",
-            getWordTooltip: () => ``,
-        };
-
-        return (
-            <ReactWordcloud
-                options={options}
-                callbacks={callbacks}
-                words={language?.unique ?? []}
-            />
-        );
-    }
-
     return (
         <Container fluid>
             <h2>
@@ -132,6 +100,11 @@ function Contact() {
                 <Card title="Sentiment" span={4}>
                     <DataWidget
                         fetchPath={`/chat/${params.number}/sentiment`}
+                    />
+                </Card>
+                <Card title="Common Words" span={6} height={380}>
+                    <DataWidget
+                        fetchPath={`/chat/${params.number}/wordcloud`}
                     />
                 </Card>
             </Grid>

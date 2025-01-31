@@ -1,7 +1,8 @@
 import MessageCarousel from "@/components/data_widget/message_carousel/message_carousel";
 import Podium from "@/components/data_widget/podium/podium";
+import Wordcloud from "@/components/data_widget/wordcloud/wordcloud";
 import { showError } from "@/util";
-import { Stack, Center, Loader, Select } from "@mantine/core";
+import { Center, Loader, Select, Stack } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -40,9 +41,9 @@ function DataWidget(props: WidgetProps) {
 
     if (loading) {
         return (
-                <Center className={classes.center}>
-                    <Loader color="blue" />
-                </Center>
+            <Center h="100%">
+                <Loader color="blue" />
+            </Center>
         );
     }
 
@@ -62,6 +63,10 @@ function DataWidget(props: WidgetProps) {
 
         if (type === "message") {
             return <MessageCarousel messages={selectedData} />;
+        }
+
+        if (type === "wordcloud") {
+            return <Wordcloud words={selectedData} />;
         }
 
         return <>Error!</>;
@@ -93,9 +98,9 @@ function DataWidget(props: WidgetProps) {
     }
 
     return (
-        <div>
+        <div className={classes.container}>
             <div className={classes.toggles}>{optionToggles()}</div>
-            {displayData()}
+            <div className={classes.contents}>{displayData()}</div>
         </div>
     );
 }
