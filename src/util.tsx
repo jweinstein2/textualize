@@ -47,9 +47,28 @@ export function format(value: number, type: FormatType): string {
             return humanFormat(value);
             break;
         case FormatType.ResponseTime:
-            return `${value}`;
+            return timerFormat(value);
             break;
     }
+}
+
+// From ChatGPT
+function timerFormat(seconds: number): string {
+    if (seconds < 60) {
+        return `${seconds} second${seconds === 1 ? "" : "s"}`;
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const days = Math.floor(minutes / 1440);
+    const hours = Math.floor((minutes % 1440) / 60);
+    const remainingMinutes = minutes % 60;
+
+    const result = [];
+    if (days > 0) result.push(`${days}d`);
+    if (hours > 0) result.push(`${hours}h`);
+    if (remainingMinutes > 0) result.push(`${remainingMinutes}m`);
+
+    return result.length > 0 ? result.join(" ") : "0m";
 }
 
 function humanFormat(num: number): string {

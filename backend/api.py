@@ -184,6 +184,18 @@ def count(number, start=None, end=None):
     response["data"] = {"Total": {"value": total, "label": "Messages"}, "Sent": {"value": sent, "label": "Messages Sent"}, "Received": {"value": received, "label": "Messages Received"}}
     return response
 
+# TODO: Properly handle start / end time frames.
+@app.route('/chat/<number>/responsetime', methods=['GET'])
+def response_time(number, start=None, end=None):
+    chats = data_manager.processed_chats()
+    chat = chats[chats.number == number].iloc[0]
+
+    response = {}
+    response["type"] = "simple"
+    response["format"] = "response_time"
+    response["options"] = [["Sent", "Received"]]
+    response["data"] = {"Sent": {"value": chat.sent_response_time, "label": "on average"}, "Received": {"value": chat.received_response_time, "label": "on average"}}
+    return response
 
 
 ##############################
