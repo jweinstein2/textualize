@@ -93,7 +93,8 @@ def language(number, start=None, end=None):
 @app.route('/frequency/', defaults={'number': None})
 @app.route('/frequency/<number>', methods=['GET'])
 def frequency(number=None, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end)
+    is_group = None if (number == None) else False
+    msg = data_manager.messages(number=number, start=start, end=end, is_group=is_group)
     result = general_stats.frequency(msg, period='MS')
 
     return result
@@ -171,7 +172,7 @@ def wordcloud(number, start=None, end=None):
 
 @app.route('/chat/<number>/count', methods=['GET'])
 def count(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end)
+    msg = data_manager.messages(number=number, start=start, end=end, is_group=False)
     sent_msg, received_msg = split_sender(msg)
     sent = len(sent_msg)
     received = len(received_msg)
