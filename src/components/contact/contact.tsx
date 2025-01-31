@@ -35,7 +35,6 @@ type LanguageData = {
 
 function Contact() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
-    const [sentiment, setSentiment] = useState<SentimentData>();
     const [language, setLanguage] = useState<LanguageData>();
     const [name, setName] = useState("");
 
@@ -74,15 +73,6 @@ function Contact() {
 
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:4242/sentiment/${params.number}`)
-            .then((response) => setSentiment(response.data))
-            .catch(() =>
-                showError("Failed to load data", "Sentiment info not found")
-            );
-    }, []);
-
-    useEffect(() => {
-        axios
             .get(`http://127.0.0.1:4242/language/${params.number}`)
             .then((response) => {
                 setLanguage(response.data);
@@ -91,34 +81,6 @@ function Contact() {
                 showError("Failed to load data", "Language info failed to load")
             );
     }, []);
-
-    function renderSentiment() {
-        if (sentiment == null) {
-            return (
-                <Center>
-                    <Loader color="blue" />
-                </Center>
-            );
-        }
-        return (
-            <div>
-                <h5>Positive</h5>
-                <Bubble message={sentiment?.pos_sent[0]} isSent></Bubble>
-                <Bubble message={sentiment?.pos_sent[1]} isSent></Bubble>
-                <Bubble message={sentiment?.pos_sent[2]} isSent></Bubble>
-                <Bubble message={sentiment?.pos_received[0]}></Bubble>
-                <Bubble message={sentiment?.pos_received[1]}></Bubble>
-                <Bubble message={sentiment?.pos_received[2]}></Bubble>
-                <h5>Negative</h5>
-                <Bubble message={sentiment?.neg_sent[0]} isSent></Bubble>
-                <Bubble message={sentiment?.neg_sent[1]} isSent></Bubble>
-                <Bubble message={sentiment?.neg_sent[2]} isSent></Bubble>
-                <Bubble message={sentiment?.neg_received[0]}></Bubble>
-                <Bubble message={sentiment?.neg_received[1]}></Bubble>
-                <Bubble message={sentiment?.neg_received[2]}></Bubble>
-            </div>
-        );
-    }
 
     function renderLanguage() {
         const options = {
@@ -167,11 +129,15 @@ function Contact() {
             <h3>General</h3>
             <h3>Language</h3>
             <Grid>
-                <Card title="Sentiment" span={6}></Card>
+                <Card title="Sentiment" span={4}>
+                    <DataWidget
+                        fetchPath={`/chat/${params.number}/sentiment`}
+                    />
+                </Card>
             </Grid>
             <h3>Emoji & Tapback</h3>
             <Grid>
-                <Card title="Emoji Usage" span={6}>
+                <Card title="Emoji Usage" span={3}>
                     <DataWidget fetchPath={`/chat/${params.number}/emoji`} />
                 </Card>
             </Grid>

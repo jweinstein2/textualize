@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
 
+import "@mantine/carousel/styles.css";
 import "@mantine/charts/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";

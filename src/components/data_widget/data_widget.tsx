@@ -1,7 +1,7 @@
 import MessageCarousel from "@/components/data_widget/message_carousel/message_carousel";
 import Podium from "@/components/data_widget/podium/podium";
 import { showError } from "@/util";
-import { Center, Loader, Select } from "@mantine/core";
+import { Stack, Center, Loader, Select } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -40,9 +40,9 @@ function DataWidget(props: WidgetProps) {
 
     if (loading) {
         return (
-            <Center>
-                <Loader color="blue" />
-            </Center>
+                <Center className={classes.center}>
+                    <Loader color="blue" />
+                </Center>
         );
     }
 

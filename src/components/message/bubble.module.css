@@ -1,12 +1,21 @@
 .bubble_sent {
     background-color: #e9ebee;
-    max-width: 600px;
-    margin: 8px 0;
+    color: var(--mantine-color-dark-8);
+    max-width: 400px;
+    margin: auto;
 }
 
 .bubble_received {
     color: white;
     background-color: #218aff;
-    max-width: 600px;
-    margin: 8px 0;
+    max-width: 400px;
+    margin: auto;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 12px; /* For scroll bar */
+
 }

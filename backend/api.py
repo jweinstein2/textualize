@@ -104,12 +104,6 @@ def group_frequency(group_id, start=None, end=None):
     result = general_stats.frequency(msg, period='MS')
     return result
 
-@app.route('/sentiment/<number>', methods=['GET'])
-def sentiment(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end)
-    result = sentiment_stats.contact_summary(msg)
-    return result
-
 @app.route('/group/<id>/tapback', methods=['GET'])
 def group_tapback(id, start=None, end=None):
     msg = data_manager.group_messages(int(id))
@@ -146,7 +140,24 @@ def emoji_widget(number, start=None, end=None):
     response["data"] = data
     return response
 
-    return result
+@app.route('/chat/<number>/sentiment', methods=['GET'])
+def sentiment(number, start=None, end=None):
+    msg = data_manager.messages(number=number, start=start, end=end)
+    result = sentiment_stats.contact_summary(msg)
+    response = {}
+    response["type"] = "message"
+    response["options"] = [["Sent (you)", "Received"],
+                           ["Positive", "Negative"]]
+
+    data = {}
+    data["Sent (you)"] = {"Positive": result['pos_sent'],
+                          "Negative": result['neg_sent']}
+    data["Received"] = {"Positive": result['pos_received'],
+                          "Negative": result['neg_received']}
+    response["data"] = data
+    return response
+
+
 
 ##############################
 # SUMMARY STATS
