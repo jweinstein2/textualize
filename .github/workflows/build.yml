@@ -37,7 +37,7 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install nltk
                   python -m nltk.downloader vader_lexicon
-                  ls -R $(python -c "import nltk; print(nltk.data.path[0])")
+                  python -m nltk.downloader stopwords
 
             - name: Install Python executable
               uses: sayyid5416/pyinstaller@v1
@@ -88,7 +88,7 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install -r backend/requirements.txt
                   python -m nltk.downloader vader_lexicon
-                  ls -R $(python -c "import nltk; print(nltk.data.path[0])")
+                  python -m nltk.downloader stopwords
 
             - name: Install Python executable
               uses: sayyid5416/pyinstaller@v1
