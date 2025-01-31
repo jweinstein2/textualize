@@ -197,6 +197,22 @@ def response_time(number, start=None, end=None):
     response["data"] = {"Sent": {"value": chat.sent_response_time, "label": "on average"}, "Received": {"value": chat.received_response_time, "label": "on average"}}
     return response
 
+# TODO: BUG! The oldest oldest messages aren't showing up...
+@app.route('/chat/<number>/firstmessage', methods=['GET'])
+def first_message(number, start=None, end=None):
+    msg = data_manager.messages(number=number, start=start, end=end, is_group=False)
+    msg = msg[msg.text.notna()]
+
+    sent_msg, received_msg = split_sender(msg)
+    sent_msg = sent_msg.sort_values(by='date_delivered', ascending=True)
+    received_msg = received_msg.sort_values(by='date_delivered', ascending=True)
+
+    response = {}
+    response["type"] = "message"
+    response["options"] = [["Sent", "Received"]]
+    response["data"] = {"Sent": [sent_msg.iloc[0].text], "Received": [received_msg.iloc[0].text]}
+    return response
+
 
 ##############################
 # SUMMARY STATS

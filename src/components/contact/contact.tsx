@@ -99,7 +99,11 @@ function Contact() {
                 <Card title="Message Count" span={3}>
                     <DataWidget fetchPath={`/chat/${params.number}/count`} />
                 </Card>
-                <Card title="First Message" span={3} />
+                <Card title="Oldest Message" span={3}>
+                    <DataWidget
+                        fetchPath={`/chat/${params.number}/firstmessage`}
+                    />
+                </Card>
                 <Card title="Response Time" span={3}>
                     <DataWidget
                         fetchPath={`/chat/${params.number}/responsetime`}
