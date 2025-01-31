@@ -11,6 +11,8 @@ import src.stats.sentiment as sentiment_stats
 from http import HTTPStatus
 import multiprocessing
 
+from src.util import *
+
 from flask_cors import CORS
 from flask import Flask, request
 
@@ -165,6 +167,21 @@ def wordcloud(number, start=None, end=None):
     response["type"] = "wordcloud"
     response["options"] = [["Unique", "Popular"]]
     response["data"] = {"Unique": unique, "Popular": popular}
+    return response
+
+@app.route('/chat/<number>/count', methods=['GET'])
+def count(number, start=None, end=None):
+    msg = data_manager.messages(number=number, start=start, end=end)
+    sent_msg, received_msg = split_sender(msg)
+    sent = len(sent_msg)
+    received = len(received_msg)
+    total = sent + received
+
+    response = {}
+    response["type"] = "simple"
+    response["format"] = "message_count"
+    response["options"] = [["Total", "Sent", "Received"]]
+    response["data"] = {"Total": {"value": total, "label": "Messages"}, "Sent": {"value": sent, "label": "Messages Sent"}, "Received": {"value": received, "label": "Messages Received"}}
     return response
 
 

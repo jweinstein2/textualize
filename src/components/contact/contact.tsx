@@ -95,16 +95,30 @@ function Contact() {
                 withDots={false}
             />
             <h3>General</h3>
+            <Grid>
+                <Card title="Message Count" span={3}>
+                    <DataWidget fetchPath={`/chat/${params.number}/count`} />
+                </Card>
+                <Card title="First Message" span={3} />
+                <Card title="Response Time" span={3} />
+                <Card title="Double Texts" span={3} />
+                <Card title="Time of Day" span={6} />
+                <Card title="Day of Week" span={6} />
+                <Card title="Top Groups" span={4} />
+                <Card title="Text Inequality" span={3} />
+                <Card title="Longest Streak" span={3} />
+            </Grid>
             <h3>Language</h3>
             <Grid>
-                <Card title="Sentiment" span={4}>
-                    <DataWidget
-                        fetchPath={`/chat/${params.number}/sentiment`}
-                    />
-                </Card>
                 <Card title="Common Words" span={6} height={380}>
                     <DataWidget
                         fetchPath={`/chat/${params.number}/wordcloud`}
+                    />
+                </Card>
+                <Card title="Commonly Mispelled" span={6} />
+                <Card title="Sentiment" span={4}>
+                    <DataWidget
+                        fetchPath={`/chat/${params.number}/sentiment`}
                     />
                 </Card>
             </Grid>
@@ -113,6 +127,12 @@ function Contact() {
                 <Card title="Emoji Usage" span={3}>
                     <DataWidget fetchPath={`/chat/${params.number}/emoji`} />
                 </Card>
+                <Card title="Emoji Density" span={4} />
+                <Card title="Usage over Time" span={12} />
+                <Card title="Linguistic Diversity" span={3} />
+                <Card title="Tapback Density" span={4} />
+                <Card title="Tapback Graph" span={6} />
+                <Card title="Tapbacks over Time" span={12} />
             </Grid>
         </Container>
     );

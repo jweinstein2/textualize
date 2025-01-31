@@ -34,7 +34,6 @@ function Wordcloud(props: WordcloudProps) {
         return updated;
     });
 
-    console.log(updatedValueWords);
     return (
         <div className={classes.container}>
             <ReactWordcloud

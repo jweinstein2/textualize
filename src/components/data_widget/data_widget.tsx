@@ -1,8 +1,9 @@
 import MessageCarousel from "@/components/data_widget/message_carousel/message_carousel";
 import Podium from "@/components/data_widget/podium/podium";
+import Simple from "@/components/data_widget/simple/simple";
 import Wordcloud from "@/components/data_widget/wordcloud/wordcloud";
-import { showError } from "@/util";
-import { Center, Loader, Select, Stack } from "@mantine/core";
+import { FormatType, showError, toFormatEnum } from "@/util";
+import { Center, Loader, Select } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -16,6 +17,7 @@ function DataWidget(props: WidgetProps) {
     const [type, setType] = useState<string>();
     const [data, setData] = useState();
     const [options, setOptions] = useState<{ [key: string]: string[] }>({});
+    const [format, setFormat] = useState<FormatType>();
     const [loading, setLoading] = useState(true);
     const [selectedOptions, setSelectedOptions] = useState<{
         [optionKey: string]: string;
@@ -28,6 +30,7 @@ function DataWidget(props: WidgetProps) {
                 setType(response.data.type ?? "");
                 setData(response.data.data);
                 setOptions(response.data.options);
+                setFormat(toFormatEnum(response.data.format));
                 setLoading(false);
             })
             .catch(() => {
@@ -67,6 +70,10 @@ function DataWidget(props: WidgetProps) {
 
         if (type === "wordcloud") {
             return <Wordcloud words={selectedData} />;
+        }
+
+        if (type === "simple") {
+            return <Simple data={selectedData} format={format} />;
         }
 
         return <>Error!</>;
