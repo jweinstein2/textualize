@@ -114,7 +114,9 @@ function Contact() {
                 <Card title="Day of Week" span={6} />
                 <Card title="Top Groups" span={4} />
                 <Card title="Text Inequality" span={3} />
-                <Card title="Longest Streak" span={3} />
+                <Card title="Longest Streak" span={3}>
+                    <DataWidget fetchPath={`/chat/${params.number}/streak`} />
+                </Card>
             </Grid>
             <h3>Language</h3>
             <Grid>

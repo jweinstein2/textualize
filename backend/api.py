@@ -182,7 +182,9 @@ def count(number, start=None, end=None):
     response["type"] = "simple"
     response["format"] = "message_count"
     response["options"] = [["Total", "Sent", "Received"]]
-    response["data"] = {"Total": {"value": total, "label": "Messages"}, "Sent": {"value": sent, "label": "Messages Sent"}, "Received": {"value": received, "label": "Messages Received"}}
+    response["data"] = {"Total": {"value": total, "label": "Messages"},
+                        "Sent": {"value": sent, "label": "Messages Sent"},
+                        "Received": {"value": received, "label": "Messages Received"}}
     return response
 
 # TODO: Properly handle start / end time frames.
@@ -195,7 +197,8 @@ def response_time(number, start=None, end=None):
     response["type"] = "simple"
     response["format"] = "response_time"
     response["options"] = [["Sent", "Received"]]
-    response["data"] = {"Sent": {"value": chat.sent_response_time, "label": "on average"}, "Received": {"value": chat.received_response_time, "label": "on average"}}
+    response["data"] = {"Sent": {"value": chat.sent_response_time, "label": "on average"},
+                        "Received": {"value": chat.received_response_time, "label": "on average"}}
     return response
 
 # TODO: BUG! The oldest oldest messages aren't showing up...
@@ -212,6 +215,27 @@ def first_message(number, start=None, end=None):
     response["type"] = "message"
     response["options"] = [["Sent", "Received"]]
     response["data"] = {"Sent": [sent_msg.iloc[0].text], "Received": [received_msg.iloc[0].text]}
+    return response
+
+@app.route('/chat/<number>/streak', methods=['GET'])
+def streak(number, start=None, end=None):
+    chats = data_manager.processed_chats()
+    chat = chats[chats.number == number].iloc[0]
+    print(chat)
+
+    def format_streak(s):
+        if (s < 1): return str(s) + " 🪦"
+        if (s < 3): return str(s) + " 😶‍🌫️"
+        if (s < 6): return str(s) + " 🥱"
+        if (s < 10): return str(s) + " 😤"
+        if (s < 20): return str(s) + " 👯"
+        return str(s) + " 🔥"
+
+    response = {}
+    response["type"] = "simple"
+    response["options"] = [["Longest", "Current"]]
+    response["data"] = {"Longest": {"value": format_streak(chat.longest_streak), "label": "days"},
+                        "Current": {"value": format_streak(chat.current_streak), "label": "days"}}
     return response
 
 

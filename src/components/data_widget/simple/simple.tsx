@@ -19,7 +19,7 @@ function Simple(props: SimpleProps) {
     const dataString =
         props.format != null
             ? format(props.data.value, props.format)
-            : `${props.data}`;
+            : `${props.data.value}`;
 
     const style = {
         fontSize: `${Math.min(height, width) * 0.4}px`,
