@@ -5,8 +5,23 @@ import Planet, {
     Position,
 } from "@/components/chats/universe/planet";
 import { minMax, prettyDate } from "@/util";
-import { Button, Select } from "@mantine/core";
-import { IconList, IconSettings } from "@tabler/icons-react";
+import {
+    Button,
+    CloseButton,
+    Select,
+    Slider,
+    Space,
+    Switch,
+    Text,
+    TextInput,
+} from "@mantine/core";
+import {
+    IconFilter,
+    IconFilterFilled,
+    IconList,
+    IconSettings,
+    IconX,
+} from "@tabler/icons-react";
 import { MoveDirection } from "@tsparticles/engine";
 import Particles from "@tsparticles/react";
 import { ReactNode, memo, useState } from "react";
@@ -56,6 +71,13 @@ const Stars = memo(function Stars({}) {
     return <Particles id="tsparticles" options={OPTIONS} />;
 });
 
+interface Filter {
+    textFilter: string;
+    filterGroups: boolean;
+    filterContacts: boolean;
+    maxChats: number; // Evaluate last
+}
+
 interface PlanetParameter {
     movement: Movement;
     tooltip: string;
@@ -98,8 +120,8 @@ function makePlanetParams(chat: Chat): PlanetParameter {
     };
 }
 
-function messageCountMap(chats: Chat[]): PlanetParameter[] {
-    const [, max] = minMax(chats.map((c) => c.countTotal));
+function messageCountMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
+    const [, max] = minMax(allChats.map((c) => c.countTotal));
 
     return chats.map((chat) => {
         const params = makePlanetParams(chat);
@@ -115,8 +137,8 @@ function messageCountMap(chats: Chat[]): PlanetParameter[] {
     });
 }
 
-function streakMap(chats: Chat[]): PlanetParameter[] {
-    const [, max] = minMax(chats.map((c) => c.longestStreak));
+function streakMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
+    const [, max] = minMax(allChats.map((c) => c.longestStreak));
 
     return chats.map((chat) => {
         const params = makePlanetParams(chat);
@@ -132,8 +154,8 @@ function streakMap(chats: Chat[]): PlanetParameter[] {
     });
 }
 
-function earliestMap(chats: Chat[]): PlanetParameter[] {
-    const [min, max] = minMax(chats.map((c) => c.oldest.getTime()));
+function earliestMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
+    const [min, max] = minMax(allChats.map((c) => c.oldest.getTime()));
     const maxDelta = min - max;
 
     return chats.map((chat) => {
@@ -151,8 +173,8 @@ function earliestMap(chats: Chat[]): PlanetParameter[] {
     });
 }
 
-function recentMap(chats: Chat[]): PlanetParameter[] {
-    const [min, max] = minMax(chats.map((c) => c.newest.getTime()));
+function recentMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
+    const [min, max] = minMax(allChats.map((c) => c.newest.getTime()));
     const maxDelta = min - max;
 
     return chats.map((chat) => {
@@ -170,8 +192,8 @@ function recentMap(chats: Chat[]): PlanetParameter[] {
     });
 }
 
-function responseTimeMap(chats: Chat[]): PlanetParameter[] {
-    const [min, max] = minMax(chats.map((c) => c.responseTimeReceived));
+function responseTimeMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
+    const [min, max] = minMax(allChats.map((c) => c.responseTimeReceived));
 
     // TODO: Fix this for groups
     return chats
@@ -190,7 +212,10 @@ function responseTimeMap(chats: Chat[]): PlanetParameter[] {
 }
 
 const DataTypeToBuildParams: {
-    [key in DataTypeOption]: (chats: Chat[]) => PlanetParameter[];
+    [key in DataTypeOption]: (
+        allChats: Chat[],
+        chats: Chat[]
+    ) => PlanetParameter[];
 } = {
     [DataTypeOption.MessageCount]: messageCountMap,
     [DataTypeOption.Streak]: streakMap,
@@ -207,9 +232,13 @@ function buildLink(chat: Chat): string {
     }
 }
 
-function buildPlanets(chats: Chat[], selectedDataType: DataTypeOption) {
+function buildPlanets(
+    allChats: Chat[],
+    chats: Chat[],
+    selectedDataType: DataTypeOption
+) {
     const buildParams = DataTypeToBuildParams[selectedDataType];
-    const planetParameters = buildParams(chats);
+    const planetParameters = buildParams(allChats, chats);
     const planets = planetParameters.map((params) => {
         return (
             <Planet
@@ -230,10 +259,101 @@ function Universe({ chats }: { chats: Chat[] }) {
     const [selectedDataType, setSelectedDataType] = useState<DataTypeOption>(
         DataTypeOption.MessageCount
     );
+    const [filters, setFilters] = useState<Filter>({
+        maxChats: 25,
+        textFilter: "",
+        filterGroups: false,
+        filterContacts: false,
+    });
+    const [displayFilter, setDisplayFilter] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
-    const planets = buildPlanets(chats, selectedDataType);
+    const filteredChats = chats
+        .filter((c) => {
+            const query = filters.textFilter.toLowerCase().trim();
+            if (filters.filterGroups && c.isGroup) return false;
+            if (filters.filterContacts && !c.isGroup) return false;
+            if (query.length > 0) return c.name.toLowerCase().includes(query);
+            return true;
+        })
+        .slice(0, filters.maxChats);
+    const planets = buildPlanets(chats, filteredChats, selectedDataType);
+
+    const filterWindow = (
+        <div className={classes.filterWindow}>
+            <CloseButton
+                className={classes.close}
+                onClick={() => setDisplayFilter(false)}
+            ></CloseButton>
+            <div className={classes.filterContents}>
+                <Text fw={500}>Filters</Text>
+                <Space h="xs" />
+                <Switch
+                    checked={filters.filterGroups}
+                    onChange={(event) => {
+                        const updated = { ...filters };
+                        updated.filterGroups = event.currentTarget.checked;
+                        setFilters(updated);
+                    }}
+                    label="Hide groups"
+                    radius="lg"
+                />
+                <Switch
+                    label="Hide contacts"
+                    radius="lg"
+                    checked={filters.filterContacts}
+                    onChange={(event) => {
+                        const updated = { ...filters };
+                        updated.filterContacts = event.currentTarget.checked;
+                        setFilters(updated);
+                    }}
+                />
+                <Space h="xs" />
+                <Text fw={500} size="sm">
+                    Number of Chats
+                </Text>
+                <Slider
+                    color="blue"
+                    onChange={(num) => {
+                        const updated = { ...filters };
+                        updated.maxChats = num;
+                        setFilters(updated);
+                    }}
+                    min={0}
+                    max={Math.min(200, chats.length)}
+                    value={filters.maxChats}
+                />
+                <Space h="xs" />
+                <Text fw={500} size="sm">
+                    Filter by Name
+                </Text>
+                <TextInput
+                    value={filters.textFilter}
+                    onChange={(event) => {
+                        const updated = { ...filters };
+                        updated.textFilter = event.currentTarget.value;
+                        setFilters(updated);
+                    }}
+                    rightSection={
+                        filters.textFilter ? (
+                            <IconX
+                                onClick={() =>
+                                    setFilters({
+                                        ...filters,
+                                        textFilter: "",
+                                    })
+                                }
+                            />
+                        ) : (
+                            <></>
+                        )
+                    }
+                    placeholder="Joe Shmoe"
+                />
+            </div>
+        </div>
+    );
 
     return (
         <div>
@@ -261,8 +381,15 @@ function Universe({ chats }: { chats: Chat[] }) {
                     >
                         <IconSettings />
                     </Button>
+                    <Button
+                        onClick={() => setDisplayFilter(!displayFilter)}
+                        variant="light"
+                    >
+                        {displayFilter ? <IconFilterFilled /> : <IconFilter />}
+                    </Button>
+                    {displayFilter ? filterWindow : <></>}
                 </div>
-                {planets.slice(0, 50)} {/* TODO: Customize w. Filter */}
+                {planets}
                 <Planet
                     link="/overview"
                     key="me"

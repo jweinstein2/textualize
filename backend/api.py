@@ -69,7 +69,7 @@ def quick_stats():
 
 # TODO: Remove the abstraction of groups and individuals
 @app.route('/chats', methods=['GET'])
-def list(start=None, end=None, n=100):
+def list(start=None, end=None, n=300):
     chats = data_manager.processed_chats()
     chats = chats.sort_values(by='count_total', ascending=False)
     chats = chats[:n]
@@ -221,7 +221,6 @@ def first_message(number, start=None, end=None):
 def streak(number, start=None, end=None):
     chats = data_manager.processed_chats()
     chat = chats[chats.number == number].iloc[0]
-    print(chat)
 
     def format_streak(s):
         if (s < 1): return str(s) + " 🪦"
