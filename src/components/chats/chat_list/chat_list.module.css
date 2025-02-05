@@ -27,6 +27,13 @@
     margin-top: 0;
 }
 
+.nameCol {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .groupIcon {
     margin-right: 8px;
     vertical-align: top;

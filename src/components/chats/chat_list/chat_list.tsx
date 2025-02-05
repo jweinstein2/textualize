@@ -102,27 +102,24 @@ function ChatList({ chats }: { chats: Chat[] }) {
         search
     );
 
-    function renderRows() {
-        return sortedContacts.map((contact) => (
-            <Table.Tr
-                key={contact.id}
-                onClick={() => navigate(contact.detailsLink)}
-            >
-                <Table.Td>
-                    {contact.isGroup ? (
-                        <IconUsers className={classes.groupIcon} />
-                    ) : (
-                        <></>
-                    )}
-                    {contact.name}
-                </Table.Td>
-                <Table.Td>{contact.countTotal}</Table.Td>
-                <Table.Td>{prettyDate(contact.oldest)}</Table.Td>
-                <Table.Td>{prettyDate(contact.newest)}</Table.Td>
-                <Table.Td>{contact.longestStreak}</Table.Td>
-            </Table.Tr>
-        ));
-    }
+    const tableRows = sortedContacts.map((contact) => (
+        <Table.Tr
+            key={contact.id}
+            onClick={() => navigate(contact.detailsLink)}
+        >
+            <Table.Td className={classes.nameCol}>
+                <IconUsers
+                    style={contact.isGroup ? {} : { display: "none" }}
+                    className={classes.groupIcon}
+                />
+                {contact.name}
+            </Table.Td>
+            <Table.Td>{contact.countTotal}</Table.Td>
+            <Table.Td>{prettyDate(contact.oldest)}</Table.Td>
+            <Table.Td>{prettyDate(contact.newest)}</Table.Td>
+            <Table.Td>{contact.longestStreak}</Table.Td>
+        </Table.Tr>
+    ));
 
     const table = (
         <Table.ScrollContainer minWidth={800}>
@@ -173,7 +170,7 @@ function ChatList({ chats }: { chats: Chat[] }) {
                         </Th>
                     </Table.Tr>
                 </Table.Thead>
-                <Table.Tbody>{renderRows()}</Table.Tbody>
+                <Table.Tbody>{tableRows}</Table.Tbody>
             </Table>
         </Table.ScrollContainer>
     );
