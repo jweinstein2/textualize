@@ -54,8 +54,12 @@ export function format(value: number, type: FormatType): string {
 
 // From ChatGPT
 function timerFormat(seconds: number): string {
+    console.log(seconds);
+
     if (seconds < 60) {
-        return `${seconds} second${seconds === 1 ? "" : "s"}`;
+        if (seconds < 1) return "Instant ⚡️";
+        const s = Math.floor(seconds);
+        return `${s} second${s === 1 ? "" : "s"}`;
     }
 
     const minutes = Math.floor(seconds / 60);

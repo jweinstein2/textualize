@@ -32,7 +32,6 @@ function Simple(props: SimpleProps) {
                 <Text style={style}>{dataString}</Text>
                 <Text>{props.data.label}</Text>
             </div>
-            {/*<Text>{props.data.message}Hello World</Text>*/}
         </Center>
     );
 }

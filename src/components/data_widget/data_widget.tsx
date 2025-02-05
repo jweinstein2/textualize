@@ -61,7 +61,7 @@ function DataWidget(props: WidgetProps) {
         }
 
         if (type === "leaderboard") {
-            return <Podium leaderboard={selectedData} />;
+            return <Podium leaderboard={selectedData} format={format} />;
         }
 
         if (type === "message") {

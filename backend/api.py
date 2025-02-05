@@ -256,6 +256,7 @@ def summary(start=None, end=None):
 def activity_summary(start=None, end=None):
     response = {}
     response["type"] = "leaderboard"
+    response["format"] = "message_count"
     response["options"] = [["Chats", "Groups"]]
 
     chats = data_manager.processed_chats()
@@ -282,6 +283,7 @@ def activity_summary(start=None, end=None):
 def response_time_summary(start=None, end=None):
     response = {}
     response["type"] = "leaderboard"
+    response["format"] = "response_time"
     response["options"] =  [["Sent (you)", "Received"],
                            ["Fastest", "Slowest"]]
 
@@ -294,7 +296,7 @@ def response_time_summary(start=None, end=None):
     sent = sent.rename(columns={"sent_response_time": "value", "number": "id"})
     received = contacts.sort_values(by='received_response_time', ascending=True)
     received = received[received.received_response_time > 0]
-    received = received.rename(columns={"sent_response_time": "value", "number": "id"})
+    received = received.rename(columns={"received_response_time": "value", "number": "id"})
 
     sent_top = sent[:3]
     sent_bottom = sent[-3:]

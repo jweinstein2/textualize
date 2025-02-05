@@ -1,14 +1,21 @@
 import ContactIcon from "@/components/contact_icon/contact_icon";
+import { FormatType, format as utilFormat } from "@/util";
 import { Center } from "@mantine/core";
 import React from "react";
 
 import c from "./podium.module.css";
 
 interface PodiumProps {
-    leaderboard: { name: string; value: string; id: string }[];
+    leaderboard: { name: string; value: number; id: string }[];
+    format?: FormatType;
 }
 
-function Podium({ leaderboard }: PodiumProps) {
+function Podium({ format, leaderboard }: PodiumProps) {
+    function value(index: number) {
+        const v = leaderboard[index].value;
+        return format != null ? utilFormat(v, format) : `${v}`;
+    }
+
     return (
         <Center>
             <div className={c.container}>
@@ -18,7 +25,7 @@ function Podium({ leaderboard }: PodiumProps) {
                             <ContactIcon text="" size={60}></ContactIcon>
                         </div>
                         <div className={c.name}>{leaderboard[1].name}</div>
-                        <div>{leaderboard[1].value}</div>
+                        <div>{value(1)}</div>
                     </div>
                     <Center>
                         <div className={`${c.medal} ${c.silver}`}>2</div>
@@ -30,7 +37,7 @@ function Podium({ leaderboard }: PodiumProps) {
                             <ContactIcon text="" size={70}></ContactIcon>
                         </div>
                         <div className={c.name}>{leaderboard[0].name}</div>
-                        <div>{leaderboard[0].value}</div>
+                        <div>{value(0)}</div>
                     </div>
                     <Center>
                         <div className={`${c.medal} ${c.gold}`}>1</div>
@@ -42,7 +49,7 @@ function Podium({ leaderboard }: PodiumProps) {
                             <ContactIcon text="" size={60}></ContactIcon>
                         </div>
                         <div className={c.name}>{leaderboard[2].name}</div>
-                        <div>{leaderboard[2].value}</div>
+                        <div>{value(2)}</div>
                     </div>
                     <Center>
                         <div className={`${c.medal} ${c.bronze}`}>3</div>
