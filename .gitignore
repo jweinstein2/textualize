@@ -25,6 +25,7 @@ release
 *.njsproj
 *.sln
 *.sw?
+.fdignore
 
 #lockfile
 package-lock.json
