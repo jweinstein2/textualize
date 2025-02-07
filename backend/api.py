@@ -290,7 +290,6 @@ def response_time_summary(start=None, end=None):
     chats = data_manager.processed_chats()
     contacts = chats[chats.is_group == False]
 
-
     sent = contacts.sort_values(by='sent_response_time', ascending=True)
     sent = sent[sent.sent_response_time > 0]
     sent = sent.rename(columns={"sent_response_time": "value", "number": "id"})
@@ -310,6 +309,10 @@ def response_time_summary(start=None, end=None):
                           "Slowest": received_bottom.to_dict(orient='records')}
     response["data"] = data
     return response
+
+@app.route('/summary/statemap', methods=['GET'])
+def state_map(start = None, end = None):
+    return general_stats.state_map()
 
 
 ##############################

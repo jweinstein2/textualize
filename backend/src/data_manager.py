@@ -114,14 +114,14 @@ def group_messages(index, start=None, end=None, type=0):
     if type is not None: msg_df = msg_df.loc[msg_df.associated_message_type == type]
     return msg_df
 
-def contact(number):
+def contact(number, fallback = None):
     contacts = _fetch(CONTACTS_PATH)
     contact = contacts[contacts['value'] == util.parse_num(number)]
     try:
         contact = contact.iloc[0] # number often matches twice for imessage v. sms
         return contact.to_dict()
     except Exception as e:
-        return None
+        return fallback
 
 def safe_contact(number):
     c = contact(number)

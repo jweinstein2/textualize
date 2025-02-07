@@ -7,6 +7,7 @@ from datetime import date, datetime, timedelta
 
 from src.util import *
 import src.data_manager as dm
+from src.stats.state_codes import AREA_CODES_TO_STATE
 
 # A list of text displayed while loading.
 # All processing time should be minimal.
@@ -159,6 +160,23 @@ def group_summary(group):
     info_dict['oldest_date'] = 0 if messages.empty else ts(messages.iloc[0].date)
     info_dict['newest_date'] = 0 if messages.empty else ts(messages.iloc[-1].date)
     return info_dict
+
+def state_map():
+    df = dm.handles()
+    df = df.drop_duplicates(subset=["id"])
+    df["area_code"] = df["id"].astype(str).str.extract(r"\+1(\d{3})")
+    df["state"] = df["area_code"].map(AREA_CODES_TO_STATE)
+
+    invalid_states = df.loc[df["state"].isna(), "area_code"].unique()
+    if len(invalid_states) > 0:
+        print(f"Warning: Found invalid area codes with no matching state: {invalid_states}")
+    
+    state_counts = df.groupby("state").agg(
+        value=("state", "size"),
+        numbers=("id", lambda x: [data_manager.contact(num, fallback = {'Name': None})['Name'] for num in x])
+    ).to_dict(orient="index")
+    
+    return state_counts
 
 def group_connection_graph():
     MIN_MESSAGE_THRESHOLD = 20
