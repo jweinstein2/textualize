@@ -237,6 +237,24 @@ def streak(number, start=None, end=None):
                         "Current": {"value": format_streak(chat.current_streak), "label": "days"}}
     return response
 
+@app.route('/chat/<number>/messages_by_time', methods=['GET'])
+def messages_by_time(number, start=None, end=None):
+    msg = data_manager.messages(number=number, start=start, end=end, is_group=False)
+    by_day_of_week = general_stats.by_day_of_week(msg)
+    by_time_of_day = general_stats.by_time_of_day(msg)
+
+    # TODO: Move color values to FE
+    series = [{ "name": "received", "color": "blue.6" }, 
+                    { "name": "sent", "color": "green.6" }] 
+    by_time_of_day_data = {"data": by_time_of_day, "series": series}
+    by_day_of_week_data = {"data": by_day_of_week, "series": series}
+
+    response = {}
+    response["type"] = "bar_chart"
+    response["options"] = [[ "Time of Day", "Day of Week"]]
+    response["data"] = {"Day of Week": by_day_of_week_data, "Time of Day": by_time_of_day_data}
+    return response
+
 
 ##############################
 # SUMMARY STATS

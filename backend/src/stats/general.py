@@ -219,6 +219,50 @@ def group_connection_graph():
 
     return {'nodes': nodes, 'edges': edges}
 
+def by_day_of_week(messages):
+    messages['day_of_week'] = messages.date.apply(ts).dt.day_name()
+    sent, received = split_sender(messages)
+    
+    # Count sent and received messages by day of the week
+    DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    sent_counts = sent['day_of_week'].value_counts().reindex(DAYS, fill_value=0)
+    received_counts = received['day_of_week'].value_counts().reindex(DAYS, fill_value=0)
+    
+    df = pd.DataFrame({
+        'key': sent_counts.index,
+        'sent': sent_counts.values,
+        'received': received_counts.values
+    })
+    
+    return df.to_dict(orient='records')
+
+HOURS = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5]
+def by_time_of_day(messages):
+    messages['hour'] = messages.date.apply(ts).dt.hour
+    sent, received = split_sender(messages)
+    
+    # Count sent and received messages by hour of the day
+    sent_counts = sent['hour'].value_counts().reindex(HOURS, fill_value=0)
+    received_counts = received['hour'].value_counts().reindex(HOURS, fill_value=0)
+    
+    def format_hour(hour):
+        if hour == 0:
+            return "12 am"
+        elif hour < 12:
+            return f"{hour} am"
+        elif hour == 12:
+            return "12 pm"
+        else:
+            return f"{hour - 12} pm"
+    
+    df = pd.DataFrame({
+        'key': [format_hour(h) for h in sent_counts.index],
+        'sent': sent_counts.values,
+        'received': received_counts.values
+    })
+    
+    return df.to_dict(orient='records')
+
 def summary(messages):
     json = {}
 

@@ -1,4 +1,5 @@
 import MessageCarousel from "@/components/data_widget/message_carousel/message_carousel";
+import BarChart from "@/components/data_widget/bar_chart/bar_chart";
 import Podium from "@/components/data_widget/podium/podium";
 import Simple from "@/components/data_widget/simple/simple";
 import Wordcloud from "@/components/data_widget/wordcloud/wordcloud";
@@ -74,6 +75,11 @@ function DataWidget(props: WidgetProps) {
 
         if (type === "simple") {
             return <Simple data={selectedData} format={format} />;
+        }
+
+        if (type == "bar_chart") {
+            return  <BarChart data={selectedData['data']} 
+                              series={selectedData['series']} />
         }
 
         return <>Error!</>;

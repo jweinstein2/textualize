@@ -1,16 +1,14 @@
 import Card from "@/components/card/card";
 import DataWidget from "@/components/data_widget/data_widget";
-import Bubble from "@/components/message/bubble";
 import { showError } from "@/util";
 import { LineChart } from "@mantine/charts";
 import { Button, Container } from "@mantine/core";
-import { Center, Grid, Loader } from "@mantine/core";
+import {  Grid } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
-import ReactWordcloud from "react-wordcloud";
 
 import classes from "./contact.module.css";
 
@@ -25,12 +23,6 @@ export type SentimentData = {
     neg_sent: string[];
     pos_received: string[];
     neg_received: string[];
-};
-
-type LanguageData = {
-    unique: { text: string; value: number }[];
-    received_avg_wordlen: number;
-    sent_avg_wordlen: number;
 };
 
 function Contact() {
@@ -110,8 +102,9 @@ function Contact() {
                     />
                 </Card>
                 <Card title="Double Texts" span={3} />
-                <Card title="Time of Day" span={6} />
-                <Card title="Day of Week" span={6} />
+                <Card title="Message Time" span={6} >
+                    <DataWidget fetchPath={`/chat/${params.number}/messages_by_time`} />
+                </Card>
                 <Card title="Top Groups" span={4} />
                 <Card title="Text Inequality" span={3} />
                 <Card title="Longest Streak" span={3}>
