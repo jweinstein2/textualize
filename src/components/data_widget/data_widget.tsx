@@ -55,10 +55,12 @@ function DataWidget(props: WidgetProps) {
         if (data == null) return <></>;
 
         let selectedData = data;
-        for (const i in Object.keys(options)) {
-            const key = Object.keys(options)[i];
-            const val = selectedOptions[key] ?? options[key][0];
-            selectedData = selectedData[val];
+        if (Object.keys(options).length !== 0) {
+            for (const i in Object.keys(options)) {
+                const key = Object.keys(options)[i];
+                const val = selectedOptions[key] ?? options[key][0];
+                selectedData = selectedData[val];
+            }
         }
 
         if (type === "leaderboard") {

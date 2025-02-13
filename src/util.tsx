@@ -8,6 +8,14 @@ export function showError(title: string, message: string) {
     });
 }
 
+export function idPath(id: string) {
+    if (Number(id) < 100000 && Number(id) > 0) {
+        return `/groups/${id}`;
+    } else {
+        return `/contacts/${id}`;
+    }
+}
+
 export function groupName(members?: string[], name?: string) {
     if (name != null && name.length != 0) return name;
     return (members ?? []).join(", ");

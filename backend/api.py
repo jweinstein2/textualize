@@ -67,7 +67,6 @@ def quick_stats():
 # STATS
 ##############################
 
-# TODO: Remove the abstraction of groups and individuals
 @app.route('/chats', methods=['GET'])
 def list(start=None, end=None, n=300):
     chats = data_manager.processed_chats()
@@ -255,6 +254,24 @@ def messages_by_time(number, start=None, end=None):
     response["data"] = {"Day of Week": by_day_of_week_data, "Time of Day": by_time_of_day_data}
     return response
 
+@app.route('/chat/<number>/top_groups', methods=['GET'])
+def top_groups(number, start=None, end=None):
+    contact = data_manager.contact(number)
+
+    chats = data_manager.processed_chats()
+    chats = chats.sort_values(by='count_total', ascending=False)
+    chats = chats[chats.is_group == True]
+    chats = chats[chats['members'].apply(lambda members: contact['First'] in members)]
+    chats = chats[["count_total", "name", "id"]]
+    chats = chats.rename(columns={"count_total": "value"})
+    data = chats.to_dict(orient='records')
+
+    response = {}
+    response["type"] = "leaderboard"
+    response["format"] = "message_count"
+    response["options"] = []
+    response["data"] = data
+    return response
 
 ##############################
 # SUMMARY STATS
