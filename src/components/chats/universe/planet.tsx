@@ -8,14 +8,14 @@ import classes from "./planet.module.css";
 
 export interface Orbit {
     type: "orbit";
-    distance: number; // px from center
+    distance: number; // 0-1: % of radius.
     speed: number; // magic number (sorry)
 }
 
 export interface Position {
     type: "position";
-    distance: number; // px from center
-    degree: number; // 0 - 360
+    distance: number; // 0-1: % of radius.
+    degree: number; // 0-360
 }
 
 interface PlanetProps {
@@ -45,6 +45,7 @@ function Planet(props: PlanetProps) {
 
     const { height, width } = useViewportSize();
     const { x, y } = useMouse();
+    const  screenRadius = Math.min(height, width) / 2;
 
     const navigate = useNavigate();
 
@@ -60,7 +61,7 @@ function Planet(props: PlanetProps) {
                 const anglePosition =
                     (props.movement.degree / 360) * 2 * Math.PI;
                 setPositionOverride({
-                    radius: props.movement.distance,
+                    radius: props.movement.distance * ( screenRadius * .7), 
                     angle: anglePosition,
                 });
                 break;
@@ -70,7 +71,7 @@ function Planet(props: PlanetProps) {
                         ? Math.random() * 2 * Math.PI
                         : position.angle;
                 setPositionOverride({
-                    radius: props.movement.distance,
+                    radius: props.movement.distance * ( screenRadius * .8) + 100, // Add offset to avoid center
                     angle: angleOrbit,
                 });
                 break;
@@ -82,7 +83,7 @@ function Planet(props: PlanetProps) {
         if (positionOverride != null) {
             setPosition(positionOverride);
             setPositionOverride(undefined);
-        }
+        } 
 
         switch (props.movement.type) {
             case "position":

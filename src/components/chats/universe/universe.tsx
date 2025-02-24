@@ -126,7 +126,7 @@ function messageCountMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
     return chats.map((chat) => {
         const params = makePlanetParams(chat);
 
-        const distance = (120 - (chat.countTotal / max) * 100) * 5.5;
+        const distance = (1 - (chat.countTotal / max));
         const speedJitter =
             Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
         const speed = 1.5 + speedJitter;
@@ -143,7 +143,7 @@ function streakMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
     return chats.map((chat) => {
         const params = makePlanetParams(chat);
 
-        const distance = (120 - (chat.longestStreak / max) * 100) * 5.5;
+        const distance = (1 - (chat.longestStreak / max) * 1);
         const speedJitter =
             Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
         const speed = 1.5 + speedJitter;
@@ -162,7 +162,7 @@ function earliestMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
         const params = makePlanetParams(chat);
 
         const dateDelta = chat.oldest.getTime() - max;
-        const distance = (120 - (dateDelta / maxDelta) * 100) * 5.5;
+        const distance = (1 - (dateDelta / maxDelta));
         const speedJitter =
             Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
         const speed = 1.5 + speedJitter;
@@ -181,7 +181,7 @@ function recentMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
         const params = makePlanetParams(chat);
 
         const dateDelta = chat.newest.getTime() - max;
-        const distance = (20 + (dateDelta / maxDelta) * 100) * 5.5;
+        const distance = dateDelta / maxDelta;
         const speedJitter =
             Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
         const speed = 1.5 + speedJitter;
@@ -202,7 +202,7 @@ function responseTimeMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
             const params = makePlanetParams(chat);
             const time = chat.responseTimeReceived;
 
-            const distance = (20 + Math.random() * 100) * 5.5;
+            const distance = Math.random();
             const speed = (1 - (time - max) / (min - max)) * 5 + 0.25;
 
             params.movement = { distance, speed, type: "orbit" } as Orbit;
