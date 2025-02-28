@@ -1,5 +1,4 @@
 .background {
-    background-color: #121120;
     width: 100vw;
     height: 100vh;
     padding: 16px;
@@ -32,7 +31,7 @@
 }
 
 .filterWindow {
-    background-color: var(--mantine-color-dark-7);
+    background-color: var(--color-space);
     border-radius: 4px;
     width: 200px;
 }

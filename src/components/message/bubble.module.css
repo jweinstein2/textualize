@@ -1,7 +1,8 @@
-.bubble_sent {
+/* Unused */
+.bubble_sent { 
     word-wrap: break-word;
-    background-color: #e9ebee;
-    color: var(--mantine-color-dark-8);
+    background-color: var(--color-text);
+    color: var(--color-background);
     max-width: 400px;
     margin: auto;
 }
@@ -9,7 +10,7 @@
 .bubble_received {
     word-wrap: break-word;
     color: white;
-    background-color: #218aff;
+    background-color: var(--color-received);
     max-width: 400px;
     margin: auto;
 }

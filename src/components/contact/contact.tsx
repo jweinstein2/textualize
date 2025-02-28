@@ -63,7 +63,7 @@ function Contact() {
     }, []);
 
     return (
-        <Container fluid>
+        <Container fluid className={classes.container}>
             <h2>
                 <Button
                     className={classes.backButton}
@@ -78,8 +78,8 @@ function Contact() {
                 data={frequency}
                 dataKey="date"
                 series={[
-                    { name: "sent", color: "green.6" },
-                    { name: "received", color: "blue.6" },
+                    { name: "sent", color: "var(--color-sent)" },
+                    { name: "received", color: "var(--color-received)" },
                 ]}
                 curveType="linear"
                 tickLine="x"

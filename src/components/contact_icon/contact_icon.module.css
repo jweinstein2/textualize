@@ -1,6 +1,6 @@
 .circle {
     aspect-ratio: 1;
-    background-color: #1c1c1e;
+    background-color: var(--color-space);
     color: white;
     font-weight: bold;
     border-radius: 50%;

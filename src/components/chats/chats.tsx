@@ -2,6 +2,7 @@ import { groupName } from "@/util";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Routes as ReactRoutes, Route } from "react-router-dom";
+import  c from "./chats.module.css";
 
 import ChatList from "./chat_list/chat_list";
 import Universe from "./universe/universe";
@@ -58,11 +59,13 @@ function Chats() {
     }, []);
 
     return (
-        <ReactRoutes>
-            <Route path="/*" element={<Universe chats={chats} />} />
-            <Route path="/list" element={<ChatList chats={chats} />} />
-            <Route path="/universe" element={<Universe chats={chats} />} />
-        </ReactRoutes>
+        <div className={c.container}>
+            <ReactRoutes>
+                <Route path="/*" element={<Universe chats={chats} />} />
+                <Route path="/list" element={<ChatList chats={chats} />} />
+                <Route path="/universe" element={<Universe chats={chats} />} />
+            </ReactRoutes>
+        </div>
     );
 }
 

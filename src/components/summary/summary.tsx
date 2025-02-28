@@ -100,7 +100,7 @@ function Summary() {
     }
 
     return (
-        <Container fluid>
+        <Container fluid className={classes.container}>
             <h2>
                 <Button
                     className={classes.backButton}

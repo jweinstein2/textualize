@@ -19,6 +19,10 @@
     flex-grow: 1;
 }
 
+.input {
+    background-color: var(--color-space);
+}
+
 .headerLeft {
     display: block;
 }

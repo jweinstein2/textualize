@@ -129,9 +129,10 @@ function ChatList({ chats }: { chats: Chat[] }) {
                 leftSection={<IconSearch />}
                 value={search}
                 onChange={handleSearchChange}
-            />
-            <Table highlightOnHover verticalSpacing="xs">
-                <Table.Thead>
+                classNames={{ input: classes.input }}
+        />
+        <Table highlightOnHover verticalSpacing="xs" borderColor="rgba(255, 255, 255, 0.1)" highlightOnHoverColor="rgba(255, 255, 255, 0.1)">
+            <Table.Thead>
                     <Table.Tr>
                         <Th
                             sorted={sortBy === "name"}
@@ -192,7 +193,6 @@ function ChatList({ chats }: { chats: Chat[] }) {
                     </div>
 
                     <Button
-                        variant="light"
                         onClick={() => navigate("/settings")}
                     >
                         <IconSettings />

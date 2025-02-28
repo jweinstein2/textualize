@@ -34,9 +34,7 @@ const SPEED_JITTER_THRESHOLD = 0.5;
 const OPTIONS = {
     autoPlay: true,
     background: {
-        color: {
-            value: "#080612",
-        },
+        opacity: 0,
     },
     particles: {
         number: {
@@ -377,13 +375,11 @@ function Universe({ chats }: { chats: Chat[] }) {
                 <div className={classes.floatRight}>
                     <Button
                         onClick={() => navigate("/settings")}
-                        variant="light"
                     >
                         <IconSettings />
                     </Button>
                     <Button
                         onClick={() => setDisplayFilter(!displayFilter)}
-                        variant="light"
                     >
                         {displayFilter ? <IconFilterFilled /> : <IconFilter />}
                     </Button>

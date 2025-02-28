@@ -1,0 +1,15 @@
+:root {
+  --color-background: var(--mantine-color-dark-7);
+  --color-text: var(--mantine-color-dark-1);
+  --color-space: var(--mantine-color-dark-9);
+
+  /* Accents */
+  --color-sent: var(--mantine-color-green-6);
+  --color-received: var(--mantine-color-blue-6);
+}
+
+/* https://cssgradient.io/ */
+:root {
+    --color-background-gradient: linear-gradient(10deg, rgba(3,5,20,1) 0%, rgba(39,76,167,1) 32%, rgba(107,66,148,1) 50%, rgba(26,26,89,1) 80%, rgba(3,3,27,1) 100%);
+    --color-background-gradient-muted: linear-gradient(10deg, rgba(9,35,56,1) 0%, rgba(12,46,128,1) 29%, rgba(94,59,130,1) 50%, rgba(3,3,27,1) 100%);
+}
