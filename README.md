@@ -31,3 +31,15 @@ By default, code signing and validation are skipped during a local build.
 Signing is turned off in the npm command using `-c.mac.identity=null`.
 Validation is turned off via SKIP_NOTARIZATION in the .env setting. This toggle
 is used to early exit from `scripts/notarize.cjs`
+
+## Logo
+
+`makeicns -in infile.jpg -out outfile.icns`
+
+## Similar Projects 
+
+This project did not develop in a vacuum. Notable shout-out to the other projects that have set out with similar ambitions. 
+
+* [Left on Read](https://leftonread.me/)
+* [Messages Wrapped](https://messageswrapped.com/)
+* [Mimoto](https://apps.apple.com/gb/app/mimoto-chat-insights-engine/id1549876571)
