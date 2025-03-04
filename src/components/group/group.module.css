@@ -8,3 +8,8 @@
     vertical-align: top;
     margin-right: 20px;
 }
+
+.container {
+    background: var(--color-background-gradient-muted);
+    padding-top: 1px; /* 1px to avoid the top border */
+}

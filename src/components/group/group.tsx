@@ -1,7 +1,9 @@
 import { FrequencyDay } from "@/components/contact/contact";
+import Card from "@/components/card/card";
+import DataWidget from "@/components/data_widget/data_widget";
 import { groupName, showError } from "@/util";
 import { LineChart } from "@mantine/charts";
-import { Button, Chip, Container } from "@mantine/core";
+import { Grid, Button, Chip, Container } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -95,7 +97,7 @@ function Group() {
     };
 
     return (
-        <Container fluid>
+        <Container fluid className={classes.container}>
             <h2>
                 <Button
                     className={classes.backButton}
@@ -120,6 +122,11 @@ function Group() {
                 withDots={false}
             />
             <h3>Language</h3>
+            <Grid>
+                <Card title="Message Count" span={6}>
+                    <DataWidget fetchPath={`/chat/${params.number}/count`} />
+                </Card>
+            </Grid>
             <ReactWordcloud
                 options={options}
                 callbacks={callbacks}
