@@ -1,5 +1,6 @@
 import { showError } from "@/util";
 import { Button, Group, Radio, Stack, Text } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +24,12 @@ function Mac() {
     return (
         <div className="onboardingContainer">
             <div className="onboardingContents">
+                <Button
+                    onClick={() => navigate(-1)}
+                    variant="light"
+                >
+                    <IconArrowLeft />
+                </Button>
                 <h2>Load data from Messages</h2>
 
                 <Radio.Group

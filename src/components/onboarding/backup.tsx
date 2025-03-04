@@ -1,4 +1,5 @@
 import { showError } from "@/util";
+import { IconArrowLeft } from "@tabler/icons-react";
 import {
     Button,
     Center,
@@ -165,6 +166,12 @@ function Onboarding() {
     return (
         <div className="onboardingContainer">
             <div className="onboardingContents">
+                <Button
+                    onClick={() => navigate(-1)}
+                    variant="light"
+                >
+                    <IconArrowLeft />
+                </Button>
                 <h2>Load data from an iPhone Backup</h2>
                 {loading ? (
                     <Center>
