@@ -48,6 +48,9 @@ jobs:
                   python_arch: "x64"
                   exe_path: "./dist-python"
                   options: --onedir --name "api" --add-data "`python -c 'import nltk; print(nltk.data.path[0])'`:."
+              env:
+                  REACT_APP_PUBLIC_POSTHOG_HOST: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}
+                  REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
 
             - name: Setup Node.js
               uses: actions/setup-node@v3
@@ -66,6 +69,8 @@ jobs:
                   APPLEID: ${{ secrets.APPLEID }}
                   APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
                   TEAMID: ${{ secrets.TEAMID }}
+                  REACT_APP_PUBLIC_POSTHOG_HOST: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}
+                  REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
 
     deploy_arm:
         runs-on: ${{ matrix.os }}
@@ -99,6 +104,9 @@ jobs:
                   python_arch: "arm64"
                   exe_path: "./dist-python"
                   options: --onedir --name "api" --add-data "`python -c 'import nltk; print(nltk.data.path[0])'`:."
+              env:
+                  REACT_APP_PUBLIC_POSTHOG_HOST: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}
+                  REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
 
             - name: Setup Node.js
               uses: actions/setup-node@v3
@@ -117,3 +125,5 @@ jobs:
                   APPLEID: ${{ secrets.APPLEID }}
                   APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
                   TEAMID: ${{ secrets.TEAMID }}
+                  REACT_APP_PUBLIC_POSTHOG_HOST: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}
+                  REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
