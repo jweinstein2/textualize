@@ -24,6 +24,11 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     // You can expose other APTs you need here.
 });
 
+contextBridge.exposeInMainWorld('envVars', {
+  posthogAPIKey: process.env.REACT_APP_PUBLIC_POSTHOG_KEY,
+  posthogHost: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
+});
+
 // --------- Preload scripts loading ---------
 function domReady(
     condition: DocumentReadyState[] = ["complete", "interactive"],

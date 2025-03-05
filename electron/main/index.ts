@@ -12,6 +12,7 @@ const require = createRequire(import.meta.url);
 const plist = require("simple-plist");
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const dotenv = require("dotenv").config();
 const fs = require("fs");
 const url = require("url");
 const { spawn, ChildProcess } = require("child_process");

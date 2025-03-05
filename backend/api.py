@@ -1,5 +1,6 @@
 from __future__ import print_function
 import sys
+import os
 import src.data_manager as data_manager
 import src.file_util as file_util
 import src.configuration as config
@@ -8,16 +9,54 @@ import src.stats.tapback as tapback
 import src.stats.language as language_stats
 import src.stats.emoji as emoji_stats
 import src.stats.sentiment as sentiment_stats
+import traceback
 from http import HTTPStatus
 import multiprocessing
+from posthog import Posthog
+from werkzeug.exceptions import HTTPException
+from dotenv import load_dotenv
 
 from src.util import *
 
 from flask_cors import CORS
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 CORS(app)
+
+load_dotenv()
+
+POSTHOG_KEY = os.getenv('REACT_APP_PUBLIC_POSTHOG_KEY')
+POSTHOG_HOST = os.getenv('REACT_APP_PUBLIC_POSTHOG_HOST')
+
+posthog = Posthog(POSTHOG_KEY,
+  host=POSTHOG_HOST,
+  enable_exception_autocapture=True, # Not working... 
+)
+
+# Internal Server Error handler
+@app.errorhandler(Exception)
+def handle_exception(e):
+    exception = e
+    t = type(e).__name__
+    full_traceback = traceback.format_exc()
+    print('\n', e, '\n', full_traceback, '\n\n')
+
+    # Capture exception with PostHog
+    additional_properties = {
+        'path': request.path,
+        'method': request.method,
+        '$exception_message': str(e),
+        '$exception_type': t,
+        'stack_trace': full_traceback
+    }
+    UNIQUE_ID = 0 # Get this from FE
+    posthog.capture_exception(e, UNIQUE_ID, properties=additional_properties)
+
+    # pass through HTTP errors
+    if isinstance(e, HTTPException):
+        return e
+    return jsonify(error=str(e)), 500 
 
 ##############################
 # CONFIGURATION
@@ -32,9 +71,11 @@ def heartbeat():
 @app.route('/source', methods=['GET', 'DELETE'])
 def source():
     if request.method == 'GET':
+        posthog.capture(0, 'source fetched')    
         path =  config.get_backup_path();
         return {"source": path}
     elif request.method == 'DELETE':
+        posthog.capture(0, 'source deleted')    
         config.reset();
         data_manager.clear();
         return "", HTTPStatus.OK
@@ -46,6 +87,7 @@ def process():
         data_manager.clear()
         return "", HTTPStatus.OK
     if request.method == 'GET':
+        posthog.capture(0, 'process status fetched') 
         status, percent, error = data_manager.process_progress()
         return {"status": status, "percent": percent, "error": error}
     if request.method == 'POST':
