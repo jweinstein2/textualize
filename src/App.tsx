@@ -23,6 +23,7 @@ const theme = createTheme({
 const options = {
   api_host: window.envVars.posthogHost,
   capture_pageview: false, // Handled manually in routes.tsx
+  autocapture: !window.envVars.isDev,
 }
 
 

@@ -5,6 +5,7 @@ declare global {
         envVars: {
             posthogAPIKey: string;
             posthogHost: string;
+            isDev: boolean;
         };
     }
 }

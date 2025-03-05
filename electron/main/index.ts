@@ -121,6 +121,7 @@ async function createWindow() {
         title: "Textual Activity",
         webPreferences: {
             preload,
+            additionalArguments: [`--is-dev=${isDev}`], // Pass boolean as a string
             // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
             // nodeIntegration: true,
 

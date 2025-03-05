@@ -24,9 +24,11 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     // You can expose other APTs you need here.
 });
 
+const isDev = process.argv.includes('--is-dev=true');
 contextBridge.exposeInMainWorld('envVars', {
   posthogAPIKey: process.env.REACT_APP_PUBLIC_POSTHOG_KEY,
   posthogHost: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
+  isDev: isDev,
 });
 
 // --------- Preload scripts loading ---------
