@@ -14,7 +14,6 @@ from http import HTTPStatus
 import multiprocessing
 from posthog import Posthog
 from werkzeug.exceptions import HTTPException
-from dotenv import load_dotenv
 
 from src.util import *
 
@@ -24,10 +23,8 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 CORS(app)
 
-load_dotenv()
-
-POSTHOG_KEY = os.getenv('REACT_APP_PUBLIC_POSTHOG_KEY')
-POSTHOG_HOST = os.getenv('REACT_APP_PUBLIC_POSTHOG_HOST')
+POSTHOG_KEY = 'phc_R24eFyS4g39gx6F3GrmxNb6HqeGX0dTWx7gfmWUNx2Q' # public key
+POSTHOG_HOST = 'https://us.i.posthog.com'
 
 posthog = Posthog(POSTHOG_KEY,
   host=POSTHOG_HOST,
