@@ -60,6 +60,11 @@ jobs:
             - name: Install Dependencies
               run: npm install --legacy-peer-deps
 
+            - name: Create electron-builder.env file
+              run: |
+                echo "REACT_APP_PUBLIC_POSTHOG_KEY=${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}" >> electron-builder.env
+                echo "REACT_APP_PUBLIC_POSTHOG_HOST=${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}" >> electron-builder.env
+
             - name: Electron-Builder
               run: npm run gh_deploy_x64
               env:
@@ -115,6 +120,11 @@ jobs:
 
             - name: Install Dependencies
               run: npm install --legacy-peer-deps
+
+            - name: Create electron-builder.env file
+              run: |
+                echo "REACT_APP_PUBLIC_POSTHOG_KEY=${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}" >> electron-builder.env
+                echo "REACT_APP_PUBLIC_POSTHOG_HOST=${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}" >> electron-builder.env
 
             - name: Electron-Builder
               run: npm run gh_deploy_arm

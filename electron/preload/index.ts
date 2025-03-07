@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 });
 
 const isDev = process.argv.includes('--is-dev=true');
+console.log({isDev, "host": process.env.REACT_APP_PUBLIC_POSTHOG_HOST })
 contextBridge.exposeInMainWorld('envVars', {
   posthogAPIKey: process.env.REACT_APP_PUBLIC_POSTHOG_KEY,
   posthogHost: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,

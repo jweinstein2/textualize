@@ -36,6 +36,7 @@ yarn.lock
 /playwright/.cache/
 api.spec
 .env
+electron-builder.env
 
 # Certificates
 *.p12
