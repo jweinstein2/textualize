@@ -126,6 +126,9 @@ jobs:
                 echo "REACT_APP_PUBLIC_POSTHOG_KEY=${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}" >> electron-builder.env
                 echo "REACT_APP_PUBLIC_POSTHOG_HOST=${{ secrets.REACT_APP_PUBLIC_POSTHOG_HOST }}" >> electron-builder.env
 
+            - name: Display electron-builder.env (optional, for debugging)
+              run: cat electron-builder.env
+
             - name: Electron-Builder
               run: npm run gh_deploy_arm
               env:
