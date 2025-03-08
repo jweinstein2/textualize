@@ -108,9 +108,6 @@ jobs:
             - name: Install Dependencies
               run: npm install --legacy-peer-deps
 
-            - name: Display electron-builder.env (optional, for debugging)
-              run: cat electron-builder.env
-
             - name: Electron-Builder
               run: npm run gh_deploy_arm
               env:
