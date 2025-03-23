@@ -129,43 +129,13 @@ function Summary() {
                 <Card title="Most Active" span={6}>
                     <DataWidget fetchPath="/summary/activity" />
                 </Card>
-                <Card title="👻 Caught Lurkin'" span={4}>
-                    <></>
-                </Card>
-                <Card title="Group Connection Graph" span={12}>
-                    {connectionGraph()}
-                </Card>
                 <Card title="Response Time" span={6}>
                     <DataWidget fetchPath="/summary/responsetime" />
                 </Card>
-                <Card title="Time of Day" span={8}>
-                    <></>
-                </Card>
-                <Card title="Text Inequality" span={4}>
-                    <></>
-                </Card>
-                <Card title="Longest Streak" span={4}>
-                    <></>
-                </Card>
-                <Card title="Current Streaks" span={4}>
-                    <></>
-                </Card>
-                <Card title="Forgotten Messages" span={4}>
-                    <></>
-                </Card>
-                <Card title="Double Texts" span={4}>
-                    <></>
-                </Card>
-                <Card title="🪦 The Graveyard" span={4}>
-                    <></>
-                </Card>
-                <Card title="Area Codes" span={12}>
-                    <></>
+                <Card title="Group Connection Graph" span={12} height={600}>
+                    {connectionGraph()}
                 </Card>
             </Grid>
-            <h3>Language</h3>
-            <h3>Emoji & Tapback</h3>
-            <h3>Groups</h3>
         </Container>
     );
 }

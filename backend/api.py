@@ -298,7 +298,7 @@ def messages_by_time(number):
 ########################
 # STATS [INDIVIDUAL ONLY]
 ########################
-@app.route('/chat/<number>/top_groups', methods=['GET'])k
+@app.route('/chat/<number>/top_groups', methods=['GET'])
 def top_groups(number, start=None, end=None):
     contact = data_manager.contact(number)
 
