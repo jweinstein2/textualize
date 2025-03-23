@@ -1,4 +1,4 @@
-import { Center, Paper, Text } from "@mantine/core";
+import { Paper, Text } from "@mantine/core";
 import GraphemeSplitter from "grapheme-splitter";
 
 import classes from "./bubble.module.css";

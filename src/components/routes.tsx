@@ -29,7 +29,6 @@ function Routes() {
         const pathname = location.pathname;
         const sensitivePattern = /(\/(contacts|groups)\/)([\w+.-]+@[\w.-]+|\+\d{10,15}|\d+)/g;
         const sanitized =  pathname.replace(sensitivePattern, (_, prefix) => `${prefix}[...]`);
-        console.log(`Pageview: ${sanitized}`);
         posthog?.capture('$pageview', {'$pathname': sanitized})
     }, [location]);
 

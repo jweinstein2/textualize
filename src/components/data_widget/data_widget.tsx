@@ -12,7 +12,7 @@ import classes from "./data_widget.module.css";
 
 interface WidgetProps {
     fetchPath: string;
-    params?: {};
+    params?: object;
 }
 
 function DataWidget(props: WidgetProps) {

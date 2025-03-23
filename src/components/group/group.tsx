@@ -68,12 +68,6 @@ function Group() {
         ));
     }
 
-    const options = {
-        rotations: 8,
-        rotationAngles: [-20, 20] as [number, number],
-    };
-
-
     return (
         <Container fluid className={classes.container}>
             <h2>
