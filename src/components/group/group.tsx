@@ -9,7 +9,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
-import ReactWordcloud from "react-wordcloud";
 
 import classes from "./group.module.css";
 
@@ -18,14 +17,9 @@ type GroupInfo = {
     members: string[];
 };
 
-type LanguageData = {
-    unique: { text: string; value: number }[];
-};
-
 function Group() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
     const [groupInfo, setGroupInfo] = useState<GroupInfo>();
-    const [language, setLanguage] = useState<LanguageData>();
 
     const params = useParams();
     const navigate = useNavigate();
@@ -65,20 +59,6 @@ function Group() {
             );
     }, []);
 
-    useEffect(() => {
-        axios
-            .get(`http://127.0.0.1:4242/group/${params.id}/language`)
-            .then((response) => {
-                setLanguage(response.data);
-            })
-            .catch(() =>
-                showError(
-                    "Failed to load group data",
-                    "Frequency graph could not be generated"
-                )
-            );
-    }, []);
-
     function renderGroupMembers() {
         if (groupInfo?.members == null) return <div />;
         return groupInfo.members.map((name: string) => (
@@ -91,10 +71,6 @@ function Group() {
         rotationAngles: [-20, 20] as [number, number],
     };
 
-    const callbacks = {
-        getWordColor: () => "#218aff",
-        getWordTooltip: () => ``,
-    };
 
     return (
         <Container fluid className={classes.container}>
@@ -123,15 +99,13 @@ function Group() {
             />
             <h3>Language</h3>
             <Grid>
-                <Card title="Message Count" span={6}>
-                    <DataWidget fetchPath={`/chat/${params.number}/count`} />
+                <Card title="Common Words" span={6} height={400}>
+                    <DataWidget fetchPath={`/chat/${params.id}/wordcloud`} params={{"isGroup": true}} />
+                </Card>
+                <Card title="Message Time" span={6} height={400}>
+                    <DataWidget fetchPath={`/chat/${params.id}/messages_by_time`} params={{"isGroup": true}}/>
                 </Card>
             </Grid>
-            <ReactWordcloud
-                options={options}
-                callbacks={callbacks}
-                words={language?.unique ?? []}
-            />
         </Container>
     );
 }

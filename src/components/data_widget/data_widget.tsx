@@ -12,6 +12,7 @@ import classes from "./data_widget.module.css";
 
 interface WidgetProps {
     fetchPath: string;
+    params?: {};
 }
 
 function DataWidget(props: WidgetProps) {
@@ -26,7 +27,7 @@ function DataWidget(props: WidgetProps) {
 
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:4242/${props.fetchPath}`)
+            .get(`http://127.0.0.1:4242/${props.fetchPath}`, {"params": props.params ?? {}})
             .then((response) => {
                 setType(response.data.type ?? "");
                 setData(response.data.data);

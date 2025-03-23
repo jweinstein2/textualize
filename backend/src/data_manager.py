@@ -110,9 +110,14 @@ def group_messages(index, start=None, end=None, type=0):
 
     join = cm_join[cm_join.chat_id == index]
     msg_df = msg_df.set_index(['ROWID']).reindex(join.message_id)
-
+    
     if type is not None: msg_df = msg_df.loc[msg_df.associated_message_type == type]
     return msg_df
+
+def messages_general(id, is_group, start, end, type=None):
+    if is_group:
+        return group_messages(int(id), start, end, type)
+    return messages(id, start, end, type)
 
 def contact(number, fallback = None):
     contacts = _fetch(CONTACTS_PATH)

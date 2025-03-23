@@ -93,7 +93,7 @@ def process():
         error = data_manager.start_process(type, source)
 
         if (error != None):
-            console.log(error)
+            print(error)
             return str(error), HTTPStatus.INTERNAL_SERVER_ERROR
 
         return "", HTTPStatus.OK
@@ -198,7 +198,9 @@ def sentiment(number, start=None, end=None):
 
 @app.route('/chat/<number>/wordcloud', methods=['GET'])
 def wordcloud(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end)
+    [is_group, start, end] = get_standard_query_params()
+
+    msg = data_manager.messages_general(number, is_group, start, end)
     unique = language_stats.unique_words(msg)
     popular = language_stats.popular_words(msg) # TODO
 
@@ -276,8 +278,10 @@ def streak(number, start=None, end=None):
     return response
 
 @app.route('/chat/<number>/messages_by_time', methods=['GET'])
-def messages_by_time(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end, is_group=False)
+def messages_by_time(number):
+    [is_group, start, end] = get_standard_query_params()
+    msg = data_manager.messages_general(number, is_group, start, end)
+
     by_day_of_week = general_stats.by_day_of_week(msg)
     by_time_of_day = general_stats.by_time_of_day(msg)
 
@@ -388,10 +392,15 @@ def response_time_summary(start=None, end=None):
 def state_map(start = None, end = None):
     return general_stats.state_map()
 
+##############################
+# Util
+##############################
 
-##############################
-# IPC
-##############################
+def get_standard_query_params():
+    is_group = request.args.get('isGroup', default=False, type=lambda x: x.lower() == 'true')
+    start = request.args.get('start', default=None)
+    end = request.args.get('end', default=None)
+    return [is_group, start, end]
 
 def parse_port():
     port = 4242
