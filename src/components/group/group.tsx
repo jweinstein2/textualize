@@ -17,6 +17,8 @@ type GroupInfo = {
     members: string[];
 };
 
+const GROUP_API_PARAMS = {"isGroup": true}
+
 function Group() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
     const [groupInfo, setGroupInfo] = useState<GroupInfo>();
@@ -100,10 +102,23 @@ function Group() {
             <h3>Language</h3>
             <Grid>
                 <Card title="Common Words" span={6} height={400}>
-                    <DataWidget fetchPath={`/chat/${params.id}/wordcloud`} params={{"isGroup": true}} />
+                    <DataWidget fetchPath={`/chat/${params.id}/wordcloud`} params={GROUP_API_PARAMS} />
                 </Card>
                 <Card title="Message Time" span={6} height={400}>
-                    <DataWidget fetchPath={`/chat/${params.id}/messages_by_time`} params={{"isGroup": true}}/>
+                    <DataWidget fetchPath={`/chat/${params.id}/messages_by_time`} params={GROUP_API_PARAMS}/>
+                </Card>
+                <Card title="Emoji Usage" span={4}>
+                    <DataWidget fetchPath={`/chat/${params.id}/emoji`} params={GROUP_API_PARAMS} />
+                </Card>
+                <Card title="Sentiment" span={4}>
+                    <DataWidget
+                        fetchPath={`/chat/${params.id}/sentiment`}
+                        params={GROUP_API_PARAMS} />
+                </Card>
+                <Card title="Oldest Message" span={4}>
+                    <DataWidget
+                        fetchPath={`/chat/${params.id}/firstmessage`} params={GROUP_API_PARAMS}
+                    />
                 </Card>
             </Grid>
         </Container>

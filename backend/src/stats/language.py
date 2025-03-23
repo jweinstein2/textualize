@@ -26,11 +26,6 @@ from src.util import *
 #     process('sent', sent)
 #     return info_dict
 
-def group_summary(messages):
-    info_dict = {}
-    info_dict['unique'] = unique_words(messages)
-    return info_dict
-
 def unique_words(messages):
     (words, _) = extract_words(messages, True, True)
     (all_words, _) = extract_words(data_manager.messages(), True, True)

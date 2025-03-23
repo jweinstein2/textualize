@@ -103,7 +103,10 @@ def quick_stats():
     return general_stats.quick_stats()
 
 ##############################
-# STATS
+# STATS [PRECOMPUTED]
+# 
+# Stuff like lists that we don't want to 
+# regenerrate overtime.
 ##############################
 
 @app.route('/chats', methods=['GET'])
@@ -124,112 +127,9 @@ def group_info(id):
     content = general_stats.group_info(int(id))
     return content
 
-@app.route('/language/<number>', methods=['GET'])
-def language(number, start=None, end=None):
-    return result
-
-@app.route('/frequency/', defaults={'number': None})
-@app.route('/frequency/<number>', methods=['GET'])
-def frequency(number=None, start=None, end=None):
-    is_group = None if (number == None) else False
-    msg = data_manager.messages(number=number, start=start, end=end, is_group=is_group)
-    result = general_stats.frequency(msg, period='MS')
-
-    return result
-
-@app.route('/group_frequency/<group_id>', methods=['GET'])
-def group_frequency(group_id, start=None, end=None):
-    msg = data_manager.group_messages(int(group_id))
-    result = general_stats.frequency(msg, period='MS')
-    return result
-
-@app.route('/group/<id>/tapback', methods=['GET'])
-def group_tapback(id, start=None, end=None):
-    msg = data_manager.group_messages(int(id))
-    result = tapback.group_info(msg)
-    return result
-
-@app.route('/group/<id>/language', methods=['GET'])
-def group_language(id, start=None, end=None):
-    msg = data_manager.group_messages(int(id))
-    result = language_stats.group_summary(msg)
-    return result
-
-
-##############################
-# CHAT STATS
-##############################
-
-@app.route('/chat/<number>/emoji', methods=['GET'])
-def emoji_widget(number, start=None, end=None):
-    n = 3
-    msg = data_manager.messages(number=number, start=start, end=end)
-    result = emoji_stats.contact_summary(msg, n)
-
-    response = {}
-    response["type"] = "message"
-    response["options"] = [["Sent (you)", "Received"],
-                           ["Popular", "Unique"]]
-
-    data = {}
-    data["Sent (you)"] = {"Unique": [result['unique_sent']],
-                          "Popular": [result['popular_sent']]}
-    data["Received"] = {"Unique": [result['unique_received']],
-                          "Popular": [result['popular_received']]}
-    response["data"] = data
-    return response
-
-@app.route('/chat/<number>/sentiment', methods=['GET'])
-def sentiment(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end)
-    result = sentiment_stats.contact_summary(msg)
-    response = {}
-    response["type"] = "message"
-    response["options"] = [["Sent (you)", "Received"],
-                           ["Positive", "Negative"]]
-
-    data = {}
-    data["Sent (you)"] = {"Positive": result['pos_sent'],
-                          "Negative": result['neg_sent']}
-    data["Received"] = {"Positive": result['pos_received'],
-                          "Negative": result['neg_received']}
-    response["data"] = data
-    return response
-
-@app.route('/chat/<number>/wordcloud', methods=['GET'])
-def wordcloud(number, start=None, end=None):
-    [is_group, start, end] = get_standard_query_params()
-
-    msg = data_manager.messages_general(number, is_group, start, end)
-    unique = language_stats.unique_words(msg)
-    popular = language_stats.popular_words(msg) # TODO
-
-    response = {}
-    response["type"] = "wordcloud"
-    response["options"] = [["Unique", "Popular"]]
-    response["data"] = {"Unique": unique, "Popular": popular}
-    return response
-
-@app.route('/chat/<number>/count', methods=['GET'])
-def count(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end, is_group=False)
-    sent_msg, received_msg = split_sender(msg)
-    sent = len(sent_msg)
-    received = len(received_msg)
-    total = sent + received
-
-    response = {}
-    response["type"] = "simple"
-    response["format"] = "message_count"
-    response["options"] = [["Total", "Sent", "Received"]]
-    response["data"] = {"Total": {"value": total, "label": "Messages"},
-                        "Sent": {"value": sent, "label": "Messages Sent"},
-                        "Received": {"value": received, "label": "Messages Received"}}
-    return response
-
-# TODO: Properly handle start / end time frames.
+# TODO: Calculate on demand
 @app.route('/chat/<number>/responsetime', methods=['GET'])
-def response_time(number, start=None, end=None):
+def response_time(number):
     chats = data_manager.processed_chats()
     chat = chats[chats.number == number].iloc[0]
 
@@ -239,22 +139,6 @@ def response_time(number, start=None, end=None):
     response["options"] = [["Sent", "Received"]]
     response["data"] = {"Sent": {"value": chat.sent_response_time, "label": "on average"},
                         "Received": {"value": chat.received_response_time, "label": "on average"}}
-    return response
-
-# TODO: BUG! The oldest oldest messages aren't showing up...
-@app.route('/chat/<number>/firstmessage', methods=['GET'])
-def first_message(number, start=None, end=None):
-    msg = data_manager.messages(number=number, start=start, end=end, is_group=False)
-    msg = msg[msg.text.notna()]
-
-    sent_msg, received_msg = split_sender(msg)
-    sent_msg = sent_msg.sort_values(by='date_delivered', ascending=True)
-    received_msg = received_msg.sort_values(by='date_delivered', ascending=True)
-
-    response = {}
-    response["type"] = "message"
-    response["options"] = [["Sent", "Received"]]
-    response["data"] = {"Sent": [sent_msg.iloc[0].text], "Received": [received_msg.iloc[0].text]}
     return response
 
 @app.route('/chat/<number>/streak', methods=['GET'])
@@ -277,6 +161,120 @@ def streak(number, start=None, end=None):
                         "Current": {"value": format_streak(chat.current_streak), "label": "days"}}
     return response
 
+
+##############################
+# STATS [ON DEMAND]
+#
+# Usually this involves fetching messages as the first step.
+# Should handle both group and individual chats
+# TODO: Properly handle start / end time frames.
+##############################
+
+@app.route('/frequency/', defaults={'number': None})
+@app.route('/frequency/<number>', methods=['GET'])
+def frequency(number=None, start=None, end=None):
+    is_group = None if (number == None) else False
+    msg = data_manager.messages(number=number, start=start, end=end, is_group=is_group)
+    result = general_stats.frequency(msg, period='MS')
+    return result
+
+# TODO: Collapse this using get_standard_query_params
+@app.route('/group_frequency/<group_id>', methods=['GET'])
+def group_frequency(group_id, start=None, end=None):
+    msg = data_manager.group_messages(int(group_id))
+    result = general_stats.frequency(msg, period='MS')
+    return result
+
+
+@app.route('/chat/<number>/emoji', methods=['GET'])
+def emoji_widget(number):
+    [is_group, start, end] = get_standard_query_params()
+
+    n = 3
+    msg = data_manager.messages_general(number, is_group, start, end)
+    result = emoji_stats.contact_summary(msg, n)
+
+    response = {}
+    response["type"] = "message"
+    response["options"] = [["Sent (you)", "Received"],
+                           ["Popular", "Unique"]]
+
+    data = {}
+    data["Sent (you)"] = {"Unique": [result['unique_sent']],
+                          "Popular": [result['popular_sent']]}
+    data["Received"] = {"Unique": [result['unique_received']],
+                          "Popular": [result['popular_received']]}
+    response["data"] = data
+    return response
+
+@app.route('/chat/<number>/sentiment', methods=['GET'])
+def sentiment(number):
+    [is_group, start, end] = get_standard_query_params()
+
+    msg = data_manager.messages_general(number, is_group, start, end)
+    result = sentiment_stats.contact_summary(msg)
+    response = {}
+    response["type"] = "message"
+    response["options"] = [["Sent (you)", "Received"],
+                           ["Positive", "Negative"]]
+
+    data = {}
+    data["Sent (you)"] = {"Positive": result['pos_sent'],
+                          "Negative": result['neg_sent']}
+    data["Received"] = {"Positive": result['pos_received'],
+                          "Negative": result['neg_received']}
+    response["data"] = data
+    return response
+
+@app.route('/chat/<number>/wordcloud', methods=['GET'])
+def wordcloud(number):
+    [is_group, start, end] = get_standard_query_params()
+    msg = data_manager.messages_general(number, is_group, start, end)
+    unique = language_stats.unique_words(msg)
+    popular = language_stats.popular_words(msg) # TODO
+
+    response = {}
+    response["type"] = "wordcloud"
+    response["options"] = [["Unique", "Popular"]]
+    response["data"] = {"Unique": unique, "Popular": popular}
+    return response
+
+@app.route('/chat/<number>/count', methods=['GET'])
+def count(number):
+    [is_group, start, end] = get_standard_query_params()
+    msg = data_manager.messages_general(number, is_group, start, end)
+    sent_msg, received_msg = split_sender(msg)
+    sent = len(sent_msg)
+    received = len(received_msg)
+    total = sent + received
+
+    response = {}
+    response["type"] = "simple"
+    response["format"] = "message_count"
+    response["options"] = [["Total", "Sent", "Received"]]
+    response["data"] = {"Total": {"value": total, "label": "Messages"},
+                        "Sent": {"value": sent, "label": "Messages Sent"},
+                        "Received": {"value": received, "label": "Messages Received"}}
+    return response
+
+
+# TODO: BUG! The oldest oldest messages aren't showing up...
+@app.route('/chat/<number>/firstmessage', methods=['GET'])
+def first_message(number):
+    [is_group, start, end] = get_standard_query_params()
+    msg = data_manager.messages_general(number, is_group, start, end)
+    msg = msg[msg.text.notna()]
+
+    sent_msg, received_msg = split_sender(msg)
+    sent_msg = sent_msg.sort_values(by='date_delivered', ascending=True)
+    received_msg = received_msg.sort_values(by='date_delivered', ascending=True)
+
+    response = {}
+    response["type"] = "message"
+    response["options"] = [["Sent", "Received"]]
+    response["data"] = {"Sent": [sent_msg.iloc[0].text], "Received": [received_msg.iloc[0].text]}
+    return response
+
 @app.route('/chat/<number>/messages_by_time', methods=['GET'])
 def messages_by_time(number):
     [is_group, start, end] = get_standard_query_params()
@@ -297,7 +295,10 @@ def messages_by_time(number):
     response["data"] = {"Day of Week": by_day_of_week_data, "Time of Day": by_time_of_day_data}
     return response
 
-@app.route('/chat/<number>/top_groups', methods=['GET'])
+########################
+# STATS [INDIVIDUAL ONLY]
+########################
+@app.route('/chat/<number>/top_groups', methods=['GET'])k
 def top_groups(number, start=None, end=None):
     contact = data_manager.contact(number)
 
@@ -315,6 +316,10 @@ def top_groups(number, start=None, end=None):
     response["options"] = []
     response["data"] = data
     return response
+
+########################
+# STATS [GROUP ONLY]
+########################
 
 ##############################
 # SUMMARY STATS

@@ -18,13 +18,6 @@ export type FrequencyDay = {
     recieved: number;
 };
 
-export type SentimentData = {
-    pos_sent: string[];
-    neg_sent: string[];
-    pos_received: string[];
-    neg_received: string[];
-};
-
 function Contact() {
     const [frequency, setFrequency] = useState<FrequencyDay[]>([]);
     const [name, setName] = useState("");
