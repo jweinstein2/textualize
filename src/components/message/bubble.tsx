@@ -20,7 +20,7 @@ export default function Bubble(props: BubbleProps) {
     // Display emojis big like iOS
     // Note: counting emojis is a dark art... this is probably buggy.
     const emojiArray = splitter.splitGraphemes(props.message);
-    if (emoji_regex.test(props.message) && emojiArray.length >= 3) {
+    if (emoji_regex.test(props.message) && emojiArray.length <= 3) {
         size = "80px";
     }
 
