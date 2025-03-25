@@ -1,7 +1,7 @@
 import { Tooltip } from "@mantine/core";
 import { useMouse, useViewportSize } from "@mantine/hooks";
 import { motion, useAnimationFrame } from "motion/react";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useLayoutEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import classes from "./planet.module.css";
@@ -55,7 +55,7 @@ function Planet(props: PlanetProps) {
     }
 
     // Calculate Initial Position
-    useEffect(() => {
+    useLayoutEffect(() => {
         switch (props.movement.type) {
             case "position":
                 const anglePosition =
