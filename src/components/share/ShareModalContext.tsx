@@ -1,21 +1,21 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Modal } from '@mantine/core';
+import ShareModal from './ShareModal';
 
 type ShareModalContextType = {
-  openShareModal: (content: ReactNode) => void;
+  openShareModal: (screenshotPngData: string) => void;
 };
 
 const ShareContext = createContext<ShareModalContextType | undefined>(undefined);
 
 export const ShareModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [opened, modal] = useDisclosure(false);
-    const [content, setContent] = useState<ReactNode>(<></>)
+    const [content, setContent] = useState<string>()
 
-  const openShareModal = (content: ReactNode) => {
+  const openShareModal = (screenshotPngData: string) => {
     modal.open()
-    console.log("Sharing:", content);
-    setContent(content)
+    setContent(screenshotPngData)
   };
 
     return (
@@ -23,8 +23,9 @@ export const ShareModalProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             <ShareContext.Provider value={{openShareModal}}>
                 {children}
             </ShareContext.Provider>
-            <Modal opened={opened} onClose={modal.close} title="Share" centered>
-                {content}
+            <Modal opened={opened} size="xl" 
+                onClose={modal.close} title="Share" centered>
+                <ShareModal pngImage={content} />
             </Modal>
         </>
     );

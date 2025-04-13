@@ -217,6 +217,13 @@ app.whenReady().then(() => {
     ipcMain.handle("listBackups", listBackups);
     ipcMain.handle("hasDiskAccess", hasDiskAccess);
     ipcMain.handle("openSystemPreferences", openSystemPreferences);
+    ipcMain.handle("copy-to-clipboard", (_, data) => {
+        const { clipboard, nativeImage } = require('electron');
+        // Convert data URL to NativeImage
+        const image = nativeImage.createFromDataURL(data);
+        clipboard.writeImage(image);
+        return true;
+    });
     createWindow();
 });
 

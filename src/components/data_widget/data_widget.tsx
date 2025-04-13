@@ -8,7 +8,8 @@ import { FormatType, showError, toFormatEnum } from "@/util";
 import { Center, Loader, Select } from "@mantine/core";
 import { useShareOption } from "@/components/card/card";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import html2canvas from 'html2canvas';
+import { useEffect, useState, useRef } from "react";
 
 
 import classes from "./data_widget.module.css";
@@ -28,12 +29,17 @@ function DataWidget(props: WidgetProps) {
         [optionKey: string]: string;
     }>({ type: "Groups" });
 
+    const screenshotRef = useRef<HTMLDivElement>(null);
     const shareContext = useShareOption();
 
     // Define the share generator function separately
-    const shareGenerator = () => {
+    const shareGenerator = async () => {
         console.log("Share generator called");
-        return "Hello World";
+        if (screenshotRef.current === null) return "";
+        const canvas = await html2canvas(screenshotRef.current, {
+            backgroundColor: '#282c34', // Can be transparent or any color
+        });
+        return canvas.toDataURL();
     };
 
     useEffect(() => {
@@ -56,9 +62,9 @@ function DataWidget(props: WidgetProps) {
     }, [props.fetchPath]);
 
     useEffect(() => {
-        if (loading) return
+        if (loading)  return;
         shareContext.registerShareGenerator(shareGenerator);
-    }, []);
+    }, [data, selectedOptions, loading]);
 
     if (loading) {
         return (
@@ -132,7 +138,7 @@ function DataWidget(props: WidgetProps) {
     return (
         <div className={classes.container}>
             <div className={classes.toggles}>{optionToggles()}</div>
-            <div className={classes.contents}>{displayData()}</div>
+            <div ref={screenshotRef} className={classes.contents}>{displayData()}</div>
         </div>
     );
 }

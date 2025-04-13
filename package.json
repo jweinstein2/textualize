@@ -46,6 +46,7 @@
         "esbuild": "^0.24.0",
         "eslint": "^9.14.0",
         "grapheme-splitter": "^1.0.4",
+        "html2canvas": "^1.4.1",
         "motion": "^11.17.0",
         "posthog-js": "^1.227.0",
         "react-redux": "^9.1.2",

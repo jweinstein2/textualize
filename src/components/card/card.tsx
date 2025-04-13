@@ -14,7 +14,7 @@ export interface CardProps {
 }
 
 type ShareOptionContextType = {
-    registerShareGenerator: (callback: () => string) => void;
+    registerShareGenerator: (callback: () => Promise<string>) => void;
 };
 
 const ShareOptionContext = createContext<ShareOptionContextType | undefined>(undefined);
@@ -29,9 +29,9 @@ export const useShareOption = (): ShareOptionContextType => {
 
 function Card(props: CardProps) {
     const { openShareModal } = useShareModal();
-    const [shareContentGenerator, setShareContentGenerator] = useState<() => string>();
+    const [shareContentGenerator, setShareContentGenerator] = useState<() => Promise<string>>();
 
-    function registerShareGenerator(callback: () => string) {
+    function registerShareGenerator(callback: () => Promise<string>) {
         setShareContentGenerator(() => callback);
     }
 
@@ -40,8 +40,9 @@ function Card(props: CardProps) {
             console.error("No share content generator registered");
             return;
         }
-        const content = shareContentGenerator();
-        openShareModal(content);
+        shareContentGenerator().then((data) => {
+            openShareModal(data);
+        });
     }
 
     const shareIcon = shareContentGenerator != null 
