@@ -8,6 +8,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {StateMap} from "@/components/map/StateMap";
 
 import classes from "./summary.module.css";
 
@@ -132,8 +133,13 @@ function Summary() {
                 <Card title="Response Time" span={6}>
                     <DataWidget fetchPath="/summary/responsetime" />
                 </Card>
+                {/*
                 <Card title="Group Connection Graph" span={12} height={600}>
                     {connectionGraph()}
+                </Card>
+                */}
+                <Card title="Contact Locations" span={6} height={800}>
+                    <StateMap />
                 </Card>
             </Grid>
         </Container>
