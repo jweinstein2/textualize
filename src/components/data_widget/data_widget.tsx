@@ -3,10 +3,13 @@ import BarChart from "@/components/data_widget/bar_chart/bar_chart";
 import Podium from "@/components/data_widget/podium/podium";
 import Simple from "@/components/data_widget/simple/simple";
 import Wordcloud from "@/components/data_widget/wordcloud/wordcloud";
+import Card from "@/components/card/card";
 import { FormatType, showError, toFormatEnum } from "@/util";
 import { Center, Loader, Select } from "@mantine/core";
+import { useShareOption } from "@/components/card/card";
 import axios from "axios";
 import { useEffect, useState } from "react";
+
 
 import classes from "./data_widget.module.css";
 
@@ -24,6 +27,14 @@ function DataWidget(props: WidgetProps) {
     const [selectedOptions, setSelectedOptions] = useState<{
         [optionKey: string]: string;
     }>({ type: "Groups" });
+
+    const shareContext = useShareOption();
+
+    // Define the share generator function separately
+    const shareGenerator = () => {
+        console.log("Share generator called");
+        return "Hello World";
+    };
 
     useEffect(() => {
         axios
@@ -43,6 +54,11 @@ function DataWidget(props: WidgetProps) {
                 );
             });
     }, [props.fetchPath]);
+
+    useEffect(() => {
+        if (loading) return
+        shareContext.registerShareGenerator(shareGenerator);
+    }, []);
 
     if (loading) {
         return (

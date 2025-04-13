@@ -5,6 +5,7 @@ import { loadSlim } from "@tsparticles/slim";
 import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
+import { ShareModalProvider } from '@/components/share/ShareModalContext';
 
 import "@mantine/carousel/styles.css";
 import "@mantine/charts/styles.css";
@@ -46,9 +47,11 @@ function App() {
             <Provider store={store}>
                 <MantineProvider theme={theme} defaultColorScheme="dark">
                     <HashRouter>
-                        <UpdateModal />
-                        <Notifications />
-                        {init ? <Routes /> : <></>}
+                        <ShareModalProvider>
+                            <UpdateModal />
+                            <Notifications />
+                            {init ? <Routes /> : <></>}
+                        </ShareModalProvider>
                     </HashRouter>
                 </MantineProvider>
             </Provider>
