@@ -224,6 +224,22 @@ app.whenReady().then(() => {
         clipboard.writeImage(image);
         return true;
     });
+    ipcMain.handle("run-applescript", async (_, script) => {
+        const { exec } = require('child_process');
+        return new Promise((resolve, reject) => {
+            exec(script, (error: Error | null, stdout: string, stderr: string) => {
+                if (error) {
+                    console.error('AppleScript Error:', error);
+                    reject(error);
+                    return;
+                }
+                if (stderr) {
+                    console.error('AppleScript stderr:', stderr);
+                }
+                resolve(stdout);
+            });
+        });
+    });
     createWindow();
 });
 

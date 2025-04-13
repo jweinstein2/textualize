@@ -3,9 +3,22 @@
     height: auto;
 }
 
+.share {
+    display: flex;
+    justify-content: space-between;
+
+}
+
 .socials {
     display: flex;
-    justify-content: flex-start;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-end;
+
+}
+
+.socialIcons {
+    display: flex;
+    padding-top: .75em;
+    gap: .75em
 
 }
