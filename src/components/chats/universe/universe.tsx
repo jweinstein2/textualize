@@ -1,4 +1,4 @@
-import { Chat } from "@/components/chats/chats";
+import {Chat, useChat} from "@/components/chats/ChatContext"
 import Planet, {
     Movement,
     Orbit,
@@ -253,7 +253,8 @@ function buildPlanets(
     return planets;
 }
 
-function Universe({ chats }: { chats: Chat[] }) {
+function Universe() {
+    const { chats } = useChat();
     const [selectedDataType, setSelectedDataType] = useState<DataTypeOption>(
         DataTypeOption.MessageCount
     );
@@ -354,7 +355,7 @@ function Universe({ chats }: { chats: Chat[] }) {
     );
 
     return (
-        <div>
+        <>
             <Stars />
             <div className={classes.background}>
                 <div className={classes.floatLeft}>
@@ -395,7 +396,7 @@ function Universe({ chats }: { chats: Chat[] }) {
                     You
                 </Planet>
             </div>
-        </div>
+        </>
     );
 }
 

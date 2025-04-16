@@ -70,7 +70,7 @@ function Onboarding() {
             .catch(() =>
                 showError("Fatal Error", "Unable to begin processing data"),
             );
-        navigate("/loading");
+        navigate("/onboarding/loading");
     }
 
     function renderBackupCards() {

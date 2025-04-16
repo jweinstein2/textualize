@@ -1,3 +1,4 @@
+import {Chat, useChat} from "@/components/chats/ChatContext";
 import { prettyDate } from "@/util";
 import {
     Button,
@@ -21,7 +22,6 @@ import { useNavigate } from "react-router-dom";
 
 import classes from "./chat_list.module.css";
 
-import { Chat } from "../chats";
 
 interface ThProps {
     children: React.ReactNode;
@@ -30,10 +30,12 @@ interface ThProps {
     onSort(): void;
 }
 
-function ChatList({ chats }: { chats: Chat[] }) {
+function ChatList() {
     const [search, setSearch] = useState("");
     const [reverseSortDirection, setReverseSortDirection] = useState(false);
     const [sortBy, setSortBy] = useState<keyof Chat | null>(null);
+
+    const { chats } = useChat();
 
     const navigate = useNavigate();
 

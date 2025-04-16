@@ -10,12 +10,43 @@ import Splash from "@/components/onboarding/splash";
 import Settings from "@/components/settings/settings";
 import Summary from "@/components/summary/summary";
 import { showError } from "@/util";
+import ChatList from "@/components/chats/chat_list/chat_list";
+import Universe from "@/components/chats/universe/universe";
 import { Center, Loader } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Routes as ReactRoutes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
+import {ChatProvider} from "@/components/chats/ChatContext";
+
+function OnboardingRoutes() {
+    return (
+            <ReactRoutes>
+                <Route path="*" element={<Splash />} />
+                <Route path="/backup" element={<Backup />} />
+                <Route path="/mac" element={<Mac />} />
+                <Route path="/disk_access" element={<DiskAccess />} />
+                <Route path="/loading" element={<Loading />} />
+            </ReactRoutes>
+    )
+}
+
+function AppRoutes() {
+    return (
+        <ChatProvider>
+            <ReactRoutes>
+                <Route path="/overview" element={<Summary />} />
+                <Route path="/contacts/:number" element={<Contact />} />
+                <Route path="/groups/:id" element={<Group />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/list" element={<ChatList/>} />
+                <Route path="/universe" element={<Universe/>} />
+                <Route path="*" element={<Universe/>} />
+            </ReactRoutes>
+        </ChatProvider>
+    )
+}
 
 function Routes() {
     const [loading, setLoading] = useState(true);
@@ -51,7 +82,7 @@ function Routes() {
                 if (status === "unstarted") {
                     navigate("/onboarding");
                 } else if (status === "in_progress") {
-                    navigate("/loading");
+                    navigate("/onboarding/loading");
                 }
             })
             .catch(() => {
@@ -72,17 +103,8 @@ function Routes() {
 
     return (
         <ReactRoutes>
-            <Route path="/onboarding/*" element={<Splash />} />
-            <Route path="/onboarding/backup" element={<Backup />} />
-            <Route path="/onboarding/mac" element={<Mac />} />
-            <Route path="/disk_access" element={<DiskAccess />} />
-            <Route path="/loading" element={<Loading />} />
-            <Route path="/" element={<Chats />} />
-            <Route path="/*" element={<Chats />} />
-            <Route path="/overview" element={<Summary />} />
-            <Route path="/contacts/:number" element={<Contact />} />
-            <Route path="/groups/:id" element={<Group />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/onboarding/*" element={<OnboardingRoutes />} />
+            <Route path="*" element={<AppRoutes />} />
         </ReactRoutes>
     );
 }

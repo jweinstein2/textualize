@@ -15,7 +15,7 @@ function Splash() {
             if (isEnabled) {
                 navigate(navigationPath);
             } else {
-                navigate("/disk_access");
+                navigate("/onboarding/disk_access");
             }
         });
     }

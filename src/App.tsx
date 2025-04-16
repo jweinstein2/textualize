@@ -14,7 +14,6 @@ import "@mantine/notifications/styles.css";
 
 import Routes from "./components/routes";
 import UpdateModal from "./components/update/modal";
-import store from "./store/store";
 import { PostHogProvider} from 'posthog-js/react'
 
 const theme = createTheme({
@@ -44,17 +43,15 @@ function App() {
     return (
         <PostHogProvider apiKey={window.envVars.posthogAPIKey}
               options={options}>
-            <Provider store={store}>
-                <MantineProvider theme={theme} defaultColorScheme="dark">
-                    <HashRouter>
-                        <ShareModalProvider>
-                            <UpdateModal />
-                            <Notifications />
-                            {init ? <Routes /> : <></>}
-                        </ShareModalProvider>
-                    </HashRouter>
-                </MantineProvider>
-            </Provider>
+            <MantineProvider theme={theme} defaultColorScheme="dark">
+                <HashRouter>
+                    <ShareModalProvider>
+                        <UpdateModal />
+                        <Notifications />
+                        {init ? <Routes /> : <></>}
+                    </ShareModalProvider>
+                </HashRouter>
+            </MantineProvider>
         </PostHogProvider>
     );
 }

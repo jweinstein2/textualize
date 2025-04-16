@@ -1,11 +1,6 @@
+import { useEffect, createContext, useContext, useState, ReactNode } from 'react';
 import { groupName } from "@/util";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Routes as ReactRoutes, Route } from "react-router-dom";
-import  c from "./chats.module.css";
-
-import ChatList from "./chat_list/chat_list";
-import Universe from "./universe/universe";
 
 export type Chat = {
     name: string;
@@ -20,7 +15,13 @@ export type Chat = {
     responseTimeSent: number;
 };
 
-function Chats() {
+type ChatContextType = {
+  chats: Chat[];
+};
+
+const ChatContext = createContext<ChatContextType | undefined>(undefined);
+
+export const ChatProvider = ({ children }: { children: ReactNode }) => {
     const [chats, setChats] = useState<Chat[]>([]);
 
     useEffect(() => {
@@ -58,15 +59,18 @@ function Chats() {
         });
     }, []);
 
-    return (
-        <div className={c.container}>
-            <ReactRoutes>
-                <Route path="/*" element={<Universe chats={chats} />} />
-                <Route path="/list" element={<ChatList chats={chats} />} />
-                <Route path="/universe" element={<Universe chats={chats} />} />
-            </ReactRoutes>
-        </div>
-    );
-}
+  return (
+    <ChatContext.Provider value={{chats}}>
+      {children}
+    </ChatContext.Provider>
+  );
+};
 
-export default Chats;
+// Custom hook
+export const useChat = () => {
+  const context = useContext(ChatContext);
+  if (!context) {
+    throw new Error('useChat must be used within a ChatProvider');
+  }
+  return context;
+};
