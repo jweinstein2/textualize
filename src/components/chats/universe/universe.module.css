@@ -31,24 +31,6 @@
     margin-left: 8px;
 }
 
-.filterWindow {
-    background-color: var(--color-space);
-    border-radius: 4px;
-    width: 200px;
-}
-
-.filterContents {
-    margin: 8px 16px 16px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.close {
-    position: absolute;
-    right: 8px;
-}
-
 .select {
     max-width: 500px;
 }

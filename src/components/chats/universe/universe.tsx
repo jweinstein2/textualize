@@ -7,74 +7,25 @@ import Planet, {
 import { minMax, prettyDate } from "@/util";
 import {
     Button,
-    CloseButton,
     Select,
-    Slider,
-    Space,
-    Switch,
-    Text,
-    TextInput,
 } from "@mantine/core";
 import {
-    IconFilter,
-    IconFilterFilled,
     IconList,
     IconSettings,
-    IconX,
 } from "@tabler/icons-react";
-import { MoveDirection } from "@tsparticles/engine";
 import Particles from "@tsparticles/react";
 import { ReactNode, memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Filters, {Filter} from "./filters";
+import {STARS} from "@/particles"
 
 import classes from "./universe.module.css";
 
 const SPEED_JITTER_THRESHOLD = 0.5;
 
-const OPTIONS = {
-    autoPlay: true,
-    background: {
-        opacity: 0,
-    },
-    particles: {
-        number: {
-            value: 1000,
-            density: {
-                enable: true,
-                width: 1024,
-                height: 1024,
-            },
-        },
-        move: {
-            direction: MoveDirection.top,
-            enable: true,
-            speed: 0.5,
-            straight: true,
-        },
-        opacity: {
-            animation: {
-                enable: true,
-                speed: 0.1,
-                sync: false,
-            },
-            value: { min: 0, max: 0.3 },
-        },
-        size: {
-            value: { min: 0.2, max: 1.5 },
-        },
-    },
-};
-
 const Stars = memo(function Stars({}) {
-    return <Particles id="tsparticles" options={OPTIONS} />;
+    return <Particles id="tsparticles" options={STARS} />;
 });
-
-interface Filter {
-    textFilter: string;
-    filterGroups: boolean;
-    filterContacts: boolean;
-    maxChats: number; // Evaluate last
-}
 
 interface PlanetParameter {
     movement: Movement;
@@ -264,7 +215,6 @@ function Universe() {
         filterGroups: false,
         filterContacts: false,
     });
-    const [displayFilter, setDisplayFilter] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -279,80 +229,6 @@ function Universe() {
         .slice(0, filters.maxChats);
     const planets = buildPlanets(chats, filteredChats, selectedDataType);
 
-    const filterWindow = (
-        <div className={classes.filterWindow}>
-            <CloseButton
-                className={classes.close}
-                onClick={() => setDisplayFilter(false)}
-            ></CloseButton>
-            <div className={classes.filterContents}>
-                <Text fw={500}>Filters</Text>
-                <Space h="xs" />
-                <Switch
-                    checked={filters.filterGroups}
-                    onChange={(event) => {
-                        const updated = { ...filters };
-                        updated.filterGroups = event.currentTarget.checked;
-                        setFilters(updated);
-                    }}
-                    label="Hide groups"
-                    radius="lg"
-                />
-                <Switch
-                    label="Hide contacts"
-                    radius="lg"
-                    checked={filters.filterContacts}
-                    onChange={(event) => {
-                        const updated = { ...filters };
-                        updated.filterContacts = event.currentTarget.checked;
-                        setFilters(updated);
-                    }}
-                />
-                <Space h="xs" />
-                <Text fw={500} size="sm">
-                    Number of Chats
-                </Text>
-                <Slider
-                    color="blue"
-                    onChange={(num) => {
-                        const updated = { ...filters };
-                        updated.maxChats = num;
-                        setFilters(updated);
-                    }}
-                    min={0}
-                    max={Math.min(200, chats.length)}
-                    value={filters.maxChats}
-                />
-                <Space h="xs" />
-                <Text fw={500} size="sm">
-                    Filter by Name
-                </Text>
-                <TextInput
-                    value={filters.textFilter}
-                    onChange={(event) => {
-                        const updated = { ...filters };
-                        updated.textFilter = event.currentTarget.value;
-                        setFilters(updated);
-                    }}
-                    rightSection={
-                        filters.textFilter ? (
-                            <IconX
-                                onClick={() =>
-                                    setFilters({
-                                        ...filters,
-                                        textFilter: "",
-                                    })
-                                }
-                            />
-                        ) : (
-                            <></>
-                        )
-                    }
-                    placeholder="Joe Shmoe"
-                />
-            </div>
-        </div>
-    );
 
     return (
         <>
@@ -379,12 +255,7 @@ function Universe() {
                     >
                         <IconSettings />
                     </Button>
-                    <Button
-                        onClick={() => setDisplayFilter(!displayFilter)}
-                    >
-                        {displayFilter ? <IconFilterFilled /> : <IconFilter />}
-                    </Button>
-                    {displayFilter ? filterWindow : <></>}
+                    <Filters setFilters={setFilters} filters={filters} chatLength={chats.length}/>
                 </div>
                 {planets}
                 <Planet
