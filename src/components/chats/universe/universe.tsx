@@ -1,10 +1,8 @@
 import {Chat, useChat} from "@/components/chats/ChatContext"
-import Planet, {
-    Movement,
-    Orbit,
-    Position,
-} from "@/components/chats/universe/planet";
-import { minMax, prettyDate } from "@/util";
+import { useAnimationFrame } from "motion/react";
+import { useViewportSize, useMouse } from "@mantine/hooks";
+import  { PlanetParameter, buildFunctions } from "@/components/chats/universe/planet_builder";
+import Planet from "@/components/chats/universe/planet";
 import {
     Button,
     Select,
@@ -14,27 +12,19 @@ import {
     IconSettings,
 } from "@tabler/icons-react";
 import Particles from "@tsparticles/react";
-import { ReactNode, memo, useState } from "react";
+import { memo, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Filters, {Filter} from "./filters";
 import {STARS} from "@/particles"
 
 import classes from "./universe.module.css";
 
-const SPEED_JITTER_THRESHOLD = 0.5;
+const CENTER_SIZE = 100;
+const UNIVERSE_MARGIN = 50;
 
 const Stars = memo(function Stars({}) {
     return <Particles id="tsparticles" options={STARS} />;
 });
-
-interface PlanetParameter {
-    movement: Movement;
-    tooltip: string;
-    size: number;
-    key: string;
-    link: string;
-    contents: ReactNode;
-}
 
 enum DataTypeOption {
     MessageCount = "Messages Sent",
@@ -44,171 +34,24 @@ enum DataTypeOption {
     ResponseTime = "Your Response Time",
 }
 
-function firstChar(str: string) {
-    if (str == null || str.length === 0) return "";
-    return str.charAt(0).toUpperCase();
-}
-
-function buildName(chat: Chat) {
-    if (chat.isGroup) {
-        return firstChar(chat.name);
-    } else {
-        const [first, last] = chat.name.split(" ", 2);
-        return firstChar(first) + firstChar(last);
-    }
-}
-
-function makePlanetParams(chat: Chat): PlanetParameter {
-    return {
-        size: 40,
-        tooltip: chat.name,
-        key: chat.id,
-        link: buildLink(chat),
-        movement: { distance: 0, degree: 0, type: "position" } as Position,
-        contents: <>{buildName(chat)}</>,
-    };
-}
-
-function messageCountMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
-    const [, max] = minMax(allChats.map((c) => c.countTotal));
-
-    return chats.map((chat) => {
-        const params = makePlanetParams(chat);
-
-        const distance = (1 - (chat.countTotal / max));
-        const speedJitter =
-            Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
-        const speed = 1.5 + speedJitter;
-
-        params.tooltip = `${chat.name}:  ${chat.countTotal} messages`;
-        params.movement = { distance, speed, type: "orbit" } as Orbit;
-        return params;
-    });
-}
-
-function streakMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
-    const [, max] = minMax(allChats.map((c) => c.longestStreak));
-
-    return chats.map((chat) => {
-        const params = makePlanetParams(chat);
-
-        const distance = (1 - (chat.longestStreak / max) * 1);
-        const speedJitter =
-            Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
-        const speed = 1.5 + speedJitter;
-
-        params.tooltip = `${chat.name}:  ${chat.longestStreak} days`;
-        params.movement = { distance, speed, type: "orbit" } as Orbit;
-        return params;
-    });
-}
-
-function earliestMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
-    const [min, max] = minMax(allChats.map((c) => c.oldest.getTime()));
-    const maxDelta = min - max;
-
-    return chats.map((chat) => {
-        const params = makePlanetParams(chat);
-
-        const dateDelta = chat.oldest.getTime() - max;
-        const distance = (1 - (dateDelta / maxDelta));
-        const speedJitter =
-            Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
-        const speed = 1.5 + speedJitter;
-
-        params.tooltip = `${chat.name}: ${prettyDate(chat.oldest)}`;
-        params.movement = { distance, speed, type: "orbit" } as Orbit;
-        return params;
-    });
-}
-
-function recentMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
-    const [min, max] = minMax(allChats.map((c) => c.newest.getTime()));
-    const maxDelta = min - max;
-
-    return chats.map((chat) => {
-        const params = makePlanetParams(chat);
-
-        const dateDelta = chat.newest.getTime() - max;
-        const distance = dateDelta / maxDelta;
-        const speedJitter =
-            Math.random() * SPEED_JITTER_THRESHOLD - SPEED_JITTER_THRESHOLD / 2;
-        const speed = 1.5 + speedJitter;
-        params.tooltip = `${chat.name}: ${prettyDate(chat.newest)}`;
-        params.movement = { distance, speed, type: "orbit" } as Orbit;
-
-        return params;
-    });
-}
-
-function responseTimeMap(allChats: Chat[], chats: Chat[]): PlanetParameter[] {
-    const [min, max] = minMax(allChats.map((c) => c.responseTimeReceived));
-
-    // TODO: Fix this for groups
-    return chats
-        .filter((c) => !c.isGroup)
-        .map((chat) => {
-            const params = makePlanetParams(chat);
-            const time = chat.responseTimeReceived;
-
-            const distance = Math.random();
-            const speed = (1 - (time - max) / (min - max)) * 5 + 0.25;
-
-            params.movement = { distance, speed, type: "orbit" } as Orbit;
-            params.tooltip = `${chat.name}: ${Math.ceil(time / 60)} min`;
-            return params;
-        });
-}
-
 const DataTypeToBuildParams: {
     [key in DataTypeOption]: (
-        allChats: Chat[],
-        chats: Chat[]
+        chats: Chat[],
     ) => PlanetParameter[];
 } = {
-    [DataTypeOption.MessageCount]: messageCountMap,
-    [DataTypeOption.Streak]: streakMap,
-    [DataTypeOption.Earliest]: earliestMap,
-    [DataTypeOption.Recent]: recentMap,
-    [DataTypeOption.ResponseTime]: responseTimeMap,
+    [DataTypeOption.MessageCount]: buildFunctions.byMessageCount,
+    [DataTypeOption.Streak]: buildFunctions.byStreak,
+    [DataTypeOption.Earliest]: buildFunctions.byEarliest,
+    [DataTypeOption.Recent]: buildFunctions.byRecent,
+    [DataTypeOption.ResponseTime]: buildFunctions.byResponseTime,
 };
-
-function buildLink(chat: Chat): string {
-    if (chat.isGroup) {
-        return `/groups/${chat.id}`;
-    } else {
-        return `/contacts/${chat.id}`;
-    }
-}
-
-function buildPlanets(
-    allChats: Chat[],
-    chats: Chat[],
-    selectedDataType: DataTypeOption
-) {
-    const buildParams = DataTypeToBuildParams[selectedDataType];
-    const planetParameters = buildParams(allChats, chats);
-    const planets = planetParameters.map((params) => {
-        return (
-            <Planet
-                tooltip={params.tooltip}
-                size={40}
-                movement={params.movement}
-                key={params.key}
-                link={params.link}
-            >
-                {params.contents}
-            </Planet>
-        );
-    });
-    return planets;
-}
 
 function Universe() {
     const { chats } = useChat();
     const [selectedDataType, setSelectedDataType] = useState<DataTypeOption>(
         DataTypeOption.MessageCount
     );
+    const [planets, setPlanets] = useState<JSX.Element[]>([]);
     const [filters, setFilters] = useState<Filter>({
         maxChats: 25,
         textFilter: "",
@@ -216,19 +59,166 @@ function Universe() {
         filterContacts: false,
     });
 
+    const planetRefs = useRef<HTMLDivElement[]>([]);
+    const planetParameterRefs = useRef<PlanetParameter[]>([]);
+
+    const { height, width } = useViewportSize();
     const navigate = useNavigate();
+    const { x, y } = useMouse();
 
-    const filteredChats = chats
-        .filter((c) => {
-            const query = filters.textFilter.toLowerCase().trim();
-            if (filters.filterGroups && c.isGroup) return false;
-            if (filters.filterContacts && !c.isGroup) return false;
-            if (query.length > 0) return c.name.toLowerCase().includes(query);
-            return true;
+    function buildPlanets(
+        chats: Chat[],
+        selectedDataType: DataTypeOption
+    ) {
+        const buildParams = DataTypeToBuildParams[selectedDataType];
+        const planetParameters = buildParams(chats);
+        planetParameters.unshift({
+            movement: {
+                type: "position",
+                distance: 0, // 0-1: % of radius.
+                degree: 0, // 0-360
+            },
+            tooltip: "Click for Summary Stats",
+            size: CENTER_SIZE,
+            key: "me",
+            link: "/overview",
+            contents: <div>You</div>,
+            currentRadius: 0, 
+            currentAngle: 0,
         })
-        .slice(0, filters.maxChats);
-    const planets = buildPlanets(chats, filteredChats, selectedDataType);
+        const planets = planetParameters.map(initialPosition); 
+        planetParameterRefs.current = planets;
 
+        return planets.map((params, index) => {
+            return (
+                <Planet
+                    ref={(p: any) => {
+                        if (p) planetRefs.current[index] = p;
+                    }}
+
+                    tooltip={params.tooltip}
+                    size={params.size}
+                    movement={params.movement}
+                    key={params.key}
+                    link={params.link}
+                >
+                    {params.contents}
+                </Planet>
+            );
+        });
+    }
+
+    useEffect(() => {
+        planetRefs.current = [];
+        planetParameterRefs.current = [];
+        const builtPlanets = buildPlanets(chats, selectedDataType);
+        setPlanets(builtPlanets);
+    }, [chats, selectedDataType])
+
+    // Hide filters planets
+    useEffect(() => {
+        if (planets.length !== planetRefs.current.length || planetRefs.current.length != planetParameterRefs.current.length) {
+           return; 
+        }
+
+        const query = filters.textFilter.toLowerCase().trim();
+        let displayed = 0
+        planets.forEach((_, index) => {
+            if (index === 0) return;
+            const planet = planetRefs.current[index]
+            const chat = chats[index - 1] // Offset by 1 for the first planet
+
+            const isGroup = chat.isGroup;
+            const nameMatches = chat.name.toLowerCase().includes(query);
+            const shouldHide =
+              (filters.filterGroups && isGroup) ||
+              (filters.filterContacts && !isGroup) ||
+              (query !==  "" && !nameMatches) ||
+              (displayed >= filters.maxChats);
+
+            planet.style.display = shouldHide ? "none" : "flex";
+            if (!shouldHide) displayed += 1
+        })
+    }, [planets, filters])
+
+    function calcRadius(distance: number, isOrbit = true) {
+        const maxOrbit = Math.min(height, width) / 2;
+        return (isOrbit) 
+            ? distance * (maxOrbit - CENTER_SIZE - UNIVERSE_MARGIN) + CENTER_SIZE
+            : distance * (maxOrbit)
+    }
+
+    function initialPosition(params: PlanetParameter): PlanetParameter {
+        let currentRadius, currentAngle;
+        switch (params.movement.type) {
+            case "position":
+                currentAngle = (params.movement.degree / 360) * 2 * Math.PI;
+                currentRadius = calcRadius(params.movement.distance, /* isOrbit */ false);
+                return {...params, currentRadius, currentAngle}
+            case "orbit":
+                currentAngle = Math.random() * 2 * Math.PI
+                currentRadius = calcRadius(params.movement.distance);
+                return {...params, currentRadius, currentAngle}
+        }
+    }
+
+    function polarToCartesian(params: PlanetParameter) {
+        const size = params.size
+        const radius = params.currentRadius ?? 0;
+        const widthMid = width / 2
+        const heightMid = height / 2
+        const positionX =
+            widthMid + radius * Math.cos(params.currentAngle) - size / 2;
+        const positionY =
+            heightMid + radius * Math.sin(params.currentAngle) - size / 2;
+        return [positionX, positionY]
+    }
+
+    function mouseDistance(x: number, y: number, params: PlanetParameter): number {
+        const [positionX, positionY] = polarToCartesian(params);
+        const midX = positionX + params.size / 2;
+        const midY = positionY + params.size / 2;
+
+        const sqrt = Math.sqrt(
+            Math.pow(x - midX, 2) + Math.pow(y - midY, 2)
+        );
+        return sqrt
+    }
+
+    function quadraticEaseSpeedMultiplier(distance: number, radius: number) {
+        if (distance < radius) return 0;
+        if (distance > 3 * radius) return 1;
+
+        const t = (distance - radius) / (2 * radius);
+        return t * t;
+    };
+
+    function updatePosition(params: PlanetParameter, delta: number): PlanetParameter {
+        const distance = mouseDistance(x, y, params);
+        const speedMultiplier = quadraticEaseSpeedMultiplier(distance, params.size / 3);
+
+        let currentAngle, currentRadius;
+        switch (params.movement.type) {
+            case "position":
+                currentAngle = (params.movement.degree / 360) * 2 * Math.PI;
+                currentRadius = calcRadius(params.movement.distance, /* isOrbit */ false);
+                return {...params, currentRadius, currentAngle}
+            case "orbit":
+                currentAngle = params.currentAngle + params.movement.speed * delta / 3000 * speedMultiplier;
+                currentRadius = calcRadius(params.movement.distance);
+                return {...params, currentRadius, currentAngle}
+        }
+    }
+
+    useAnimationFrame((_, delta) => {
+        planetRefs.current.forEach((planetRef: any, index) => {
+            const parameter = planetParameterRefs.current[index];
+            planetParameterRefs.current[index] = updatePosition(parameter, delta);
+            const [positionX, positionY] = polarToCartesian(parameter);
+            planetRef.style.left = `${positionX}px`;
+            planetRef.style.top = `${positionY}px`;
+        })
+    });
 
     return (
         <>
@@ -250,22 +240,12 @@ function Universe() {
                     </Button>
                 </div>
                 <div className={classes.floatRight}>
-                    <Button
-                        onClick={() => navigate("/settings")}
-                    >
+                    <Button onClick={() => navigate("/settings")}>
                         <IconSettings />
                     </Button>
                     <Filters setFilters={setFilters} filters={filters} chatLength={chats.length}/>
                 </div>
                 {planets}
-                <Planet
-                    link="/overview"
-                    key="me"
-                    size={100}
-                    movement={{ distance: 0, degree: 0, type: "position" }}
-                >
-                    You
-                </Planet>
             </div>
         </>
     );
