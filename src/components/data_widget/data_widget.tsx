@@ -22,6 +22,7 @@ interface WidgetProps {
 function DataWidget(props: WidgetProps) {
     const [type, setType] = useState<string>();
     const [data, setData] = useState();
+    const [selectedData, setSelectedData] = useState();
     const [options, setOptions] = useState<{ [key: string]: string[] }>({});
     const [format, setFormat] = useState<FormatType>();
     const [loading, setLoading] = useState(true);
@@ -34,11 +35,56 @@ function DataWidget(props: WidgetProps) {
 
     // Define the share generator function separately
     const shareGenerator = async () => {
-        console.log("Share generator called");
         if (screenshotRef.current === null) return "";
-        const canvas = await html2canvas(screenshotRef.current, {
-            backgroundColor: '#282c34', // Can be transparent or any color
+        
+       // Create a temporary container for the share view
+        const shareContainer = document.createElement('div');
+        shareContainer.style.width = '800px'; // Fixed width for share view
+        shareContainer.style.padding = '20px';
+        shareContainer.style.backgroundColor = '#282c34';
+        shareContainer.style.display = 'flex';
+        shareContainer.style.flexDirection = 'column';
+        shareContainer.style.alignItems = 'center';
+
+        const header = document.createElement('div')
+        header.style.color = 'white';
+        header.style.width = '100%';
+        header.style.textAlign = 'center';
+        header.style.padding = '1rem';
+        header.textContent = selectedData?.shareLabel ?? ""
+        shareContainer.appendChild(header)
+        
+        // Clone the content
+        const contentClone = screenshotRef.current.cloneNode(true) as HTMLElement;
+        contentClone.style.width = '100%';
+        contentClone.style.marginBottom = '20px';
+        
+        // Add the content
+        shareContainer.appendChild(contentClone);
+        
+        // Add text at the bottom
+        const footerText = document.createElement('div');
+        footerText.style.color = 'white';
+        footerText.style.fontSize = '14px';
+        footerText.style.textAlign = 'center';
+        footerText.style.padding = '10px';
+        footerText.style.width = '100%';
+        footerText.textContent = 'Textualize';
+        shareContainer.appendChild(footerText);
+        
+        // Add the container to the document temporarily
+        document.body.appendChild(shareContainer);
+        
+        // Capture the new component
+        const canvas = await html2canvas(shareContainer, {
+            backgroundColor: '#282c34',
+            width: 800,
+            height: shareContainer.offsetHeight,
         });
+        
+        // Clean up
+        document.body.removeChild(shareContainer);
+        
         return canvas.toDataURL();
     };
 
@@ -66,6 +112,22 @@ function DataWidget(props: WidgetProps) {
         shareContext.registerShareGenerator(shareGenerator);
     }, [data, selectedOptions, loading]);
 
+    useEffect(() => {
+        if (data == null) {
+            setSelectedData(undefined)
+            return 
+        }
+        let selected = data;
+        if (Object.keys(options).length !== 0) {
+            for (const i in Object.keys(options)) {
+                const key = Object.keys(options)[i];
+                const val = selectedOptions[key] ?? options[key][0];
+                selected = selected[val];
+            }
+        }
+        setSelectedData(selected)
+    }, [data, options, selectedOptions])
+
     if (loading) {
         return (
             <Center h="100%">
@@ -75,38 +137,23 @@ function DataWidget(props: WidgetProps) {
     }
 
     function displayData() {
-        if (data == null) return <></>;
-
-        let selectedData = data;
-        if (Object.keys(options).length !== 0) {
-            for (const i in Object.keys(options)) {
-                const key = Object.keys(options)[i];
-                const val = selectedOptions[key] ?? options[key][0];
-                selectedData = selectedData[val];
-            }
-        }
-
+        if (selectedData === undefined) return <></>;
         if (type === "leaderboard") {
             return <Podium leaderboard={selectedData} format={format} />;
         }
-
         if (type === "message") {
             return <MessageCarousel messages={selectedData} />;
         }
-
         if (type === "wordcloud") {
             return <Wordcloud words={selectedData} />;
         }
-
         if (type === "simple") {
             return <Simple data={selectedData} format={format} />;
         }
-
         if (type == "bar_chart") {
             return  <BarChart data={selectedData['data']} 
                               series={selectedData['series']} />
         }
-
         return <>Error!</>;
     }
 

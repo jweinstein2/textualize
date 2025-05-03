@@ -137,8 +137,16 @@ def response_time(number):
     response["type"] = "simple"
     response["format"] = "response_time"
     response["options"] = [["Sent", "Received"]]
-    response["data"] = {"Sent": {"value": chat.sent_response_time, "label": "on average"},
-                        "Received": {"value": chat.received_response_time, "label": "on average"}}
+    response["data"] = {"Sent": 
+                            {"value": chat.sent_response_time, 
+                             "label": "on average",
+                             "shareLabel": "Average response time sent"
+                             },
+                        "Received": {
+                            "value": chat.received_response_time, 
+                            "label": "on average",
+                            "shareLabel": "Average response time received"
+                            }}
     return response
 
 @app.route('/chat/<number>/streak', methods=['GET'])

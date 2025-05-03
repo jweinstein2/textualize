@@ -18,7 +18,6 @@ import { openIMessageAndPasteImage } from '@/appleScript';
 
 interface ShareModalProps {
     pngImage?: string;
-
 }
 
 const TEXTUALIZE_URL = "https://jweinstein2.github.io/textualize_web/"
@@ -28,8 +27,6 @@ const MAIL_BODY =`
 
 Generated via Textualize.
 `
-
-
 
 export default function ShareModal(props: ShareModalProps) {
     const [copied, setCopied] = useState(false);
