@@ -17,7 +17,7 @@ function Settings() {
 
     function clearSource() {
         axios
-            .delete("http://127.0.0.1:4242/source")
+            .delete("http://127.0.0.1:4242/process")
             .then(() => navigate("/onboarding"))
             .catch((error) => console.log(error.response));
     }

@@ -64,22 +64,10 @@ def heartbeat():
     print('heartbeat')
     return "", HTTPStatus.OK
 
-# TODO: Deprecate /source DELETE. Always use /process DELETE instead
-@app.route('/source', methods=['GET', 'DELETE'])
-def source():
-    if request.method == 'GET':
-        posthog.capture(0, 'source fetched')    
-        path =  config.get_backup_path();
-        return {"source": path}
-    elif request.method == 'DELETE':
-        posthog.capture(0, 'source deleted')    
-        config.reset();
-        data_manager.clear();
-        return "", HTTPStatus.OK
-
 @app.route('/process', methods=['GET', 'POST', 'DELETE'])
 def process():
     if request.method == 'DELETE':
+        posthog.capture(0, 'source deleted')    
         config.reset();
         data_manager.clear()
         return "", HTTPStatus.OK
